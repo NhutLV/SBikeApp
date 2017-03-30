@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:id="@+id/layout_sign_up"
+    android:background="@color/colorPrimary"
+    android:gravity="center"
+    android:orientation="vertical">
+    <EditText
+        android:id="@+id/input_name_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_account_box_black_24dp"
+        android:hint="Email"
+        style="@style/MyEditText"
+        android:inputType="text"/>
+    <EditText
+        android:id="@+id/input_email_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_email_black_24dp"
+        android:hint="Email"
+        style="@style/MyEditText"
+        android:layout_marginTop="20dp"
+        android:inputType="textEmailAddress"/>
+    <EditText
+        android:id="@+id/input_number_phone_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_settings_phone_black_24dp"
+        android:hint="Number Phone"
+        style="@style/MyEditText"
+        android:layout_marginTop="20dp"
+        android:inputType="numberDecimal"/>
+    <EditText
+        android:id="@+id/input_password_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_lock_black_24dp"
+        android:hint="Password"
+        android:layout_marginTop="20dp"
+        style="@style/MyEditText"
+        android:inputType="textPassword"/>
+    <EditText
+        android:id="@+id/input_confirm_password_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_lock_black_24dp"
+        android:hint="Confirm Password"
+        android:layout_marginTop="20dp"
+        style="@style/MyEditText"
+        android:inputType="textPassword"/>
+
+    <Button
+        android:id="@+id/btn_sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_button_default"
+        android:text="Sign Up"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorApp"/>
+
+    <TextView
+        android:id="@+id/link_sign_in"
+        android:layout_marginTop="20dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="No account yet? Create one"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"/>
+
+    <ProgressBar
+        android:id="@+id/progressBarSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+</LinearLayout>
