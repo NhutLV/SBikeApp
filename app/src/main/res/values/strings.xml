@@ -5,4 +5,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="key_google_maps_api_v2">AIzaSyCkQMIy03IKILpm8gcjHW_a3hJa_OBspQU</string>
 </resources>

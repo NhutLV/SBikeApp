@@ -60,4 +60,12 @@
         <item name="android:textCursorDrawable">@drawable/color_cursor</item>
         <item name="android:padding">12dp</item>
     </style>
+    <style name="MyTextView" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/bg_edittext_icon</item>
+        <item name="android:drawablePadding">20dp</item>
+        <item name="android:cursorVisible">true</item>
+        <item name="android:textCursorDrawable">@drawable/color_cursor</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
 </resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_bottom_motorbike"
+        android:checked="false"
+        android:icon="@drawable/ic_directions_bike_black_24dp"
+        android:title="MotorBike"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_bottom_repair"
+        android:checkable="true"
+        android:icon="@drawable/ic_repair_black_24dp"
+        android:title="Repair"
+        app:showAsAction="ifRoom" />
+</menu>

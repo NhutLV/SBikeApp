@@ -5,4 +5,6 @@
     <color name="colorAccent">#FFFFFF</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorApp">#03a9f4</color>
+    <color name="colorCircleStroke">#03a9f4</color>
+    <color name="colorCircleFill">#907AC2E2</color>
 </resources>
