@@ -7,25 +7,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </com.google.android.gms.maps.MapView>
-    <EditText
+    <TextView
         android:id="@+id/ed_current_place"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_edittext_default"
+        android:background="@drawable/bg_textview_search"
         android:padding="12dp"
         android:hint="You are here"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:drawableLeft="@drawable/ic_location_on_black_24dp"
+        android:drawablePadding="12dp"
         android:layout_alignParentTop="true"/>
-    <EditText
+    <TextView
         android:id="@+id/ed_place_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_edittext_default"
+        android:background="@drawable/bg_textview_search"
         android:padding="12dp"
         android:hint="Where are you are go?"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:drawableLeft="@drawable/ic_location_on_black_24dp"
+        android:drawablePadding="12dp"
         android:layout_below="@+id/ed_current_place"/>
 </RelativeLayout>

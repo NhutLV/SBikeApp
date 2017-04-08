@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -60,8 +61,8 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
     private LocationProvider mLocationProvider;
     private final static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
-    EditText mEdPlaceSearch;
-    EditText mEdCurrentPlace;
+    TextView mTxtPlaceSearch;
+    TextView mTxtCurrentPlace;
 
     @Override
     public void onAttach(Context context) {
@@ -84,12 +85,12 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
             }
         });
 
-        mEdPlaceSearch = (EditText) v.findViewById(R.id.ed_place_search);
-        mEdCurrentPlace = (EditText) v.findViewById(R.id.ed_current_place);
-        mEdPlaceSearch.setOnClickListener(new View.OnClickListener() {
+        mTxtPlaceSearch = (TextView) v.findViewById(R.id.ed_place_search);
+        mTxtCurrentPlace = (TextView) v.findViewById(R.id.ed_current_place);
+        mTxtPlaceSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                findPlace(mEdPlaceSearch);
+                findPlace(mTxtPlaceSearch);
             }
         });
 
@@ -158,7 +159,20 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
             address = addresses.get(0).getAddressLine(0);
             Log.d("TAG CURRENT",address);
             Log.d("TAG CURRENT",addresses.get(0).toString());
-            mEdCurrentPlace.setText(address);
+            mTxtCurrentPlace.setText(address);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //get location from address
+        List<Address> addresses;
+        try {
+            addresses = geocoder.getFromLocationName("Cầu Rồng", 1);
+            if(addresses.size() > 0) {
+                double latitude= addresses.get(0).getLatitude();
+                double longitude= addresses.get(0).getLongitude();
+                Log.d("TAG LOACTION ",latitude+" - "+longitude);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -167,7 +181,7 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
                 .title(address)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
         mGoogleMap.addMarker(options);
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -232,7 +246,7 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
 
                 mGoogleMap.addMarker(placeSearch).showInfoWindow();
-                mEdPlaceSearch.setText(place.getAddress().toString());
+                mTxtPlaceSearch.setText(place.getAddress().toString());
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getActivity(), data);
@@ -240,6 +254,8 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
             } else if (requestCode == RESULT_CANCELED) {
                 Log.i("TAG PLACE", "Cancel");
             }
+        }else{
+            Log.i("TAG PLACE", "CCCC");
         }
     }
 }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.daimajia.swipe.SwipeLayout
+        xmlns:app="http://schemas.android.com/tools"
+        xmlns:swipe="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/swipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:clickToClose="true"
+        swipe:leftEdgeSwipeOffset="0dp"
+        swipe:rightEdgeSwipeOffset="0dp">
+
+        <LinearLayout
+            android:id="@+id/bottom_wrapper_2"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/edit_alarm"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:background="#4cd964"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:src="@drawable/star"/>
+
+            <ImageView
+                android:id="@+id/delete_alarm"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/red"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:src="@drawable/trash"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/item_selector"
+            android:elevation="5dp">
+
+            <TextView
+                android:id="@+id/item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_alignParentTop="true"
+                android:text="Alarm 1"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/item_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/item_name"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/activity_vertical_margin"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/item_time"
+                android:text="Alarm 1"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/item_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="19:01"
+                android:layout_marginRight="@dimen/activity_vertical_margin"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+        </RelativeLayout>
+    </com.daimajia.swipe.SwipeLayout>
+</LinearLayout>

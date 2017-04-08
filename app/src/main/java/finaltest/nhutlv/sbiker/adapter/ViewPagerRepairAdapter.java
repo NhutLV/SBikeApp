@@ -3,19 +3,17 @@ package finaltest.nhutlv.sbiker.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 
-import finaltest.nhutlv.sbiker.fragment.AboutFragment;
-import finaltest.nhutlv.sbiker.fragment.MotorbikeTaxiFragment;
-import finaltest.nhutlv.sbiker.fragment.RepairBikeFragment;
+import finaltest.nhutlv.sbiker.fragment.AutoRepairFragment;
+import finaltest.nhutlv.sbiker.fragment.StoreRepairFragment;
 
 /**
  * Created by NhutDu on 18/10/2016.
  */
-public class ViewPagerHomeAdapter extends FragmentPagerAdapter {
+public class ViewPagerRepairAdapter extends FragmentPagerAdapter {
     int mNumOfTabs;
 
-    public ViewPagerHomeAdapter(FragmentManager fm, int NumOfTabs) {
+    public ViewPagerRepairAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
         this.mNumOfTabs = NumOfTabs;
     }
@@ -24,9 +22,9 @@ public class ViewPagerHomeAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new MotorbikeTaxiFragment();
+                return new AutoRepairFragment();
             case 1:
-                return new RepairBikeFragment();
+                return new StoreRepairFragment();
             default:
                 return null;
         }

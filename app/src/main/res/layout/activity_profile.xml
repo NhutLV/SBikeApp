@@ -185,7 +185,7 @@
         android:src="@drawable/nhut"
         app:finalHeight="@dimen/image_final_width"
         app:finalYPosition="2dp"
-        app:layout_behavior="finaltest.nhutlv.sbike.tools.AvatarImageBehavior"
+        app:layout_behavior="finaltest.nhutlv.sbiker.tools.AvatarImageBehavior"
         app:startHeight="2dp"
         app:startToolbarPosition="2dp"
         app:startXPosition="2dp" />

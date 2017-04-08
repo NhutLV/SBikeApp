@@ -45,14 +45,14 @@ public class RegisterInfoRepairFragment extends AppCompatActivity implements Vie
         mBtnTimeClose.setOnClickListener(this);
 
         mSpinnerType.setItems("Choose Type","Auto","Store");
-        mSpinnerType.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-                if(position!=0){
-                    mSpinnerType.setItems("Auto","Store");
-                }
-            }
-        });
+//        mSpinnerType.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+//                if(position!=0){
+//                    mSpinnerType.setItems("Auto","Store");
+//                }
+//            }
+//        });
     }
 
     @Override

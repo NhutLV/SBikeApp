@@ -5,14 +5,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +23,7 @@ import android.widget.ImageButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import finaltest.nhutlv.sbiker.adapter.ViewPagerHomeAdapter;
 import finaltest.nhutlv.sbiker.fragment.MotorbikeTaxiFragment;
 import finaltest.nhutlv.sbiker.fragment.RepairBikeFragment;
 
@@ -27,11 +31,15 @@ import finaltest.nhutlv.sbiker.fragment.RepairBikeFragment;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    @BindView(R.id.bottomNavigation)
-    BottomNavigationView mBottomNavigationView;
+    @BindView(R.id.tabLayoutMain)
+    TabLayout mTabLayoutMain;
+
+    @BindView(R.id.viewPageMain)
+    ViewPager mViewpageMain;
 
     private FragmentManager mFragmentManager;
     private Fragment mFragment;
+    private ViewPagerHomeAdapter mAdapterViewPage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +47,6 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         mFragmentManager = getSupportFragmentManager();
-        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.add(R.id.frameMain,new MotorbikeTaxiFragment()).commit();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -67,27 +72,28 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        mAdapterViewPage = new ViewPagerHomeAdapter(mFragmentManager,2);
+        mViewpageMain.setAdapter(mAdapterViewPage);
+        mTabLayoutMain.setupWithViewPager(mViewpageMain);
+        mTabLayoutMain.getTabAt(0).setText("MotorBike").setIcon(R.drawable.ic_directions_bike_black_24dp);
+        mTabLayoutMain.getTabAt(1).setText("Repair").setIcon(R.drawable.ic_repair_black_24dp);
+        mTabLayoutMain.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.d("TAG TAB",tab.getPosition()+"");
+            }
 
-                FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-                switch (menuItem.getItemId()){
-                    case R.id.menu_bottom_motorbike:
-                        fragmentTransaction.replace(R.id.frameMain,new MotorbikeTaxiFragment()).commit();
-                        mBottomNavigationView.getMenu().getItem(1).setChecked(true);
-                        mBottomNavigationView.getMenu().getItem(0).setChecked(false);
-                        break;
-                    case R.id.menu_bottom_repair:
-                        fragmentTransaction.replace(R.id.frameMain,new RepairBikeFragment()).commit();
-                        mBottomNavigationView.getMenu().getItem(0).setChecked(true);
-                        mBottomNavigationView.getMenu().getItem(1).setChecked(false);
-                        break;
-                }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-                return false;
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
+
 
     }
 
@@ -144,7 +150,6 @@ public class MainActivity extends AppCompatActivity
 
         }
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace(R.id.frameMain,fragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
