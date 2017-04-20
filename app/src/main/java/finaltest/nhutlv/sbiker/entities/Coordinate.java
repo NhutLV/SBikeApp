@@ -1,5 +1,6 @@
 package finaltest.nhutlv.sbiker.entities;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -25,6 +26,10 @@ public class Coordinate {
     public Coordinate(double latitude, double longitude) {
         mLatitude = latitude;
         mLongitude = longitude;
+    }
+
+    public LatLng getLatLng(){
+        return new LatLng(mLatitude,mLongitude);
     }
 
     public Coordinate() {

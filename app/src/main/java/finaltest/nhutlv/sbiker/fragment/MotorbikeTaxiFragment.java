@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -56,10 +57,11 @@ import static android.app.Activity.RESULT_CANCELED;
 
 public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.LocationCallback {
 
-    MapView mMapView;
+    private MapView mMapView;
     private GoogleMap mGoogleMap = null;
     private LocationProvider mLocationProvider;
     private final static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private LatLng mLatLngCurrent;
 
     TextView mTxtPlaceSearch;
     TextView mTxtCurrentPlace;
@@ -82,6 +84,18 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 mGoogleMap = googleMap;
+                if (mMapView != null &&
+                        mMapView.findViewById(Integer.parseInt("1")) != null) {
+                    // Get the button view
+                    View locationButton = ((View) mMapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+                    // and next place it, on bottom right (as Google Maps app)
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
+                            locationButton.getLayoutParams();
+                    // position on right bottom
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+                    layoutParams.setMargins(0, 0, 30, 200);
+                }
             }
         });
 
@@ -138,19 +152,13 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
     public void handleNewLocation(final Location location) {
         Log.d("TAG HANDLE","OK");
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         mGoogleMap.setMyLocationEnabled(true);
+
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+        mLatLngCurrent = new LatLng(currentLatitude, currentLongitude);
 
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
         String address="";
@@ -179,22 +187,32 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
 
         //mMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)).title("Current Location"));
         MarkerOptions options = new MarkerOptions()
-                .position(latLng)
+                .position(mLatLngCurrent)
                 .title(address)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
         mGoogleMap.addMarker(options);
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng).zoom(10).build();
+        final CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(mLatLngCurrent).zoom(17).build();
         mGoogleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
-
-        mGoogleMap.addCircle(new CircleOptions()
-                .center(latLng)
-                .radius(10000)
+        CircleOptions circleOptions = new CircleOptions()
+                .center(mLatLngCurrent)
+                .radius(100)
                 .strokeWidth(5)
                 .strokeColor(getActivity().getResources().getColor(R.color.colorCircleStroke))
-                .fillColor(getActivity().getResources().getColor(R.color.colorCircleFill)));
+                .fillColor(getActivity().getResources().getColor(R.color.colorCircleFill));
+        mGoogleMap.addCircle(circleOptions);
+
+        mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                Log.d("TAG BUTTON CLICK","OK");
+                mGoogleMap.animateCamera(CameraUpdateFactory
+                        .newCameraPosition(cameraPosition));
+                return true;
+            }
+        });
     }
 
 
@@ -236,14 +254,11 @@ public class MotorbikeTaxiFragment extends Fragment implements LocationProvider.
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(getActivity(), data);
-                Log.i("TAG PLACE", "Place:" + place.toString());
-                Log.i("TAG PLACE", "Place:" + place.getLatLng().latitude +" - "+place.getLatLng().longitude);
-
                 MarkerOptions placeSearch = new MarkerOptions()
                         .position(place.getLatLng())
                         .title(place.getName().toString())
                         .snippet(place.getAddress().toString())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
                 mGoogleMap.addMarker(placeSearch).showInfoWindow();
                 mTxtPlaceSearch.setText(place.getAddress().toString());

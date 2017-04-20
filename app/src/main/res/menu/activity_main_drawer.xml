@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home_black_24dp"
-            android:title="Home"/>
         <item
             android:id="@+id/nav_register"
             android:icon="@drawable/ic_library_add_black_24dp"
@@ -21,6 +18,7 @@
         <item
             android:id="@+id/nav_driver"
             android:icon="@drawable/ic_directions_bike_black_24dp"
+            app:actionLayout="@layout/switch_layout"
             android:title="Become a driver"/>
         <item
             android:id="@+id/nav_invite_friend"
@@ -30,7 +28,7 @@
     <item android:title="Account">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_log_out"
                 android:icon="@drawable/ic_exit_to_app_black_24dp"
                 android:title="Log Out"/>
         </menu>

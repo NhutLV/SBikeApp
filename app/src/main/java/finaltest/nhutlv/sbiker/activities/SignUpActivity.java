@@ -1,10 +1,11 @@
-package finaltest.nhutlv.sbiker;
+package finaltest.nhutlv.sbiker.activities;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.Coordinate;
 import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.utils.CustomToast;
@@ -59,6 +61,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         ButterKnife.bind(this);
         mBtnSubmit.setOnClickListener(this);
         mNavigateLogin.setOnClickListener(this);
+        mPassword.setTransformationMethod(new PasswordTransformationMethod());
+        mRePassword.setTransformationMethod(new PasswordTransformationMethod());
     }
 
 

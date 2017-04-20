@@ -1,5 +1,6 @@
 package finaltest.nhutlv.sbiker.entities;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -73,6 +74,7 @@ public class User {
         return mCoordinate;
     }
 
+
     public void setCoordinate(Coordinate coordinate) {
         mCoordinate = coordinate;
     }
@@ -87,6 +89,17 @@ public class User {
     }
 
     public User() {
+    }
+
+    public User(String mFullName, Coordinate mCoordinate) {
+        this.mFullName = mFullName;
+        this.mCoordinate = mCoordinate;
+    }
+
+    public User(String mFullName, String mNumberPhone, Coordinate mCoordinate) {
+        this.mFullName = mFullName;
+        this.mNumberPhone = mNumberPhone;
+        this.mCoordinate = mCoordinate;
     }
 
     public String getRePassword() {

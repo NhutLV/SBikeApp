@@ -1,4 +1,4 @@
-package finaltest.nhutlv.sbiker;
+package finaltest.nhutlv.sbiker.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import finaltest.nhutlv.sbiker.R;
 
 /**
  * Created by NhutDu on 31/03/2017.

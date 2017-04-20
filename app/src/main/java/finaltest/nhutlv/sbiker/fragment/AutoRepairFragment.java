@@ -68,8 +68,8 @@ public class AutoRepairFragment extends Fragment implements AutoRepairAdapter.My
         // Item Decorator:
         recyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.divider)));
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
-        mAdapter = new AutoRepairAdapter(getActivity(),mRepairers);
         // Adapter:
+        mAdapter = new AutoRepairAdapter(getActivity(),mRepairers);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         ((AutoRepairAdapter) mAdapter).setMode(Attributes.Mode.Single);
         ((AutoRepairAdapter) mAdapter).setMyClickListener(this);

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/image_avatar_biker_info"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/image_account"/>
+
+        <TextView
+            android:id="@+id/fullname_biker_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/image_avatar_biker_info"
+            android:padding="5dp"
+            android:text="Lê Viết Nhựt"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/gender_biker_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fullname_biker_info"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/image_avatar_biker_info"
+            android:padding="5dp"
+            android:text="Male"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/age_biker_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gender_biker_info"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/image_avatar_biker_info"
+            android:padding="5dp"
+            android:text="23 years old"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/phone_biker_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/age_biker_info"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/image_avatar_biker_info"
+            android:padding="5dp"
+            android:text="01687184516"
+            android:textStyle="bold"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancel_bike_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="Cancel"/>
+        <Button
+            android:id="@+id/btn_call_bike_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="Call"/>
+    </LinearLayout>
+</LinearLayout>

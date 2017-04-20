@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "92252181847",
+    "project_id": "firebase-sbike"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92252181847:android:bb7a137ce1048ae4",
+        "android_client_info": {
+          "package_name": "finaltest.nhutlv.sbiker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "92252181847-1r6s3bo34b0816cqipo9rkk7aod1qia5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "finaltest.nhutlv.sbiker",
+            "certificate_hash": "3d6c039e987f8bfb880d013df2d5379497122e6b"
+          }
+        },
+        {
+          "client_id": "92252181847-6rnt2frgvum1jgrvn1nns8jkskrfl8m6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8WDEj1tqAFy6REOowl6gO6MnRhNAPP_s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

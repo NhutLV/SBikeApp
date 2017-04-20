@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:padding="20dp"
     android:id="@+id/layout_sign_up"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorWhite"
     android:gravity="center"
     android:orientation="vertical">
     <EditText
@@ -41,8 +41,7 @@
         android:drawableLeft="@drawable/ic_lock_black_24dp"
         android:hint="Password"
         android:layout_marginTop="20dp"
-        style="@style/MyEditText"
-        android:inputType="textPassword"/>
+        style="@style/MyEditText"/>
     <EditText
         android:id="@+id/input_confirm_password_sign_up"
         android:layout_width="match_parent"
@@ -50,29 +49,44 @@
         android:drawableLeft="@drawable/ic_lock_black_24dp"
         android:hint="Confirm Password"
         android:layout_marginTop="20dp"
-        style="@style/MyEditText"
-        android:inputType="textPassword"/>
+        style="@style/MyEditText"/>
 
     <Button
         android:id="@+id/btn_sign_up"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/bg_button_default"
+        android:background="@drawable/bg_button_blue"
         android:text="Sign Up"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="bold"
-        android:textColor="@color/colorApp"/>
+        android:textAllCaps="false"
+        android:textColor="@color/colorWhite"/>
 
-    <TextView
-        android:id="@+id/link_sign_in"
-        android:layout_marginTop="20dp"
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="No account yet? Create one"
-        android:textColor="@color/colorWhite"
-        android:textSize="16sp"/>
+        android:layout_marginTop="20dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/donthave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="You have account ? "
+            android:textColor="#C6C3C2"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/link_sign_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/donthave"
+            android:text="Log in"
+            android:textColor="@color/colorApp"
+            android:textSize="16sp"/>
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/progressBarSignUp"
