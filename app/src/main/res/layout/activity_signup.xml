@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/ic_account_box_black_24dp"
-        android:hint="Email"
+        android:hint="FullName"
         style="@style/MyEditText"
         android:inputType="text"/>
     <EditText
