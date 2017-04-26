@@ -8,6 +8,6 @@ public interface Callback<T> {
 
     void onResult(T t);
 
-    void onFailure();
+    void onFailure(String message);
 
 }

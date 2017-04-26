@@ -6,7 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite">
-
+    <ImageView
+        android:src="@drawable/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <LinearLayout
         android:id="@+id/layout_login_email"
         android:layout_width="match_parent"
@@ -31,8 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:drawableLeft="@drawable/ic_lock_black_24dp"
-            android:hint="Password"
-            android:inputType="textPassword"/>
+            android:hint="Password"/>
 
         <Button
             android:id="@+id/btn_login"
@@ -82,19 +86,23 @@
         android:paddingBottom="12dp"
         android:paddingTop="12dp"/>
 
-    <com.google.android.gms.common.SignInButton
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
+    <Button
         android:id="@+id/btn_login_gmail"
         android:layout_width="match_parent"
-        android:text="Log in with facebook"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_button_gmail"
+        android:text="Sign Up with Gmail"
+        android:drawablePadding="-42dp"
+        android:drawableLeft="@drawable/logo_mail"
+        android:textColor="@color/colorWhite"
+        android:textAllCaps="false"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:textSize="14sp"
+        android:layout_marginBottom="10dp"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        app:colorScheme="dark"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="10dp"/>
-
+        android:textStyle="bold"/>
     <ProgressBar
         android:id="@+id/progressBarLogin"
         android:layout_width="wrap_content"

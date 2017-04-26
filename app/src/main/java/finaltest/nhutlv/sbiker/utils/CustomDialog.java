@@ -18,11 +18,15 @@ public class CustomDialog {
     }
 
     public void showDialog(){
-        progressDialog.show();
+        if(progressDialog!=null){
+            progressDialog.show();
+        }
     }
 
-    public void dismissDialog(){
-        progressDialog.dismiss();
+    public void hideDialog(){
+        if(progressDialog!=null) {
+            progressDialog.dismiss();
+        }
     }
 
 }

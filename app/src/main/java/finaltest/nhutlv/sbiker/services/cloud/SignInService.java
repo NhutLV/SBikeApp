@@ -10,11 +10,15 @@ import retrofit2.http.POST;
  * Created by NhutDu on 07/03/2017.
  */
 
-public interface LoginService {
+public interface SignInService {
 
     @FormUrlEncoded
     @POST("activity_login")
     Call<UserResponseAPI> login(@Field("email") String email
             , @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("user/sign-in-social")
+    Call<UserResponseAPI> signSocial(@Field("access_token") String accessToken);
 
 }

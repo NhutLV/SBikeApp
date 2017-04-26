@@ -38,7 +38,7 @@ public class BikerInfoDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_biker_info);
+        setContentView(R.layout.dialog_demo);
 
         TextView numberPhone = (TextView) findViewById(R.id.phone_biker_info);
         numberPhone.setText(mUser.getNumberPhone());

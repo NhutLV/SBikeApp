@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,16 +32,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.plus.People;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
 
 import org.json.JSONObject;
 
@@ -50,20 +44,26 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dmax.dialog.SpotsDialog;
 import finaltest.nhutlv.sbiker.R;
-import finaltest.nhutlv.sbiker.services.cloud.LoginServiceImpl;
+import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.services.cloud.SignInServiceImpl;
+import finaltest.nhutlv.sbiker.services.cloud.SignUpServiceImpl;
+import finaltest.nhutlv.sbiker.tools.ErrorDialog;
+import finaltest.nhutlv.sbiker.tools.PrefManagement;
+import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.CustomDialog;
 import finaltest.nhutlv.sbiker.utils.CustomToast;
+import finaltest.nhutlv.sbiker.utils.SBConstants;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
-import finaltest.nhutlv.sbiker.utils.UtilsFunctions;
+import finaltest.nhutlv.sbiker.utils.SBFunctions;
 
 /**
  * Created by NhutDu on 01/03/2017.
  */
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
+public class SignInActivity extends AppCompatActivity implements View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = LoginActivity.class.getSimpleName();
+    private static final String TAG = SignInActivity.class.getSimpleName();
     @BindView(R.id.input_email_login)
     EditText mEmail;
 
@@ -86,16 +86,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     LoginButton mBtnLoginFb;
 
     @BindView(R.id.btn_login_gmail)
-    SignInButton mBtnLoginGmail;
+    Button mBtnLoginGmail;
 
     private CallbackManager mCallbackManager;
 
     private AlertDialog mAlertDialog;
     private ProgressDialog mProgressDialog;
     private CustomDialog mCustomDialog;
-    private LoginServiceImpl mLoginService;
+    private SignInServiceImpl mLoginService;
+    private SignUpServiceImpl mSignUpService;
     private GoogleApiClient mGoogleApiClient;
-    private static final int RC_SIGN_IN =1;
+    private static final int RC_SIGN_IN = 1;
+    private PrefManagement mPrefManagement;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +105,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mCallbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        mPassword.setTransformationMethod(new PasswordTransformationMethod());
+        mPrefManagement = new PrefManagement(this);
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestServerAuthCode(getString(R.string.default_web_client_id))
@@ -120,11 +125,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signInWithToken();
 
         mBtnLoginFb.setOnClickListener(this);
-        mBtnLoginGmail.setSize(SignInButton.COLOR_DARK);
         mBtnLoginGmail.setOnClickListener(this);
 
         mNavigateSignUp.setOnClickListener(this);
-        mLoginService = new LoginServiceImpl();
+        mLoginService = new SignInServiceImpl(this);
+        mSignUpService = new SignUpServiceImpl();
         mAlertDialog = new SpotsDialog(this, "Login...");
         mCustomDialog = new CustomDialog(this, "Login...");
     }
@@ -135,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     public void hideProgress() {
-        mCustomDialog.dismissDialog();
+        mCustomDialog.hideDialog();
     }
 
 
@@ -150,12 +155,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     public void navigateToHome() {
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        startActivity(new Intent(SignInActivity.this, MainActivity.class));
         finish();
     }
 
     public void navigateToSignUp() {
-        startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+        startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
         finish();
     }
 
@@ -164,38 +169,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (view.getId()) {
             case R.id.btn_login:
                 Log.d(TAG, "onClick: ");
-                if(isOffline()){
+                if (isOffline()) {
                     return;
                 }
-                /*
-                final String email = mEmail.getText().toString();
+                /*final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 if(submitLogin()){
-                    mCustomDialog.showDialog();
-                    new Handler().postDelayed(new Runnable() {
+                    showProgress();
+                    mLoginService.login(email, password, new Callback<User>() {
                         @Override
-                        public void run() {
-                            mLoginService.activity_login(email, password, new Callback<User>() {
-                                @Override
-                                public void onResult(User user) {
-                                    if (user != null) {
-                                        new CustomToast().ShowToast(getApplicationContext(),mLayout,"Login is successfully !!!");
-                                    } else {
-                                        new CustomToast().ShowToast(getApplicationContext(),mLayout,"Email or Password is not correct");
-                                    }
-                                }
-                                @Override
-                                public void onFailure() {
-                                    new CustomToast().ShowToast(getApplicationContext(),mLayout,"Login is Failed");
-                                }
-                            });
-                            mCustomDialog.dismissDialog();
+                        public void onResult(User user) {
+                            hideProgress();
+                            Log.d(TAG, "onResult: "+user.getEmai());
+                            UserLogin.setUserLogin(user);
+                            navigateToHome();
                         }
-                    }, 3000);
-                }
 
-//                mLoginPresenter.validateLogin(mEmail.getText().toString(),mPassword.getText().toString());
-*/
+                        @Override
+                        public void onFailure(String message) {
+                            hideProgress();
+                            new ErrorDialog(SignInActivity.this,message).show();
+                            Log.d(TAG, "onFailure: Login Email");
+                        }
+                    });
+                }*/
                 navigateToHome();
                 break;
 
@@ -213,8 +210,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private boolean validateEmail() {
         String email = mEmail.getText().toString();
+        Log.d(TAG, "validateEmail: "+email);
         if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            new CustomToast().ShowToast(this, mLayout, "Email không hợp lệ");
+            new ErrorDialog(this,"Email không hợp lệ !!").show();
             return true;
         }
         return false;
@@ -222,7 +220,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private boolean validatePassword() {
         if (TextUtils.isEmpty(mPassword.getText().toString())) {
-            new CustomToast().ShowToast(this, mLayout, "Password không hợp lệ");
+            new ErrorDialog(this,"Password không hợp lệ !!").show();
             return true;
         }
         return false;
@@ -253,29 +251,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        if(isOffline()){
+        if (isOffline()) {
             return;
         }
-        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
-        if (opr.isDone()) {
-            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
-            // and the GoogleSignInResult will be available instantly.
-            Log.d(TAG, "Got cached sign-in");
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result);
-        } else {
-            // If the user has not previously signed in on this device or the sign-in has expired,
-            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-            // single sign-on will occur in this branch.
-            showProgressDialog();
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(GoogleSignInResult googleSignInResult) {
-                    hideProgressDialog();
-                    handleSignInResult(googleSignInResult);
-                }
-            });
-        }
+        signInWithAccessToken();
+//        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+//        if (opr.isDone()) {
+//            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+//            // and the GoogleSignInResult will be available instantly.
+//            Log.d(TAG, "Got cached sign-in");
+//            GoogleSignInResult result = opr.get();
+//            handleSignInResult(result);
+//        } else {
+//            // If the user has not previously signed in on this device or the sign-in has expired,
+//            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+//            // single sign-on will occur in this branch.
+//            showProgressDialog();
+//            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+//                @Override
+//                public void onResult(GoogleSignInResult googleSignInResult) {
+//                    hideProgressDialog();
+//                    handleSignInResult(googleSignInResult);
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -284,18 +283,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void signInFaceBook() {
-        if(isOffline()){
+        if (isOffline()) {
             return;
         }
         mBtnLoginFb.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
+            public void onSuccess(final LoginResult loginResult) {
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
                             @Override
                             public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("LoginActivity", response.toString());
+                                Log.v("SignInActivity", response.toString());
 
                                 // Application code
                                 String email = object.optString("email");
@@ -305,12 +304,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 String last_name = object.optString("last_name");
                                 String id = object.optString("id");
 
-                                Log.d("TAG LOGIN FB", email);
-                                Log.d("TAG LOGIN FB", name);
-                                Log.d("TAG LOGIN FB", first_name);
-                                Log.d("TAG LOGIN FB", last_name);
-                                Log.d("TAG LOGIN FB", id);
-                                Log.d("TAG LOGIN FB", birthday);
+                                String accessToken = loginResult.getAccessToken().getToken();
+                                mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN, accessToken);
+                                User user = new User();
+
+                                mSignUpService.signUpSocial(user, new Callback<User>() {
+                                    @Override
+                                    public void onResult(User user) {
+                                        Log.d(TAG, "onResult: LoginFacebook");
+                                        Toast.makeText(SignInActivity.this,"Login with Facebook is successfully !",Toast.LENGTH_LONG).show();
+                                    }
+
+                                    @Override
+                                    public void onFailure(String message) {
+                                        Log.d(TAG, "onFailure: Login Facebook");
+                                        new ErrorDialog(SignInActivity.this,"Không thể kết nối máy chủ").show();
+                                    }
+                                });
                             }
                         });
                 Bundle parameters = new Bundle();
@@ -332,8 +342,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    private void signInWithAccessToken() {
+        String accessToken = new PrefManagement(this).getValueString(SBConstants.PREF_ACCESS_TOKEN);
+        showProgress();
+        Log.d(TAG, "signInWithAccessToken: ");
+//        showProgress();
+        mLoginService.signInSocial(accessToken, new Callback<User>() {
+            @Override
+            public void onResult(User user) {
+                hideProgress();
+                Log.d(TAG, "onResult: Login with access token OK");
+                UserLogin.setUserLogin(user);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                hideProgress();
+                new ErrorDialog(SignInActivity.this,message).show();
+            }
+
+        });
+    }
+
     private void signInGmail() {
-        if(isOffline()){
+        if (isOffline()) {
             return;
         }
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -355,8 +387,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 Log.e(TAG, "Name: " + personName + ", email: " + email
                         + ", Image: " + personPhotoUrl);
-                Log.e(TAG, "Author Server: "+tokenServer);
+                Log.e(TAG, "Author Server: " + tokenServer);
+                User user = new User();
+                mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN, tokenServer);
+                mSignUpService.signUpSocial(user, new Callback<User>() {
+                    @Override
+                    public void onResult(User user) {
+                        Log.d(TAG, "onResult: LoginFacebook");
+                        Toast.makeText(SignInActivity.this,"Login with Facebook is successfully !",Toast.LENGTH_LONG).show();
+                    }
 
+                    @Override
+                    public void onFailure(String message) {
+                        Log.d(TAG, "onFailure: Login Facebook");
+                        new ErrorDialog(SignInActivity.this,"Không thể kết nối máy chủ").show();
+                    }
+                });
                 updateUI(true);
             } else {
                 // Signed out, show unauthenticated UI.
@@ -365,11 +411,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void updateUI(boolean boo){
-        if(boo){
-            Log.d(TAG,"Update UI TRUE");
-        }else{
-            Log.d(TAG,"Update UI FALSE");
+    private void updateUI(boolean boo) {
+        if (boo) {
+            Log.d(TAG, "Update UI TRUE");
+        } else {
+            Log.d(TAG, "Update UI FALSE");
         }
     }
 
@@ -421,11 +467,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.d(TAG, "onConnectionFailed: ");
     }
 
-    private boolean isOffline(){
-        boolean isOnline = new UtilsFunctions(LoginActivity.this).isOnline();
-        Log.d(TAG, "isOffline: "+isOnline);
-        if(!isOnline){
-            Toast.makeText(LoginActivity.this,"No connect internet ",Toast.LENGTH_LONG).show();
+    private boolean isOffline() {
+        boolean isOnline = new SBFunctions(SignInActivity.this).isOnline();
+        Log.d(TAG, "isOffline: " + isOnline);
+        if (!isOnline) {
+            Toast.makeText(SignInActivity.this, "No connect internet ", Toast.LENGTH_LONG).show();
         }
         return !isOnline;
     }

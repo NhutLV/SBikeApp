@@ -3,7 +3,7 @@ package finaltest.nhutlv.sbiker.tools;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import finaltest.nhutlv.sbiker.utils.UtilsConstants;
+import finaltest.nhutlv.sbiker.utils.SBConstants;
 
 /**
  * Created by NhutDu on 18/04/2017.
@@ -17,7 +17,7 @@ public class PrefManagement {
 
     public PrefManagement(Context context){
         this.mContext = context;
-        mPreferences = context.getSharedPreferences(UtilsConstants.SHARE_PREF_NAME,Context.MODE_PRIVATE);
+        mPreferences = context.getSharedPreferences(SBConstants.SHARE_PREF_NAME,Context.MODE_PRIVATE);
     }
 
     public void putValueString(String key,String value){
@@ -27,7 +27,7 @@ public class PrefManagement {
     }
 
     public String getValueString(String key){
-        return mPreferences.getString(key,UtilsConstants.PREF_VALUE_STRING_DEFAULT);
+        return mPreferences.getString(key, SBConstants.PREF_VALUE_STRING_DEFAULT);
     }
 
     public void putValueInteger(String key,int value){
@@ -36,6 +36,6 @@ public class PrefManagement {
     }
 
     public int getValueInteger(String key){
-        return mPreferences.getInt(key,UtilsConstants.PREF_VALUE_INTEGER_DEFAULT);
+        return mPreferences.getInt(key, SBConstants.PREF_VALUE_INTEGER_DEFAULT);
     }
 }

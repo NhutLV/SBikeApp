@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:orientation="vertical">
+    <EditText
+        android:id="@+id/ed_title_feedback"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg_edittext"
+        android:layout_height="wrap_content"
+        android:hint="Chủ đề"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:nextFocusDown="@+id/ed_content_feedback"
+        android:imeOptions="actionNext"
+        android:padding="10dp"/>
+    <EditText
+        android:id="@+id/ed_content_feedback"
+        android:layout_width="match_parent"
+        android:background="@drawable/bg_edittext"
+        android:layout_height="wrap_content"
+        android:lines="10"
+        android:imeOptions="actionDone"
+        android:layout_marginTop="20dp"
+        android:gravity="left|start"
+        android:textSize="16sp"
+        android:maxLines="1"
+        android:overScrollMode="ifContentScrolls"
+        android:padding="10dp"/>
+    <Button
+        android:id="@+id/btn_submit_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_button_blue"
+        android:text="Gửi"
+        android:textColor="@color/colorWhite"
+        android:textAllCaps="false"
+        android:textSize="14sp"
+        android:textStyle="bold"/>
+</LinearLayout>

@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#0288d1</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
     <color name="colorApp">#03a9f4</color>
     <color name="colorCircleStroke">#8fafd1</color>
     <color name="colorCircleFill">#26b6d9f5</color>
@@ -19,4 +20,7 @@
 
     <color name="backgroundColor">#f9f9f9</color>
     <color name="backgroundColorPress">#efefed</color>
+
+    <color name="bg_button_facebook">#48629b</color>
+    <color name="bg_button_gmail">#dc4b38</color>
 </resources>

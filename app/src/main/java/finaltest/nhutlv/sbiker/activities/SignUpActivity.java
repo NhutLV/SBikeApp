@@ -65,7 +65,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         mRePassword.setTransformationMethod(new PasswordTransformationMethod());
     }
 
-
     public void showProgress() {
         mProgressBar.setVisibility(View.VISIBLE);
     }
@@ -118,7 +117,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
 
     public void navigateLogin() {
-        startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+        startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
         finish();
     }
 

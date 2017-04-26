@@ -21,9 +21,9 @@
             app:actionLayout="@layout/switch_layout"
             android:title="Become a driver"/>
         <item
-            android:id="@+id/nav_invite_friend"
-            android:icon="@drawable/ic_invite_black_24dp"
-            android:title="Invite Friends"/>
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_feedback_black_24dp"
+            android:title="Feedback"/>
     </group>
     <item android:title="Account">
         <menu>
