@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class User {
 
+    @SerializedName("_id")
+    private String mIdUser;
+
     @SerializedName("email")
     private String mEmai;
 
@@ -65,6 +68,13 @@ public class User {
 
     private String mRePassword;
 
+    public String getIdUser() {
+        return mIdUser;
+    }
+
+    public void setIdUser(String idUser) {
+        mIdUser = idUser;
+    }
 
     public String getEmai() {
         return mEmai;

@@ -9,10 +9,10 @@
         android:id="@+id/tabLayoutRepair"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        app:tabIndicatorColor="@color/colorApp"
+        app:tabIndicatorColor="@color/colorWhite"
+        style="@style/CustomTabLayout"
         app:tabIndicatorHeight="2dp"
-        android:background="#ffffff"
-        app:tabTextColor="@color/colorApp"
+        android:background="@color/colorApp"
         android:layout_height="wrap_content"/>
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPagerRepair"

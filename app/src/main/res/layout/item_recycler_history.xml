@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/time_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:textSize="12sp"
+        android:textColor="#1e3de7"
+        android:text="27/04/2017 12:00"/>
+    <LinearLayout
+        android:id="@+id/layout_start"
+        android:layout_below="@+id/time_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/title_start"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Start: "/>
+        <TextView
+            android:id="@+id/place_start"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:maxLines="2"
+            android:layout_height="wrap_content"
+            android:text="22 Đồng Kè"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/layout_start"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <TextView
+            android:id="@+id/title_destination"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Destination: "/>
+        <TextView
+            android:id="@+id/place_destination"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:maxLines="2"
+            android:layout_height="wrap_content"
+            android:text="Kiệt 47, Nguyễn Lương Bằng, Hòa Khánh Bắc, Đà Nẵng"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_biker"
+        android:layout_below="@+id/layout_destination"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/title_biker"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Biker: "/>
+        <TextView
+            android:id="@+id/name_biker"
+            android:layout_width="0dp"
+            android:textColor="@color/colorApp"
+            android:layout_weight="3"
+            android:maxLines="2"
+            android:layout_height="wrap_content"
+            android:text="Lê Viết Nhựt"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_distance_price"
+        android:layout_below="@+id/layout_biker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/title_distance"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Distance: "/>
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/title_price"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Price: "/>
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="50.000 VNĐ"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

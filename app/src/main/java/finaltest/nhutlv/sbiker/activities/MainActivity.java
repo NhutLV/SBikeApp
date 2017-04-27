@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Fragment fragment = null;
         if (id == R.id.nav_register) {
-            startActivity(new Intent(new Intent(MainActivity.this, RegisterInfoRepairFragment.class)));
+            startActivity(new Intent(new Intent(MainActivity.this, RepairActivity.class)));
             closeDrawer();
             return true;
         } else if (id == R.id.nav_history) {
@@ -281,7 +281,10 @@ public class MainActivity extends AppCompatActivity
             closeDrawer();
             return true;
         } else if (id == R.id.nav_favorite) {
-            fragment = new RepairBikeFragment();
+            Intent intent = new Intent(MainActivity.this, FavoriteActivity.class);
+            startActivity(intent);
+            closeDrawer();
+            return true;
         } else if (id == R.id.nav_driver) {
             Log.d(TAG, "onNavigationItemSelected: " + mSwitchDriver.isChecked());
             return true;

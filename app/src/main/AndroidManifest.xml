@@ -36,9 +36,7 @@
         <activity android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.SignUpActivity"/>
-        <activity android:name=".activities.ProfileActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activities.ProfileActivity"/>
         <activity android:name=".RegisterInfoRepairFragment"
             android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar"/>
@@ -46,6 +44,8 @@
             android:parentActivityName=".activities.MainActivity"/>
         <activity android:name=".activities.FeedbackActivity"/>
         <activity android:name=".activities.BecomeDriverActivity"/>
+        <activity android:name=".activities.RepairActivity"/>
+        <activity android:name=".activities.FavoriteActivity"/>
     </application>
 
 </manifest>

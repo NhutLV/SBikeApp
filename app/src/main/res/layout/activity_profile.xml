@@ -1,82 +1,83 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:ignore="RtlHardcoded">
-
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/main.appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/main.collapsing"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+            android:fillViewport="true"
+            android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/header_cover_image"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:background="@color/colorApp"/>
+
+        <RelativeLayout
+            android:id="@+id/profile_layout"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="#ebf90f0f"
+            android:elevation="4dp"
+            android:paddingBottom="24dp"
+            android:layout_below="@+id/header_cover_image"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <ImageView
-                android:id="@+id/main.imageview.placeholder"
-                android:layout_width="match_parent"
-                android:layout_height="270dp"
-                android:background="@android:color/holo_orange_light"
-                android:scaleType="centerCrop"
-                android:tint="#11000000"
-                app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.9" />
+                android:id="@+id/img_like"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@mipmap/ic_no_favorite"
+                android:layout_alignParentLeft="true"/>
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="16dp"
+                android:text="123"
+                android:textColor="@color/colorWhite"
+                android:gravity="center"
+                android:layout_toRightOf="@+id/img_like"/>
 
-            <FrameLayout
-                android:id="@+id/main.framelayout.title"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:background="@color/colorApp"
-                android:orientation="vertical"
-                app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.3">
+            <ImageView
+                android:id="@+id/img_dislike"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="16dp"
+                android:src="@mipmap/ic_dislike"
+                android:layout_toLeftOf="@+id/number_dislike"
+                android:layout_marginTop="16dp"/>
 
-                <LinearLayout
-                    android:id="@+id/main.linearlayout.title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
+            <TextView
+                android:id="@+id/number_dislike"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="16dp"
+                android:text="13"
+                android:textColor="@color/colorWhite"
+                android:gravity="center"
+                android:layout_marginRight="16dp"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:gravity="bottom|center"
-                        android:text="Lê Viết Nhựt"
-                        android:textColor="@android:color/white"
-                        android:textSize="30sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="4dp"
-                        android:text="levietnhut@gmail.com"
-                        android:textColor="@android:color/white" />
-                </LinearLayout>
-            </FrameLayout>
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
-
-
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:scrollbars="none"
-        app:behavior_overlapTop="30dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_avatar_profile"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_below="@+id/header_cover_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-65dp"
+            android:elevation="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/image" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/profile_layout"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -92,7 +93,7 @@
                 android:text="Thông tin cá nhân"
                 android:textColor="@color/colorApp"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <EditText
                 android:id="@+id/ed_name_profile"
@@ -100,8 +101,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_edittext_default"
                 android:gravity="center"
-                android:text="Lê Viết Nhựt"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:text="Lê Viết Nhựt"/>
 
             <EditText
                 android:id="@+id/ed_email_profile"
@@ -111,8 +112,8 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/bg_edittext_default"
                 android:gravity="center"
-                android:text="levietnhutit@gmail.com"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:text="levietnhutit@gmail.com"/>
 
             <EditText
                 android:id="@+id/ed_number_phone_profile"
@@ -122,8 +123,8 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/bg_edittext_default"
                 android:gravity="center"
-                android:text="01687184516"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:text="01687184516"/>
 
 
             <Button
@@ -132,62 +133,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/bg_button_blue"
+                android:enabled="false"
                 android:text="Update Information"
                 android:textColor="@color/colorWhite"
                 android:textSize="16sp"
-                android:enabled="false"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/progressBarSignUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone" />
+                android:textStyle="bold"/>
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/main.toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:layout_anchor="@id/main.framelayout.title"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark"
-        app:title="">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Space
-                android:layout_width="32dp"
-                android:layout_height="32dp" />
-
-            <TextView
-                android:id="@+id/main.textview.title"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:gravity="center_vertical"
-                android:text="Thông tin cá nhân"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_avatar_profile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/nhut"
-        app:finalHeight="@dimen/image_final_width"
-        app:finalYPosition="2dp"
-        app:layout_behavior="finaltest.nhutlv.sbiker.tools.AvatarImageBehavior"
-        app:startHeight="2dp"
-        app:startToolbarPosition="2dp"
-        app:startXPosition="2dp" />
-</android.support.design.widget.CoordinatorLayout>
+    </RelativeLayout>
+</ScrollView>

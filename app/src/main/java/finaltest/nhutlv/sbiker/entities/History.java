@@ -157,6 +157,15 @@ public class History {
         mTimeSpend = timeSpend;
     }
 
+    public History(String idBiker, Date timeCall, String placeFrom, String placeTo, double distance, int price) {
+        mIdBiker = idBiker;
+        mTimeCall = timeCall;
+        mPlaceFrom = placeFrom;
+        mPlaceTo = placeTo;
+        mDistance = distance;
+        mPrice = price;
+    }
+
     public History() {
     }
 }
