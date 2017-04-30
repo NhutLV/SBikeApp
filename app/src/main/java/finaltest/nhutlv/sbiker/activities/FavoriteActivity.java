@@ -18,11 +18,16 @@ import android.view.ViewGroup;
 
 import com.daimajia.swipe.util.Attributes;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.adapter.AutoRepairAdapter;
 import finaltest.nhutlv.sbiker.entities.Repairer;
+import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.tools.DividerItemDecoration;
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 
@@ -39,14 +44,15 @@ public class FavoriteActivity extends AppCompatActivity implements AutoRepairAda
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-
+    private EventBus mEventBus;
     private ArrayList<Repairer> mRepairers;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_auto);
-
+        mEventBus = EventBus.getDefault();
+        mEventBus.register(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -55,12 +61,6 @@ public class FavoriteActivity extends AppCompatActivity implements AutoRepairAda
         mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
         mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
         mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -113,5 +113,13 @@ public class FavoriteActivity extends AppCompatActivity implements AutoRepairAda
                 break;
         }
         return true;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void getEvent(User user){
+        Log.d("TAG", "getEvent: ");
+        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
+        mAdapter.notifyDataSetChanged();
+        mEventBus.unregister(this);
     }
 }

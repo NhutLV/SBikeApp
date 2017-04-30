@@ -7,14 +7,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorApp"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:background="@color/colorWhite"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:orientation="vertical">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/image_logo"
-            android:layout_marginBottom="20dp"
+            android:src="@drawable/logo"
             android:layout_gravity="center"/>
         <EditText
             android:id="@+id/input_name_sign_up"
@@ -46,12 +47,28 @@
             android:hint="Number Phone"
             android:inputType="numberDecimal" />
 
-        <com.jaredrummler.materialspinner.MaterialSpinner
-            android:id="@+id/spinner_type_repair"
+        <RadioGroup
+            android:id="@+id/radio_group_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edittext_default"
-            android:layout_marginTop="20dp"/>
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Auto"
+                android:layout_weight="1"
+                android:id="@+id/radio_auto"
+                android:theme="@style/MyRadioButton"/>
+            <RadioButton
+                android:id="@+id/radio_store"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Store"
+                android:layout_weight="1"
+                android:theme="@style/MyRadioButton"/>
+        </RadioGroup>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,19 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:drawableLeft="@drawable/ic_access_time_black_24dp"
-                android:enabled="false"
                 android:text="Time Open" />
-
-            <Button
-                android:id="@+id/btn_time_open_register"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_button_default"
-                android:padding="12dp"
-                android:text="Open"
-                android:textColor="@color/colorApp" />
         </LinearLayout>
 
         <LinearLayout
@@ -94,19 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:drawableLeft="@drawable/ic_access_time_black_24dp"
-                android:enabled="false"
                 android:text="Time Close" />
-
-            <Button
-                android:id="@+id/btn_time_close_register"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_button_default"
-                android:padding="12dp"
-                android:text="Close"
-                android:textColor="@color/colorApp" />
         </LinearLayout>
 
         <Button
@@ -114,10 +107,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/bg_button_default"
+            android:background="@drawable/bg_button_blue"
             android:text="Sign Up"
-            android:textColor="@color/colorApp"
+            android:textColor="@color/colorWhite"
             android:textSize="16sp"
+            android:textAllCaps="false"
             android:textStyle="bold" />
 
         <Button
@@ -125,10 +119,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/bg_button_default"
+            android:background="@drawable/bg_button_blue"
             android:text="Back to home"
-            android:textColor="@color/colorApp"
+            android:textColor="@color/colorWhite"
             android:textSize="16sp"
+            android:textAllCaps="false"
             android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>

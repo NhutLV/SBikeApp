@@ -25,26 +25,28 @@ import finaltest.nhutlv.sbiker.R;
  * Created by NhutDu on 25/04/2017.
  */
 
-public class BecomeDriverActivity extends AppCompatActivity{
+public class BecomeDriverActivity extends AppCompatActivity implements View.OnClickListener{
     private Uri outputFileUri;
-    private static final int YOUR_SELECT_PICTURE_REQUEST_CODE = 100;
+    private static final int IDENTIFICATION_CARD_BEFORE_REQUEST_CODE = 100;
+    private static final int IDENTIFICATION_CARD_AFTER_REQUEST_CODE = 101;
+    private static final int DRIVING_LICENSE_BEFORE_REQUEST_CODE = 102;
+    private static final int DRIVING_LICENSE_AFTER_REQUEST_CODE = 103;
+    private static final int CARD_NUMBER_REQUEST_CODE = 104;
     private static final String TAG = BecomeDriverActivity.class.getSimpleName();
-    ImageView mImageView;
+    ImageView mImgIndetBef;
+    ImageView mImgIndetAft;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_become_driver);
-        mImageView = (ImageView) findViewById(R.id.image_add);
-        mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImageIntent();
-            }
-        });
+        mImgIndetAft = (ImageView) findViewById(R.id.image_identification_after);
+        mImgIndetBef = (ImageView) findViewById(R.id.image_identification_before);
+        mImgIndetAft.setOnClickListener(this);
+        mImgIndetBef.setOnClickListener(this);
     }
 
-    private void openImageIntent() {
+    private void openImageIntent(int requestCode) {
 
         // Determine Uri of camera image to save.
         final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
@@ -78,39 +80,70 @@ public class BecomeDriverActivity extends AppCompatActivity{
         // Add the camera options.
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
 
-        startActivityForResult(chooserIntent, YOUR_SELECT_PICTURE_REQUEST_CODE);
+        startActivityForResult(chooserIntent, requestCode);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == YOUR_SELECT_PICTURE_REQUEST_CODE) {
-                final boolean isCamera;
-                Log.d(TAG, "onActivityResult: ");
-                if (data == null) {
-                    Log.d(TAG, "onActivityResult: data NULL");
-                    isCamera = true;
-                } else {
-                    final String action = data.getAction();
-                    if (action == null) {
-                        Log.d(TAG, "onActivityResult: action NULL");
-                        isCamera = false;
-                    } else {
-                        Log.d(TAG, "onActivityResult: action "+action);
-                        isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    }
-                }
+            switch (requestCode){
+                case IDENTIFICATION_CARD_BEFORE_REQUEST_CODE:
+                    Log.d(TAG, "onActivityResult: "+IDENTIFICATION_CARD_BEFORE_REQUEST_CODE);
+                    resultImage(data,mImgIndetBef);
+                    break;
+                case IDENTIFICATION_CARD_AFTER_REQUEST_CODE:
+                    Log.d(TAG, "onActivityResult: "+IDENTIFICATION_CARD_AFTER_REQUEST_CODE);
+                    resultImage(data,mImgIndetAft);
+                    break;
+                case DRIVING_LICENSE_BEFORE_REQUEST_CODE:
+                    break;
+                case DRIVING_LICENSE_AFTER_REQUEST_CODE:
+                    break;
+                case CARD_NUMBER_REQUEST_CODE:
 
-                Uri selectedImageUri;
-                if (isCamera) {
-                    selectedImageUri = outputFileUri;
-                    Log.d(TAG, "onActivityResult: IS CAMERA "+selectedImageUri.toString());
-                } else {
-                    selectedImageUri = data == null ? null : data.getData();
-                    Log.d(TAG, "onActivityResult: NO CAMERA "+selectedImageUri.toString());
-                }
-                mImageView.setImageURI(selectedImageUri);
+                    break;
             }
+
+        }
+    }
+
+    private void resultImage(Intent data, ImageView img){
+        final boolean isCamera;
+        Log.d(TAG, "onActivityResult: ");
+        if (data == null) {
+            Log.d(TAG, "onActivityResult: data NULL");
+            isCamera = true;
+        } else {
+            final String action = data.getAction();
+            if (action == null) {
+                Log.d(TAG, "onActivityResult: action NULL");
+                isCamera = false;
+            } else {
+                Log.d(TAG, "onActivityResult: action "+action);
+                isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            }
+        }
+
+        Uri selectedImageUri;
+        if (isCamera) {
+            selectedImageUri = outputFileUri;
+            Log.d(TAG, "onActivityResult: IS CAMERA "+selectedImageUri.toString());
+        } else {
+            selectedImageUri = data == null ? null : data.getData();
+            Log.d(TAG, "onActivityResult: NO CAMERA "+selectedImageUri.toString());
+        }
+        img.setImageURI(selectedImageUri);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.image_identification_before:
+                openImageIntent(IDENTIFICATION_CARD_BEFORE_REQUEST_CODE);
+                break;
+            case R.id.image_identification_after:
+                openImageIntent(IDENTIFICATION_CARD_AFTER_REQUEST_CODE);
+                break;
         }
     }
 }

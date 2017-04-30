@@ -1,7 +1,9 @@
 package finaltest.nhutlv.sbiker.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,8 +45,8 @@ public class AutoRepairAdapter extends RecyclerSwipeAdapter<AutoRepairAdapter.My
         Repairer repairer = mRepairs.get(position);
         holder.name.setText(repairer.getFullName());
         holder.content.setText(repairer.getAddress());
-
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        holder.state.setImageDrawable(mContext.getResources().getDrawable(R.drawable.online));
         holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
             public void onOpen(SwipeLayout layout) {
@@ -86,6 +88,7 @@ public class AutoRepairAdapter extends RecyclerSwipeAdapter<AutoRepairAdapter.My
         SwipeLayout swipeLayout;
         ImageView edit;
         ImageView delete;
+        ImageView state;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -95,6 +98,7 @@ public class AutoRepairAdapter extends RecyclerSwipeAdapter<AutoRepairAdapter.My
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             edit = (ImageView) itemView.findViewById(R.id.edit_alarm);
             delete = (ImageView) itemView.findViewById(R.id.delete_alarm);
+            state = (ImageView) itemView.findViewById(R.id.img_state);
 
         }
     }

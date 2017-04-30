@@ -1,5 +1,7 @@
 package finaltest.nhutlv.sbiker.services.cloud;
 
+import android.content.Intent;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -7,6 +9,7 @@ import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -53,5 +56,19 @@ public interface UserService {
     Call<ResponseAPI<User>> becomeDriver(@Field("id_user") String id_user,
                                          @Field("is_driving") int is_driving);
 
+    @FormUrlEncoded
+    @POST("user/favorite")
+    Call<ResponseAPI<Boolean>> isFavorite(@Field("id_user") String id_user,
+                                       @Field("id_biker") String id_biker,
+                                       @Field("is_favorite") int is_favorite);
+
+    @GET("user/favorite/{id_user}")
+    Call<ResponseAPI<List<User>>> getListFavorite(@Path("id_user") String id_user);
+
+    @GET("/user/count-favorite/{id_user}")
+    Call<ResponseAPI<Integer>> getCountFavorite(@Path("id_user") String id_user);
+
+    @GET("/user/count-not-favorite/{id_user}")
+    Call<ResponseAPI<Integer>> getCountNotFavorite(@Path("id_user") String id_user);
 
 }

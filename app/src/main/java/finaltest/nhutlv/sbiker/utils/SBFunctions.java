@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -12,6 +13,8 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -86,5 +89,12 @@ public class SBFunctions {
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[cameraIntents.size()]));
 
         ((AppCompatActivity) mContext).startActivityForResult(chooserIntent, YOUR_SELECT_PICTURE_REQUEST_CODE);
+    }
+
+    public static float getDistance2Point(LatLng newPosition,LatLng oldPosition){
+        float[] results = new float[1];
+        Location.distanceBetween(oldPosition.latitude, oldPosition.longitude,
+                newPosition.latitude, newPosition.longitude, results);
+        return results[0];
     }
 }

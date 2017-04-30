@@ -213,4 +213,52 @@ public class UserServiceImpl {
         });
     }
 
+    public void checkFavorite(String idUser, String idBiker, int isFavorite, final Callback<Boolean> callback){
+        Call<ResponseAPI<Boolean>> call = mService.isFavorite(idUser,idBiker,isFavorite);
+        call.enqueue(new retrofit2.Callback<ResponseAPI<Boolean>>() {
+            @Override
+            public void onResponse(Call<ResponseAPI<Boolean>> call, Response<ResponseAPI<Boolean>> response) {
+                if(response.isSuccessful()){
+                    ResponseAPI<Boolean> responseAPI = response.body();
+                    if(!responseAPI.isError()){
+                        callback.onResult(responseAPI.getData());
+                    }else{
+                        callback.onFailure("Không thể kết nối máy chủ");
+                    }
+                }else{
+                    callback.onFailure("Không thể kết nối máy chủ");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseAPI<Boolean>> call, Throwable t) {
+                callback.onFailure("Đã xảy ra lỗi");
+            }
+        });
+    }
+
+    //get list favorite
+    public void getListFavorite(String idUser, final Callback<List<User>> callback){
+        Call<ResponseAPI<List<User>>> call = mService.getListFavorite(idUser);
+        call.enqueue(new retrofit2.Callback<ResponseAPI<List<User>>>() {
+            @Override
+            public void onResponse(Call<ResponseAPI<List<User>>> call, Response<ResponseAPI<List<User>>> response) {
+                if(response.isSuccessful()){
+                    ResponseAPI<List<User>> responseAPI = response.body();
+                    if(!responseAPI.isError()){
+                        callback.onResult(responseAPI.getData());
+                    }else{
+                        callback.onFailure("Không thể kết nối máy chủ");
+                    }
+                }else{
+                    callback.onFailure("Không thể kết nối máy chủ");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseAPI<List<User>>> call, Throwable t) {
+                callback.onFailure("Đã xảy ra lỗi");
+            }
+        });
+    }
 }

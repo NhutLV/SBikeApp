@@ -71,6 +71,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.kyleduo.switchbutton.SwitchButton;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -79,11 +81,9 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import finaltest.nhutlv.sbiker.R;
-import finaltest.nhutlv.sbiker.RegisterInfoRepairFragment;
 import finaltest.nhutlv.sbiker.adapter.ViewPagerHomeAdapter;
 import finaltest.nhutlv.sbiker.entities.Coordinate;
 import finaltest.nhutlv.sbiker.entities.User;
-import finaltest.nhutlv.sbiker.fragment.RepairBikeFragment;
 import finaltest.nhutlv.sbiker.tools.BikerInfoDialog;
 import finaltest.nhutlv.sbiker.tools.LocationProvider;
 import finaltest.nhutlv.sbiker.utils.CustomDialog;
@@ -102,10 +102,12 @@ public class MainActivity extends AppCompatActivity
     private final static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private final static int HISTORY_REQUEST_CODE = 2;
     private final static int CALL_PHONE_REQUEST_CODE = 3;
+    private final static int SEARCH_REQUEST_CODE = 3;
 
     private FragmentManager mFragmentManager;
     private Fragment mFragment;
     private ViewPagerHomeAdapter mAdapterViewPage;
+    private EventBus mEventBus;
 
     private MapView mMapView;
     private GoogleMap mGoogleMap = null;
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mEventBus = EventBus.getDefault();
         polylines = new ArrayList<>();
         mCustomDialog = new CustomDialog(this,"Loading...");
         if(!isLocationEnabled(this)){
@@ -191,7 +194,8 @@ public class MainActivity extends AppCompatActivity
         mTxtPlaceSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                findPlace(mTxtPlaceSearch);
+                Intent intent = new Intent(MainActivity.this,SearchPlaceActivity.class);
+                startActivityForResult(intent,SEARCH_REQUEST_CODE);
             }
         });
 
@@ -312,6 +316,7 @@ public class MainActivity extends AppCompatActivity
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
         mLatLngCurrent = new LatLng(currentLatitude, currentLongitude);
+        mEventBus.postSticky(mLatLngCurrent);
 
         mGoogleMap.clear();
         if (mPlace != null) {
@@ -610,6 +615,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onButtonClick(User user) {
         callPhone(user.getNumberPhone());
+    }
+
+    @Override
+    public void onCheckBox(User user) {
+        mEventBus.postSticky(user);
     }
 
     private void signOutGmail() {

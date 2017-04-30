@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import finaltest.nhutlv.sbiker.fragment.AutoRepairFragment;
-import finaltest.nhutlv.sbiker.fragment.Favorite;
 import finaltest.nhutlv.sbiker.fragment.BaseFragment;
 
 /**

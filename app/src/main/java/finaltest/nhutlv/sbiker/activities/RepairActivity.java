@@ -1,16 +1,19 @@
 package finaltest.nhutlv.sbiker.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import finaltest.nhutlv.sbiker.R;
+import finaltest.nhutlv.sbiker.*;
 import finaltest.nhutlv.sbiker.adapter.ViewPagerRepairAdapter;
 
 /**
@@ -58,12 +61,22 @@ public class RepairActivity extends AppCompatActivity{
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_repair,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()){
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.register_repair:
+                startActivity(new Intent(RepairActivity.this, RegisterRepairActivity.class));
                 break;
         }
         return true;

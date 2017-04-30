@@ -96,6 +96,11 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
             @Override
             public void onButtonClick(User user) {
             }
+
+            @Override
+            public void onCheckBox(User user) {
+
+            }
         },user).show();
     }
 

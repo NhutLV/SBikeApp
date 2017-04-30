@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     android:id="@+id/mapLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,7 +33,7 @@
        android:layout_height="wrap_content"
        android:background="@drawable/bg_textview_search"
        android:padding="12dp"
-       android:hint="Where are you are go?"
+       android:hint="Where do you go?"
        android:layout_marginTop="5dp"
        android:layout_marginLeft="10dp"
        android:layout_marginRight="10dp"

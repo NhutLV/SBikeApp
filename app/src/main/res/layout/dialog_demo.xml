@@ -25,14 +25,14 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true">
 
-            <ImageView
-                android:id="@+id/img_like"
+            <CheckBox
+                android:id="@+id/check_favorite"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
-                android:src="@mipmap/ic_no_favorite"
-                android:layout_alignParentLeft="true"/>
+                android:background="@drawable/selector_favorite"
+                android:button="@null"/>
             <TextView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -40,7 +40,7 @@
                 android:text="123"
                 android:textColor="@color/colorWhite"
                 android:gravity="center"
-                android:layout_toRightOf="@+id/img_like"/>
+                android:layout_toRightOf="@+id/check_favorite"/>
 
             <ImageView
                 android:id="@+id/img_dislike"

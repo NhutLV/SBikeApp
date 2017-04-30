@@ -92,6 +92,11 @@
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">4dp</item>
     </style>
-
+    <!---->
+    <!-- style radio button-->
+    <style name="MyRadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorApp</item>
+        <item name="colorControlActivated">@color/colorApp</item>
+    </style>
     <!---->
 </resources>

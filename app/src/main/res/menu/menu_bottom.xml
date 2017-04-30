@@ -2,15 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_bottom_motorbike"
+        android:id="@+id/menu_bottom_movies"
         android:checked="false"
         android:icon="@drawable/ic_directions_bike_black_24dp"
-        android:title="MotorBike"
+        android:title="Movies"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_bottom_repair"
+        android:id="@+id/menu_bottom_hospital"
         android:checkable="true"
         android:icon="@drawable/ic_repair_black_24dp"
-        android:title="Repair"
+        android:title="Hospital"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_bottom_restaurant"
+        android:checkable="true"
+        android:icon="@drawable/ic_feedback_black_24dp"
+        android:title="Restaurant"
         app:showAsAction="ifRoom" />
 </menu>
