@@ -1,6 +1,9 @@
 package finaltest.nhutlv.sbiker.activities;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -11,15 +14,28 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import finaltest.nhutlv.sbiker.R;
+import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
+import finaltest.nhutlv.sbiker.tools.ErrorDialog;
+import finaltest.nhutlv.sbiker.utils.Callback;
+import finaltest.nhutlv.sbiker.utils.UserLogin;
 
 /**
  * Created by NhutDu on 25/04/2017.
@@ -33,17 +49,35 @@ public class BecomeDriverActivity extends AppCompatActivity implements View.OnCl
     private static final int DRIVING_LICENSE_AFTER_REQUEST_CODE = 103;
     private static final int CARD_NUMBER_REQUEST_CODE = 104;
     private static final String TAG = BecomeDriverActivity.class.getSimpleName();
-    ImageView mImgIndetBef;
-    ImageView mImgIndetAft;
+    private ImageView mImgIndetBef;
+    private ImageView mImgIndetAft;
+    private EditText mEdIdentNumber;
+    private EditText mEdIdentDate;
+    private EditText mEdIdentPlace;
+    private EditText mEdLicenseNumber;
+    private EditText mEdLicenseSeri;
+    private EditText mEdNumberCard;
+    private Button mSubmit;
+    private int yearCurrent;
+    private int monthCurrent;
+    private int dateCurrent;
+    private UserServiceImpl mUserService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_become_driver);
-        mImgIndetAft = (ImageView) findViewById(R.id.image_identification_after);
-        mImgIndetBef = (ImageView) findViewById(R.id.image_identification_before);
+        bindActivity();
+        mUserService = new UserServiceImpl();
+
+        Calendar calendar = Calendar.getInstance();
+        yearCurrent =calendar.get(Calendar.YEAR);
+        monthCurrent = calendar.get(Calendar.MONTH);
+        dateCurrent = calendar.get(Calendar.DAY_OF_MONTH);
         mImgIndetAft.setOnClickListener(this);
         mImgIndetBef.setOnClickListener(this);
+        mEdIdentDate.setOnClickListener(this);
+        mSubmit.setOnClickListener(this);
     }
 
     private void openImageIntent(int requestCode) {
@@ -144,6 +178,111 @@ public class BecomeDriverActivity extends AppCompatActivity implements View.OnCl
             case R.id.image_identification_after:
                 openImageIntent(IDENTIFICATION_CARD_AFTER_REQUEST_CODE);
                 break;
+            case R.id.bc_identification_date:
+                DatePickerDialog timePickerDialogClose = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        yearCurrent = year;
+                        monthCurrent = month;
+                        dateCurrent = dayOfMonth;
+                        mEdIdentDate.setText(dayOfMonth+"/"+month+"/"+year);
+                    }
+
+                }, yearCurrent, monthCurrent, dateCurrent);
+                timePickerDialogClose.show();
+                break;
+            case R.id.btn_become_driver:
+                submitForm();
+                UserLogin.getUserLogin().setIsBecome(1);
+                String identificationNumber = mEdIdentNumber.getText().toString();
+                String identificationPlace = mEdIdentPlace.getText().toString();
+                String identificationDate = mEdIdentDate.getText().toString();
+                String licenseNumber = mEdLicenseNumber.getText().toString();
+                String licenseSeri = mEdLicenseSeri.getText().toString();
+                String numberCard = mEdNumberCard.getText().toString();
+                mUserService.sendBecomeInformation(UserLogin.getUserLogin().getIdUser(),identificationNumber,
+                        identificationPlace,identificationDate,licenseNumber,licenseSeri,numberCard,1, new Callback<User>() {
+                    @Override
+                    public void onResult(User user) {
+                        UserLogin.setUserLogin(user);
+                        Toast.makeText(getContext(),"Đã gởi thông tin thành công\nVui lòng chờ ban kiểm duyệt xác nhận",Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        new ErrorDialog(getContext(),message).show();
+                    }
+                });
+                break;
         }
+    }
+
+    private void bindActivity(){
+        mImgIndetAft = (ImageView) findViewById(R.id.image_identification_after);
+        mImgIndetBef = (ImageView) findViewById(R.id.image_identification_before);
+        mEdIdentNumber = (EditText) findViewById(R.id.bc_identification_card);
+        mEdIdentDate = (EditText) findViewById(R.id.bc_identification_date);
+        mEdIdentPlace = (EditText) findViewById(R.id.bc_identification_place);
+        mEdLicenseNumber = (EditText) findViewById(R.id.bc_license_number);
+        mEdLicenseSeri = (EditText) findViewById(R.id.bc_license_seri);
+        mEdNumberCard = (EditText) findViewById(R.id.bc_number_card);
+        mSubmit = (Button) findViewById(R.id.btn_become_driver);
+
+    }
+
+    private void submitForm(){
+
+        if(!validateIdentification()){
+            return ;
+        }
+        if(!validateLicense()){
+            return ;
+        }
+        if(!validateNumberCard()){
+            return ;
+        }
+        Toast.makeText(this,"Submit Form OK",Toast.LENGTH_LONG).show();
+    }
+
+    private boolean validateIdentification(){
+        if(TextUtils.isEmpty(mEdIdentNumber.getText().toString())){
+            new ErrorDialog(this,"Vui lòng nhập số CMND").show();
+            return false;
+        }
+        if(TextUtils.isEmpty(mEdIdentDate.getText().toString())){
+            new ErrorDialog(this,"Vui lòng nhập ngày cấp CMND").show();
+            return false;
+        }
+        if(TextUtils.isEmpty(mEdIdentPlace.getText().toString())){
+            new ErrorDialog(this,"Vui lòng nhập nơi cấp CMND").show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateLicense(){
+        if(TextUtils.isEmpty(mEdLicenseNumber.getText().toString())){
+            new ErrorDialog(this,"Vui lòng nhập số GPLX").show();
+            return false;
+        }
+        if(TextUtils.isEmpty(mEdLicenseSeri.getText().toString())){
+            new ErrorDialog(this,"Vui lòng nhập số Seri GPLX").show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateNumberCard(){
+        if(TextUtils.isEmpty(mEdNumberCard.getText().toString())){
+            new ErrorDialog(this,"Vui lòng nhập biển số xe").show();
+            return false;
+        }
+        return true;
+    }
+
+    //get Context
+    private Context getContext(){
+        return this;
     }
 }

@@ -17,8 +17,10 @@ import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.Feedback;
 import finaltest.nhutlv.sbiker.services.cloud.FeedbackServiceImpl;
 import finaltest.nhutlv.sbiker.tools.ErrorDialog;
+import finaltest.nhutlv.sbiker.tools.FlowerDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.CustomDialog;
+import finaltest.nhutlv.sbiker.utils.UserLogin;
 
 /**
  * Created by NhutDu on 24/04/2017.
@@ -36,7 +38,7 @@ public class FeedbackActivity extends AppCompatActivity {
     Button mBtnFeedback;
 
     private FeedbackServiceImpl mService;
-    private CustomDialog mCustomDialog;
+    FlowerDialog mFlowerDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,25 +47,28 @@ public class FeedbackActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mEdContent.setHint(Html.fromHtml("<i>" + "vui lòng nhập phản hồi nhé !" + "</i>"));
-        mCustomDialog = new CustomDialog(FeedbackActivity.this,"Send....");
+
+        mFlowerDialog = new FlowerDialog(this,"Send...");
         mBtnFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(validateFrom()){
-                    mCustomDialog.showDialog();
+                    mFlowerDialog.showDialog();
                     Feedback feedback = new Feedback();
+                    feedback.setTitle(mEdTitle.getText().toString());
+                    feedback.setContent(mEdContent.getText().toString());
+                    feedback.setIdUser(UserLogin.getUserLogin().getIdUser());
                     mService = new FeedbackServiceImpl();
                     mService.saveFeedback(feedback, new Callback<Feedback>() {
                         @Override
                         public void onResult(Feedback feedback) {
-                            mCustomDialog.hideDialog();
+                            mFlowerDialog.hideDialog();
                             Toast.makeText(FeedbackActivity.this,"Send feedback is successfully !",Toast.LENGTH_LONG).show();
                         }
 
                         @Override
                         public void onFailure(String message) {
-                            mCustomDialog.hideDialog();
+                            mFlowerDialog.hideDialog();
                             new ErrorDialog(FeedbackActivity.this,message).show();
                         }
                     });

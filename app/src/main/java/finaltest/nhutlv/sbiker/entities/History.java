@@ -17,7 +17,7 @@ public class History {
     private String mIdBiker;
 
     @SerializedName("time_call")
-    private Date mTimeCall;
+    private String mTimeCall;
 
     @SerializedName("place_from")
     private String mPlaceFrom;
@@ -62,11 +62,11 @@ public class History {
         mIdBiker = idBiker;
     }
 
-    public Date getTimeCall() {
+    public String getTimeCall() {
         return mTimeCall;
     }
 
-    public void setTimeCall(Date timeCall) {
+    public void setTimeCall(String timeCall) {
         mTimeCall = timeCall;
     }
 
@@ -142,7 +142,7 @@ public class History {
         mTimeSpend = timeSpend;
     }
 
-    public History(String idUser, String idBiker, Date timeCall, String placeFrom, double latitudeFrom, double longitudeFrom, String placeTo, double latitudeTo, double longitude, double distance, int price, int timeSpend) {
+    public History(String idUser, String idBiker, String timeCall, String placeFrom, double latitudeFrom, double longitudeFrom, String placeTo, double latitudeTo, double longitude, double distance, int price, int timeSpend) {
         mIdUser = idUser;
         mIdBiker = idBiker;
         mTimeCall = timeCall;
@@ -157,7 +157,7 @@ public class History {
         mTimeSpend = timeSpend;
     }
 
-    public History(String idBiker, Date timeCall, String placeFrom, String placeTo, double distance, int price) {
+    public History(String idBiker, String timeCall, String placeFrom, String placeTo, double distance, int price) {
         mIdBiker = idBiker;
         mTimeCall = timeCall;
         mPlaceFrom = placeFrom;
@@ -167,5 +167,23 @@ public class History {
     }
 
     public History() {
+    }
+
+    @Override
+    public String toString() {
+        return "History{" +
+                "mIdUser='" + mIdUser + '\'' +
+                ", mIdBiker='" + mIdBiker + '\'' +
+                ", mTimeCall=" + mTimeCall +
+                ", mPlaceFrom='" + mPlaceFrom + '\'' +
+                ", mLatitudeFrom=" + mLatitudeFrom +
+                ", mLongitudeFrom=" + mLongitudeFrom +
+                ", mPlaceTo='" + mPlaceTo + '\'' +
+                ", mLatitudeTo=" + mLatitudeTo +
+                ", mLongitudeTo=" + mLongitudeTo +
+                ", mDistance=" + mDistance +
+                ", mPrice=" + mPrice +
+                ", mTimeSpend=" + mTimeSpend +
+                '}';
     }
 }

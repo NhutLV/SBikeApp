@@ -21,7 +21,16 @@ public class PlaceSearchAdapter extends RecyclerView.Adapter<PlaceSearchAdapter.
 
     private Context mContext;
     private List<PlaceSearch> mPlaceSearches;
+    private onClickSearch mOnClickSearch;
     private DecimalFormat df = new DecimalFormat("#,000");
+
+    public interface onClickSearch{
+        void onClickItem(int position);
+    }
+
+    public void setOnClickSearch(onClickSearch onClickSearch) {
+        mOnClickSearch = onClickSearch;
+    }
 
     public PlaceSearchAdapter(Context context, List<PlaceSearch> placeSearches) {
         mContext = context;
@@ -41,7 +50,7 @@ public class PlaceSearchAdapter extends RecyclerView.Adapter<PlaceSearchAdapter.
         holder.address.setText(placeSearch.getVicinity());
         int distance = (int) placeSearch.getDistance();
         String sDistance = df.format(distance);
-        holder.distance.setText("Cách"+ sDistance +" km");
+        holder.distance.setText("Cách "+ sDistance +" km");
     }
 
     @Override
@@ -61,6 +70,13 @@ public class PlaceSearchAdapter extends RecyclerView.Adapter<PlaceSearchAdapter.
             name = (TextView) itemView.findViewById(R.id.name_place_search);
             address = (TextView) itemView.findViewById(R.id.address_place_search);
             distance = (TextView) itemView.findViewById(R.id.distance_place_search);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnClickSearch.onClickItem(getAdapterPosition());
+                }
+            });
         }
     }
 }

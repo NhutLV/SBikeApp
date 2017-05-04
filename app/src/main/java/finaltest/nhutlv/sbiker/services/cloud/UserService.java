@@ -2,6 +2,8 @@ package finaltest.nhutlv.sbiker.services.cloud;
 
 import android.content.Intent;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,9 +30,12 @@ public interface UserService {
     @GET("users/{id_user}")
     Call<ResponseAPI<User>> getUserById(@Path("id_user") String id_user);
 
-    @GET("users/{radius}")
-    Call<ResponseAPI<List<User>>> getUserByRadius(@Path("radius") double radius);
-
+    @FormUrlEncoded
+    @POST("users/radius")
+    Call<ResponseAPI<List<User>>> getUserByRadius(@Field("radius") double radius,
+                                                  @Field("latitude") double latitude,
+                                                  @Field("longitude") double longitude);
+    @FormUrlEncoded
     @POST("user/change-pass")
     Call<ResponseAPI<User>> changePassword(@Field("id_user") String id_user,
                                            @Field("new_pass") String new_pass);
@@ -52,10 +57,20 @@ public interface UserService {
                                              @Field("longitude") double longitude);
 
     @FormUrlEncoded
-    @POST("user/become-driver")
-    Call<ResponseAPI<User>> becomeDriver(@Field("id_user") String id_user,
+    @POST("users/is-driver")
+    Call<ResponseAPI<User>> isDriving(@Field("id_user") String id_user,
                                          @Field("is_driving") int is_driving);
 
+    @FormUrlEncoded
+    @POST("users/become-driver")
+    Call<ResponseAPI<User>> sendBecomeInformation( @Field("id_user") String id_user,
+                                                   @Field("identification_number") String identification_number,
+                                                   @Field("identification_date") String identification_date,
+                                                   @Field("identification_place") String identification_place,
+                                                   @Field("driving_license_number") String driving_license_number,
+                                                   @Field("driving_license_seri") String driving_license_seri,
+                                                   @Field("number_card") String car_number_plate,
+                                                   @Field("is_become") int is_become);
     @FormUrlEncoded
     @POST("user/favorite")
     Call<ResponseAPI<Boolean>> isFavorite(@Field("id_user") String id_user,

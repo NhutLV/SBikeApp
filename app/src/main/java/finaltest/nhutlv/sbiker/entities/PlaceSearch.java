@@ -1,15 +1,36 @@
 package finaltest.nhutlv.sbiker.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by NhutDu on 30/04/2017.
  */
 
-public class PlaceSearch {
+public class PlaceSearch implements Parcelable{
 
     private Geometry geometry;
     private String name;
     private String vicinity;
     private double distance;
+
+    protected PlaceSearch(Parcel in) {
+        name = in.readString();
+        vicinity = in.readString();
+        distance = in.readDouble();
+    }
+
+    public static final Creator<PlaceSearch> CREATOR = new Creator<PlaceSearch>() {
+        @Override
+        public PlaceSearch createFromParcel(Parcel in) {
+            return new PlaceSearch(in);
+        }
+
+        @Override
+        public PlaceSearch[] newArray(int size) {
+            return new PlaceSearch[size];
+        }
+    };
 
     public Geometry getGeometry() {
         return geometry;
@@ -41,6 +62,18 @@ public class PlaceSearch {
 
     public void setDistance(double distance) {
         this.distance = distance;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(vicinity);
+        dest.writeDouble(distance);
     }
 
     public class Geometry{

@@ -45,7 +45,8 @@
         <activity android:name=".activities.RepairActivity"/>
         <activity android:name=".activities.FavoriteActivity"/>
         <activity android:name=".activities.RegisterRepairActivity"/>
-        <activity android:name=".activities.SearchPlaceActivity"/>
+        <activity android:name=".activities.SearchPlaceActivity"
+                  android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

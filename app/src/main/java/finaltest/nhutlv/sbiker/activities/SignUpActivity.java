@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
@@ -13,13 +14,19 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.Coordinate;
 import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.services.cloud.SignUpServiceImpl;
+import finaltest.nhutlv.sbiker.tools.ErrorDialog;
+import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.CustomToast;
+import finaltest.nhutlv.sbiker.utils.UserLogin;
 
 /**
  * Created by NhutDu on 21/02/2017.
@@ -54,101 +61,132 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     @BindView(R.id.layout_sign_up)
     LinearLayout mLayout;
 
+    private SignUpServiceImpl mService;
+    private FlowerDialog mFlowerDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+        mService = new SignUpServiceImpl();
+        mFlowerDialog = new FlowerDialog(getContext(),"Sign in...");
         mBtnSubmit.setOnClickListener(this);
         mNavigateLogin.setOnClickListener(this);
         mPassword.setTransformationMethod(new PasswordTransformationMethod());
         mRePassword.setTransformationMethod(new PasswordTransformationMethod());
     }
 
-    public void showProgress() {
-        mProgressBar.setVisibility(View.VISIBLE);
-    }
-
-
-    public void hideProgress() {
-        mProgressBar.setVisibility(View.GONE);
-    }
-
-
-    public void setFullNameError() {
-        new CustomToast().ShowToast(this,mLayout,"FullName nhập chưa hợp lệ ");
-    }
-
-
-    public void setPasswordError() {
-        new CustomToast().ShowToast(this,mLayout,"Password chưa hợp lệ ");
-    }
-
-
-    public void setRePasswordError() {
-        new CustomToast().ShowToast(this,mLayout,"Re-password không hợp lệ");
-    }
-
-    public void setConfirmPasswordError() {
-        new CustomToast().ShowToast(this,mLayout,"Confirm password chưa đúng ");
-    }
-
-
-    public void setNumberPhoneError() {
-        new CustomToast().ShowToast(this,mLayout,"Number Phone chưa hợp lệ");
-    }
-
-
-    public void setEmailError() {
-        new CustomToast().ShowToast(this,mLayout,"Email chưa hợp lệ");
-    }
-
-
-    public void setAgeError() {
-        new CustomToast().ShowToast(this,mLayout,"Age chưa hợp lệ");
-    }
-
-
-
-    public void navigateNext() {
-        startActivity(new Intent(SignUpActivity.this, ProfileActivity.class));
-        finish();
-    }
-
-
-    public void navigateLogin() {
-        startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
-        finish();
-    }
 
     public Context getContext() {
         return this;
+    }
+
+    private boolean validateFullName(){
+        if(TextUtils.isEmpty(mFullname.getText().toString())){
+            new ErrorDialog(getContext(),"Vui lòng nhập Họ và Tên").show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateEmail(){
+        if(TextUtils.isEmpty(mEmail.getText().toString())){
+            new ErrorDialog(getContext(),"Vui lòng nhập Email").show();
+            return false;
+        }else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(mEmail.getText().toString()).matches()){
+            new ErrorDialog(getContext(),"Email chưa đúng định dạng").show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean validateNumberPhone(){
+        if(TextUtils.isEmpty(mNumberPhone.getText().toString())){
+            new ErrorDialog(getContext(),"Vui lòng nhập số điện thoại").show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validatePassword(){
+        if(TextUtils.isEmpty(mPassword.getText().toString())){
+            new ErrorDialog(getContext(),"Vui lòng nhập mật khẩu").show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateRePassword(){
+        if(TextUtils.isEmpty(mRePassword.getText().toString())){
+            new ErrorDialog(getContext(),"Vui lòng nhập mật khẩu").show();
+            return false;
+        }else if(!mPassword.getText().toString().equals(mRePassword.getText().toString())){
+            new ErrorDialog(getContext(),"Xác nhận mật khẩu không đúng").show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean submitForm(){
+        if(!validateFullName()){
+            return false;
+        }
+        if(!validateEmail()){
+            return false;
+        }
+        if(!validateNumberPhone()){
+            return false;
+        }
+        if(!validatePassword()){
+            return false;
+        }
+        if(!validateRePassword()){
+            return false;
+        }
+        return true;
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_sign_up:
-                Log.d("TAG", "onClick:  Sign Up");
-                User user = new User();
-                user.setFullName(mFullname.getText().toString());
-                user.setEmai(mEmail.getText().toString());
-                user.setNumberPhone(mNumberPhone.getText().toString());
-                Coordinate coordinate = new Coordinate();
-                coordinate.setLatitude(16.045738);
-                coordinate.setLongitude(108.228653);
-                user.setCoordinate(coordinate);
-                user.setPassword(mPassword.getText().toString());
-                user.setRePassword(mRePassword.getText().toString());
-//               mRegisterPresenter.validateRegister(user);
+                if(submitForm()){
+                    mFlowerDialog.showDialog();
+                    User user = new User();
+                    user.setFullName(mFullname.getText().toString());
+                    user.setEmai(mEmail.getText().toString());
+                    user.setNumberPhone(mNumberPhone.getText().toString());
+                    user.setPassword(mPassword.getText().toString());
+                    user.setRePassword(mRePassword.getText().toString());
+                    mService.signUp(user, new Callback<User>() {
+                        @Override
+                        public void onResult(User user) {
+                            mFlowerDialog.hideDialog();
+                            Toast.makeText(SignUpActivity.this,"Sign up is successfully !",Toast.LENGTH_LONG).show();
+                            Intent intent= new Intent(getContext(),SignInActivity.class);
+                            intent.putExtra("email",mEmail.getText().toString());
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(String message) {
+                            mFlowerDialog.hideDialog();
+                            new ErrorDialog(SignUpActivity.this,message).show();
+                        }
+                    });
+                }
                 break;
 
             case R.id.link_sign_in:
-                Log.d("TAG", "onClick: Navigate Sign In");
-                navigateLogin();
+                startActivity(new Intent(getContext(),SignInActivity.class));
+                finish();
                 break;
         }
     }
+
 
     @Override
     protected void onDestroy() {

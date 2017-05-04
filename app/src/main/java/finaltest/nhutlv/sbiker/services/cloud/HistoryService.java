@@ -11,6 +11,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by NhutDu on 24/04/2017.
@@ -19,20 +20,20 @@ import retrofit2.http.POST;
 public interface HistoryService {
 
     @FormUrlEncoded
-    @POST("")
+    @POST("journey/create")
     Call<ResponseAPI<History>> saveHistory(@Field("id_user") String idUser,
                                            @Field("id_biker") String idBiker,
                                            @Field("time_call") String timeCall,
                                            @Field("place_from") String placeFrom,
                                            @Field("latitude_from") double latitudeFrom,
                                            @Field("longitude_from") double longitudeFrom,
-                                           @Field("place_from") String placeTo,
+                                           @Field("place_to") String placeTo,
                                            @Field("latitude_to") double latitudeTo,
                                            @Field("longitude_to") double longitudeTo,
                                            @Field("distance") double distance,
                                            @Field("price") int price,
                                            @Field("time_spend") int timeSpend);
 
-    @GET("")
-    Call<ResponseAPI<List<History>>> getHistory(@Field("id_user") String idUser);
+    @GET("journey/{id_user}")
+    Call<ResponseAPI<List<History>>> getHistory(@Path("id_user") String idUser);
 }

@@ -6,7 +6,7 @@ import android.util.Log;
 import finaltest.nhutlv.sbiker.activities.SignInActivity;
 import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.Configuration;
-import finaltest.nhutlv.sbiker.services.response.UserResponseAPI;
+import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
 import finaltest.nhutlv.sbiker.tools.ErrorDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import retrofit2.Call;
@@ -32,18 +32,16 @@ public class SignInServiceImpl {
     public void login(String email, String password, final Callback<User> callback){
 
         SignInService service = Configuration.getClient().create(SignInService.class);
-        Call<UserResponseAPI> call = service.login(email,password);
-        call.enqueue(new retrofit2.Callback<UserResponseAPI>() {
+        Call<ResponseAPI<User>> call = service.login(email,password);
+        call.enqueue(new retrofit2.Callback<ResponseAPI<User>>() {
             @Override
-            public void onResponse(Call<UserResponseAPI> call, Response<UserResponseAPI> response) {
+            public void onResponse(Call<ResponseAPI<User>> call, Response<ResponseAPI<User>> response) {
                 if(response.isSuccessful()){
-                    UserResponseAPI responseAPI = response.body();
-                    Log.d(TAG, "Error: "+responseAPI.isError());
-                    Log.d(TAG, "Message: "+responseAPI.getMessage());
+                    ResponseAPI<User> responseAPI = response.body();
                     if(responseAPI.isError()){
-                        callback.onResult(null);
+                        callback.onFailure(responseAPI.getMessage());
                     }else{
-                        callback.onFailure("Không thể kết nối máy chủ");
+                        callback.onResult(responseAPI.getData());
                     }
                 }else{
                     callback.onFailure("Đã có lỗi xảy ra trong quá trình đăng nhập");
@@ -51,7 +49,7 @@ public class SignInServiceImpl {
             }
 
             @Override
-            public void onFailure(Call<UserResponseAPI> call, Throwable t) {
+            public void onFailure(Call<ResponseAPI<User>> call, Throwable t) {
                 Log.d(TAG, "onFailure: ",t);
                 callback.onFailure("Không thể kết nối mạng");
             }
@@ -60,26 +58,15 @@ public class SignInServiceImpl {
 
     public void signInSocial(String accessToken, final Callback<User> callback){
         SignInService service = Configuration.getClient().create(SignInService.class);
-        Call<UserResponseAPI> call = service.signSocial(accessToken);
-        call.enqueue(new retrofit2.Callback<UserResponseAPI>() {
+        Call<ResponseAPI<User>> call = service.signSocial(accessToken);
+        call.enqueue(new retrofit2.Callback<ResponseAPI<User>>() {
             @Override
-            public void onResponse(Call<UserResponseAPI> call, Response<UserResponseAPI> response) {
-                if(response.isSuccessful()){
-                    UserResponseAPI responseAPI = response.body();
-                    if(!responseAPI.isError()){
-                        Log.d(TAG, "onResponse: "+responseAPI.getUser().toString());
-                        callback.onResult(responseAPI.getUser());
-                    }else{
-                        callback.onResult(null);
-                        Log.d(TAG, "onResponse: Error");
-                    }
-                }else{
-                    callback.onFailure("Không thể kết nối máy chủ");
-                }
+            public void onResponse(Call<ResponseAPI<User>> call, Response<ResponseAPI<User>> response) {
+
             }
 
             @Override
-            public void onFailure(Call<UserResponseAPI> call, Throwable t) {
+            public void onFailure(Call<ResponseAPI<User>> call, Throwable t) {
                 callback.onFailure("Không thể kết nối mạng");
                 Log.d(TAG, "onFailure: ",t);
             }

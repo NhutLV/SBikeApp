@@ -26,7 +26,7 @@ public class FeedbackServiceImpl {
                     if(!feedbackResponse.isError()){
                         callback.onResult(feedbackResponse.getData());
                     }else {
-                        callback.onFailure("Không thể kết nối máy chủ");
+                        callback.onFailure(feedbackResponse.getMessage());
                     }
                 }else{
                     callback.onFailure("Không thể kết nối máy chủ");

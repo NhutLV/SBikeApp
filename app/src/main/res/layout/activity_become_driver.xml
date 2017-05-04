@@ -2,26 +2,51 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/colorWhite"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="@dimen/activity_horizontal_margin"
         android:orientation="vertical">
-
-        <TextView
+        <EditText
+            android:id="@+id/bc_identification_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Chứng minh nhân dân"
-            android:textColor="@color/colorApp"
-            android:textSize="16sp"/>
-
+            android:inputType="number"
+            android:background="@drawable/bg_edittext_search"
+            android:hint="Số CMND"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/bc_identification_date"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:background="@drawable/bg_edittext_search"
+                android:hint="Ngày cấp"/>
+            <EditText
+                android:id="@+id/bc_identification_place"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edittext_search"
+                android:hint="Nơi cấp"/>
+        </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:background="#ccc"
-            android:text="Trước"/>
+            android:text="CMND mặt trước"/>
 
         <ImageView
             android:id="@+id/image_identification_before"
@@ -37,7 +62,7 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:background="#ccc"
-            android:text="Sau"/>
+            android:text="CMND Mặt sau"/>
 
         <ImageView
             android:id="@+id/image_identification_after"
@@ -47,63 +72,37 @@
             android:adjustViewBounds="true"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_add_image"/>
-        <TextView
+        <EditText
+            android:id="@+id/bc_license_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Giấy phép lái xe"
-            android:textColor="@color/colorApp"
-            android:textSize="16sp"/>
-
-        <TextView
+            android:inputType="number"
+            android:background="@drawable/bg_edittext_search"
+            android:hint="Số GPLX"/>
+        <EditText
+            android:id="@+id/bc_license_seri"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Trước"/>
-
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_add_image"/>
-
-        <TextView
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_edittext_search"
+            android:hint="Số Seri GPLX"/>
+        <EditText
+            android:id="@+id/bc_number_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Trước"/>
-
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_add_image"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Biển số xe"
-            android:textColor="@color/colorApp"
-            android:textSize="16sp"/>
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_add_image"/>
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_edittext_search"
+            android:hint="Số biển số xe"/>
         <Button
-            android:id="@+id/btn_back_info_repair"
+            android:id="@+id/btn_become_driver"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/bg_button_blue"
             android:text="Đăng ký"
             android:textColor="@color/colorWhite"
             android:textSize="16sp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="30dp"
             android:textAllCaps="false"
             android:textStyle="bold" />
     </LinearLayout>

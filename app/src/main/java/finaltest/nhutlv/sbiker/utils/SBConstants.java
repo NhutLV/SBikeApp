@@ -15,5 +15,6 @@ public class SBConstants {
     public static final String PREF_VALUE_STRING_DEFAULT ="";
     public static final int PREF_VALUE_INTEGER_DEFAULT =0;
     public static final int IMAGE_AVATAR_REQUEST_CODE =1;
+    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE =111;
 
 }

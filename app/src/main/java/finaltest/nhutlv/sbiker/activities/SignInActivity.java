@@ -2,6 +2,7 @@ package finaltest.nhutlv.sbiker.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -48,6 +49,7 @@ import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.cloud.SignInServiceImpl;
 import finaltest.nhutlv.sbiker.services.cloud.SignUpServiceImpl;
 import finaltest.nhutlv.sbiker.tools.ErrorDialog;
+import finaltest.nhutlv.sbiker.tools.FlowerDialog;
 import finaltest.nhutlv.sbiker.tools.PrefManagement;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.CustomDialog;
@@ -90,9 +92,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     private CallbackManager mCallbackManager;
 
-    private AlertDialog mAlertDialog;
     private ProgressDialog mProgressDialog;
-    private CustomDialog mCustomDialog;
+    private FlowerDialog mFlowerDialog;
     private SignInServiceImpl mLoginService;
     private SignUpServiceImpl mSignUpService;
     private GoogleApiClient mGoogleApiClient;
@@ -105,9 +106,13 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         mCallbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        mFlowerDialog = new FlowerDialog(getContext(),"Login...");
         mPassword.setTransformationMethod(new PasswordTransformationMethod());
         mPrefManagement = new PrefManagement(this);
-
+        Intent intent = getIntent();
+        if(intent.getStringExtra("email")!=null){
+            mEmail.setText(intent.getStringExtra("email"));
+        }
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestServerAuthCode(getString(R.string.default_web_client_id))
@@ -130,19 +135,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         mNavigateSignUp.setOnClickListener(this);
         mLoginService = new SignInServiceImpl(this);
         mSignUpService = new SignUpServiceImpl();
-        mAlertDialog = new SpotsDialog(this, "Login...");
-        mCustomDialog = new CustomDialog(this, "Login...");
+
     }
-
-    public void showProgress() {
-        mCustomDialog.showDialog();
-    }
-
-
-    public void hideProgress() {
-        mCustomDialog.hideDialog();
-    }
-
 
     public void setEmailError() {
         new CustomToast().ShowToast(this, mLayout, "Email chưa hợp lệ");
@@ -172,28 +166,26 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 if (isOffline()) {
                     return;
                 }
-                /*final String email = mEmail.getText().toString();
+                final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 if(submitLogin()){
-                    showProgress();
+                    mFlowerDialog.showDialog();
                     mLoginService.login(email, password, new Callback<User>() {
                         @Override
                         public void onResult(User user) {
-                            hideProgress();
-                            Log.d(TAG, "onResult: "+user.getEmai());
+                            mFlowerDialog.hideDialog();
                             UserLogin.setUserLogin(user);
+                            Log.d("TAGGGGGGGGG",user.toString());
                             navigateToHome();
                         }
 
                         @Override
                         public void onFailure(String message) {
-                            hideProgress();
+                            mFlowerDialog.hideDialog();
                             new ErrorDialog(SignInActivity.this,message).show();
-                            Log.d(TAG, "onFailure: Login Email");
                         }
                     });
-                }*/
-                navigateToHome();
+                }
                 break;
 
             case R.id.link_signup:
@@ -254,7 +246,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         if (isOffline()) {
             return;
         }
-        signInWithAccessToken();
+//        signInWithAccessToken();
 //        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
 //        if (opr.isDone()) {
 //            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -344,20 +336,20 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     private void signInWithAccessToken() {
         String accessToken = new PrefManagement(this).getValueString(SBConstants.PREF_ACCESS_TOKEN);
-        showProgress();
+        mFlowerDialog.showDialog();
         Log.d(TAG, "signInWithAccessToken: ");
 //        showProgress();
         mLoginService.signInSocial(accessToken, new Callback<User>() {
             @Override
             public void onResult(User user) {
-                hideProgress();
+                mFlowerDialog.hideDialog();
                 Log.d(TAG, "onResult: Login with access token OK");
                 UserLogin.setUserLogin(user);
             }
 
             @Override
             public void onFailure(String message) {
-                hideProgress();
+                mFlowerDialog.hideDialog();
                 new ErrorDialog(SignInActivity.this,message).show();
             }
 
@@ -474,6 +466,10 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             Toast.makeText(SignInActivity.this, "No connect internet ", Toast.LENGTH_LONG).show();
         }
         return !isOnline;
+    }
+
+    private Context getContext(){
+        return this;
     }
 }
 

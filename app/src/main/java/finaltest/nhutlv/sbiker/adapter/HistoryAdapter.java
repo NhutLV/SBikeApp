@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -40,6 +41,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         History history = mHistories.get(position);
         holder.mTxtStart.setText(history.getPlaceFrom());
         holder.mTxtDestination.setText(history.getPlaceTo());
+        holder.mTxtTime.setText(history.getTimeCall());
         holder.mTxtDistance.setText(String.valueOf(history.getDistance()) +" km");
         holder.mTxtPrice.setText(String.valueOf(history.getPrice())+" VNĐ");
     }
@@ -61,6 +63,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         TextView mTxtBiker;
         TextView mTxtDistance;
         TextView mTxtPrice;
+        TextView mTxtTime;
 
         public HistoryViewHolder(View itemView) {
             super(itemView);
@@ -69,6 +72,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             mTxtBiker = (TextView) itemView.findViewById(R.id.name_biker);
             mTxtDistance = (TextView) itemView.findViewById(R.id.distance);
             mTxtPrice = (TextView) itemView.findViewById(R.id.price);
+            mTxtTime = (TextView) itemView.findViewById(R.id.time_call);
 
             mTxtBiker.setOnClickListener(new View.OnClickListener() {
                 @Override

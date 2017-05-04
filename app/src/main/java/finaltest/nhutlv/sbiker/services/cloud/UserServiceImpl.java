@@ -2,6 +2,8 @@ package finaltest.nhutlv.sbiker.services.cloud;
 
 import android.net.Uri;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.File;
 import java.util.List;
 
@@ -22,7 +24,7 @@ import retrofit2.Response;
 
 public class UserServiceImpl {
 
-    UserService mService;
+    private UserService mService;
 
     public UserServiceImpl(){
         mService = Configuration.getClient().create(UserService.class);
@@ -54,8 +56,8 @@ public class UserServiceImpl {
     }
 
     //get List user by radius
-    public void getListUserByRadius(double radius, final Callback<List<User>> callback){
-        Call<ResponseAPI<List<User>>> call = mService.getUserByRadius(radius);
+    public void getListUserByRadius(double radius, LatLng latLng, final Callback<List<User>> callback){
+        Call<ResponseAPI<List<User>>> call = mService.getUserByRadius(radius, latLng.latitude, latLng.longitude);
 
         call.enqueue(new retrofit2.Callback<ResponseAPI<List<User>>>() {
             @Override
@@ -189,8 +191,9 @@ public class UserServiceImpl {
     }
 
     //become driver
-    public void becomeDriver(String idUser, int isDriving, final Callback<User> callback){
-        Call<ResponseAPI<User>> call = mService.becomeDriver(idUser,isDriving);
+    public void setIsDriving(String idUser, int isDriving, final Callback<User> callback){
+        mService = Configuration.getClient().create(UserService.class);
+        Call<ResponseAPI<User>> call = mService.isDriving(idUser,isDriving);
         call.enqueue(new retrofit2.Callback<ResponseAPI<User>>() {
             @Override
             public void onResponse(Call<ResponseAPI<User>> call, Response<ResponseAPI<User>> response) {
@@ -199,7 +202,7 @@ public class UserServiceImpl {
                     if(!responseAPI.isError()){
                         callback.onResult(responseAPI.getData());
                     }else{
-                        callback.onFailure("Không thể kết nối máy chủ");
+                        callback.onFailure(responseAPI.getMessage());
                     }
                 }else{
                     callback.onFailure("Không thể kết nối máy chủ");
@@ -257,6 +260,33 @@ public class UserServiceImpl {
 
             @Override
             public void onFailure(Call<ResponseAPI<List<User>>> call, Throwable t) {
+                callback.onFailure("Đã xảy ra lỗi");
+            }
+        });
+    }
+
+    public void sendBecomeInformation(String idUser, String identificationNumber, String identificationDate,
+                                      String identificationPlace, String licenseBefore, String licenseAfter,
+                                      String numberCard, int isBecome, final Callback<User> callback){
+        Call<ResponseAPI<User>> call = mService.sendBecomeInformation(idUser, identificationNumber, identificationDate,
+                    identificationPlace, licenseBefore, licenseAfter, numberCard, isBecome);
+        call.enqueue(new retrofit2.Callback<ResponseAPI<User>>() {
+            @Override
+            public void onResponse(Call<ResponseAPI<User>> call, Response<ResponseAPI<User>> response) {
+                if(response.isSuccessful()){
+                    ResponseAPI<User> responseAPI = response.body();
+                    if(!responseAPI.isError()){
+                        callback.onResult(responseAPI.getData());
+                    }else{
+                        callback.onFailure(responseAPI.getMessage());
+                    }
+                }else{
+                    callback.onFailure("Không thể kết nối máy chủ");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseAPI<User>> call, Throwable t) {
                 callback.onFailure("Đã xảy ra lỗi");
             }
         });

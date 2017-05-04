@@ -8,6 +8,7 @@
     <color name="colorApp">#03a9f4</color>
     <color name="colorCircleStroke">#8fafd1</color>
     <color name="colorCircleFill">#26b6d9f5</color>
+    <color name="colorNoCheck">#012E41</color>
 
 
     <color name="mdtp_accent_color">#009688</color>

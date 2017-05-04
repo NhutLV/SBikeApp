@@ -43,7 +43,7 @@ public class SearchServiceImpl {
                         callback.onResult(responseAPI.getResults());
                     }else{
                         Log.d("TAG", "onResponse: NOT OK");
-                        callback.onFailure("Không thể kết nối máy chủ");
+                        callback.onResult(null);
                     }
                 }else{
                     Log.d("TAG", "onResponse: not success");

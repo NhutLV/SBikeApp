@@ -4,19 +4,19 @@
     <item
         android:id="@+id/menu_bottom_movies"
         android:checked="false"
-        android:icon="@drawable/ic_directions_bike_black_24dp"
-        android:title="Movies"
+        android:icon="@drawable/ic_school_black_24dp"
+        android:title="University"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_bottom_hospital"
         android:checkable="true"
-        android:icon="@drawable/ic_repair_black_24dp"
+        android:icon="@drawable/ic_local_hospital_black_24dp"
         android:title="Hospital"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_bottom_restaurant"
         android:checkable="true"
-        android:icon="@drawable/ic_feedback_black_24dp"
+        android:icon="@drawable/ic_restaurant_menu_black_24dp"
         android:title="Restaurant"
         app:showAsAction="ifRoom" />
 </menu>

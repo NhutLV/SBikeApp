@@ -18,7 +18,7 @@ public class User {
     @SerializedName("password")
     private String mPassword;
 
-    @SerializedName("fullName")
+    @SerializedName("fullname")
     private String mFullName;
 
     @SerializedName("age")
@@ -27,8 +27,11 @@ public class User {
     @SerializedName("number_phone")
     private String mNumberPhone;
 
-    @SerializedName("coordinates")
-    private Coordinate mCoordinate;
+    @SerializedName("latitude")
+    private double mLatitude;
+
+    @SerializedName("longitude")
+    private double mLongitude;
 
     @SerializedName("access_token")
     private String mAccessToken;
@@ -116,9 +119,6 @@ public class User {
         mNumberPhone = numberPhone;
     }
 
-    public Coordinate getCoordinate() {
-        return mCoordinate;
-    }
 
     public String getAccessToken() {
         return mAccessToken;
@@ -128,9 +128,6 @@ public class User {
         this.mAccessToken = mAccessToken;
     }
 
-    public void setCoordinate(Coordinate coordinate) {
-        mCoordinate = coordinate;
-    }
 
     public String getAvatarPath() {
         return mAvatarPath;
@@ -220,13 +217,12 @@ public class User {
         mIsBecome = isBecome;
     }
 
-    public User(String emai, String password, String fullName, int age, String numberPhone, Coordinate coordinate) {
+    public User(String emai, String password, String fullName, int age, String numberPhone) {
         mEmai = emai;
         mPassword = password;
         mFullName = fullName;
         mAge = age;
         mNumberPhone = numberPhone;
-        mCoordinate = coordinate;
     }
 
     public User() {
@@ -234,13 +230,11 @@ public class User {
 
     public User(String mFullName, Coordinate mCoordinate) {
         this.mFullName = mFullName;
-        this.mCoordinate = mCoordinate;
     }
 
     public User(String mFullName, String mNumberPhone, Coordinate mCoordinate) {
         this.mFullName = mFullName;
         this.mNumberPhone = mNumberPhone;
-        this.mCoordinate = mCoordinate;
     }
 
     public String getRePassword() {
@@ -249,5 +243,36 @@ public class User {
 
     public void setRePassword(String rePassword) {
         mRePassword = rePassword;
+    }
+
+    public LatLng getLatLng(){
+        return new LatLng(mLatitude,mLongitude);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "mIdUser='" + mIdUser + '\'' +
+                ", mEmai='" + mEmai + '\'' +
+                ", mPassword='" + mPassword + '\'' +
+                ", mFullName='" + mFullName + '\'' +
+                ", mAge=" + mAge +
+                ", mNumberPhone='" + mNumberPhone + '\'' +
+                ", mLatitude=" + mLatitude +
+                ", mLongitude=" + mLongitude +
+                ", mAccessToken='" + mAccessToken + '\'' +
+                ", mAvatarPath='" + mAvatarPath + '\'' +
+                ", mIdentificationCardBeforePath='" + mIdentificationCardBeforePath + '\'' +
+                ", mIdentificationCardAfterPath='" + mIdentificationCardAfterPath + '\'' +
+                ", mDrivingLicenseBeforePath='" + mDrivingLicenseBeforePath + '\'' +
+                ", mDrivingLicenseAfterPath='" + mDrivingLicenseAfterPath + '\'' +
+                ", mCarNumberPlatePath='" + mCarNumberPlatePath + '\'' +
+                ", mIsDriving=" + mIsDriving +
+                ", mNumberFavorite=" + mNumberFavorite +
+                ", mNumberNotFavorite=" + mNumberNotFavorite +
+                ", mIsApproved=" + mIsApproved +
+                ", mIsBecome=" + mIsBecome +
+                ", mRePassword='" + mRePassword + '\'' +
+                '}';
     }
 }

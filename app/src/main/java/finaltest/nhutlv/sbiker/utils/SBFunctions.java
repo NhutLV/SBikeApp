@@ -54,6 +54,16 @@ public class SBFunctions {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    public static String parseTime(int minutes){
+        int hours = minutes/60;
+        int minute = minutes - hours*60;
+        if(hours<=0){
+            return minute+"phút";
+        }
+        return hours +"giờ "+minute+"phút";
+    }
+
+
     public void openImageIntent(Uri outputFileUri,int YOUR_SELECT_PICTURE_REQUEST_CODE) {
 
         // Determine Uri of camera image to save.

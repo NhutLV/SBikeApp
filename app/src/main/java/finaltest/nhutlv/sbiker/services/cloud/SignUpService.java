@@ -1,5 +1,7 @@
 package finaltest.nhutlv.sbiker.services.cloud;
 
+import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
 import finaltest.nhutlv.sbiker.services.response.UserResponseAPI;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -13,17 +15,14 @@ import retrofit2.http.POST;
 public interface SignUpService {
 
     @FormUrlEncoded
-    @POST("signup")
-    Call<UserResponseAPI> signUp(@Field("full_name") String username,
-                                 @Field("email") String email,
-                                 @Field("age") int age,
-                                 @Field("number_phone") String numberPhone,
-                                 @Field("password") String password,
-                                 @Field("latitude") double latitude,
-                                 @Field("longitude") double longitude);
+    @POST("user/sign-up")
+    Call<ResponseAPI<User>> signUp(@Field("full_name") String username,
+                                   @Field("email") String email,
+                                   @Field("number_phone") String numberPhone,
+                                   @Field("password") String password);
     @FormUrlEncoded
     @POST("sign-up-social")
-    Call<UserResponseAPI> signUpSocial(@Field("full_name") String fullName,
+    Call<ResponseAPI<User>> signUpSocial(@Field("full_name") String fullName,
                                        @Field("email") String email,
                                        @Field("access_token") String accessToken,
                                        @Field("image_avatar_path") String avatarPath);

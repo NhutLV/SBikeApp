@@ -1,5 +1,7 @@
 package finaltest.nhutlv.sbiker.services.cloud;
 
+import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
 import finaltest.nhutlv.sbiker.services.response.UserResponseAPI;
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -13,12 +15,12 @@ import retrofit2.http.POST;
 public interface SignInService {
 
     @FormUrlEncoded
-    @POST("activity_login")
-    Call<UserResponseAPI> login(@Field("email") String email
-            , @Field("password") String password);
+    @POST("user/sign-in")
+    Call<ResponseAPI<User>> login(@Field("email") String email
+                                , @Field("password") String password);
 
     @FormUrlEncoded
     @POST("user/sign-in-social")
-    Call<UserResponseAPI> signSocial(@Field("access_token") String accessToken);
+    Call<ResponseAPI<User>> signSocial(@Field("access_token") String accessToken);
 
 }

@@ -1,5 +1,7 @@
 package finaltest.nhutlv.sbiker.services.cloud;
 
+import android.util.Log;
+
 import java.util.List;
 
 import finaltest.nhutlv.sbiker.entities.History;
@@ -28,10 +30,12 @@ public class HistoryServiceImpl {
             public void onResponse(Call<ResponseAPI<History>> call, Response<ResponseAPI<History>> response) {
                 if(response.isSuccessful()){
                     ResponseAPI<History> historyResponse = response.body();
+                    Log.d("TAGGGGGGG",historyResponse.getMessage());
+                    Log.d("TAGGGGGGG",historyResponse.isError()+"");
                     if(!historyResponse.isError()){
                         callback.onResult(historyResponse.getData());
                     }else{
-                        callback.onFailure("Không thể kết nối máy chủ");
+                        callback.onFailure(historyResponse.getMessage());
                     }
                 }else{
                     callback.onFailure("Không thể kết nối máy chủ");
@@ -56,7 +60,7 @@ public class HistoryServiceImpl {
                     if(!historiesResponse.isError()){
                         callback.onResult(historiesResponse.getData());
                     }else{
-                        callback.onFailure("Không thể kết nối máy chủ");
+                        callback.onFailure(historiesResponse.getMessage());
                     }
                 }else{
                     callback.onFailure("Không thể kết nối máy chủ");

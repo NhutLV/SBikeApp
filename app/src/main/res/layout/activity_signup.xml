@@ -50,6 +50,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
             android:drawableLeft="@drawable/ic_lock_black_24dp"
             android:hint="Password"/>
 
@@ -59,6 +61,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:drawableLeft="@drawable/ic_lock_black_24dp"
             android:hint="Confirm Password"/>
 
