@@ -16,6 +16,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import finaltest.nhutlv.sbiker.R;
+import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
+import finaltest.nhutlv.sbiker.utils.Callback;
+import finaltest.nhutlv.sbiker.utils.UserLogin;
 
 /**
  * Created by NhutDu on 26/04/2017.
@@ -28,6 +32,7 @@ public class ChangePasswordDialog extends Dialog{
     private EditText mPassNew;
     private EditText mRePass;
     private Button mBtnChangePass;
+    private UserServiceImpl mUserService;
 
     public ChangePasswordDialog(@NonNull Context context) {
         super(context);
@@ -43,7 +48,7 @@ public class ChangePasswordDialog extends Dialog{
         mPassNew = (EditText) findViewById(R.id.ed_password_new);
         mRePass = (EditText) findViewById(R.id.ed_retype_password);
         mBtnChangePass = (Button) findViewById(R.id.btn_change_pass);
-
+        mUserService = new UserServiceImpl();
         mPassOld.setTransformationMethod(new PasswordTransformationMethod());
         mPassNew.setTransformationMethod(new PasswordTransformationMethod());
         mRePass.setTransformationMethod(new PasswordTransformationMethod());
@@ -55,7 +60,23 @@ public class ChangePasswordDialog extends Dialog{
         mBtnChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitForm();
+                if(submitForm()){
+                    mUserService.changePassword(UserLogin.getUserLogin().getIdUser(),mPassOld.getText().toString(),
+                            UserLogin.getUserLogin().getPassword(),mPassNew.getText().toString(), new Callback<User>() {
+                                @Override
+                                public void onResult(User user) {
+                                    dismiss();
+                                    Toast.makeText(mContext,"Đổi mật khẩu thành công",Toast.LENGTH_LONG);
+                                    UserLogin.setUserLogin(user);
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+                                    mPassOld.setError(message);
+                                    requestFocus(mPassOld);
+                                }
+                            });
+                }
             }
         });
 
@@ -63,7 +84,7 @@ public class ChangePasswordDialog extends Dialog{
 
     private boolean validatePassNew() {
         if (TextUtils.isEmpty(mPassNew.getText().toString())) {
-            mPassNew.setError("Mật khẩu mới chưa hợp lệ");
+            mPassNew.setError("Vui lòng nhập mật khẩu mới");
             requestFocus(mPassNew);
             return false;
         }else{
@@ -83,8 +104,8 @@ public class ChangePasswordDialog extends Dialog{
     }
 
     private boolean validateRepass() {
-        if (TextUtils.isEmpty(mPassNew.getText().toString())) {
-            mRePass.setError("Bạn chưa nhập mật khẩu cũ");
+        if (TextUtils.isEmpty(mRePass.getText().toString())) {
+            mRePass.setError("Vui lòng nhập xác nhận mật khẩu");
             requestFocus(mRePass);
             return false;
         }
@@ -105,18 +126,17 @@ public class ChangePasswordDialog extends Dialog{
         }
     }
 
-    private void submitForm() {
+    private boolean submitForm() {
         if (!validatePassOld()) {
-            return;
+            return false;
         }
         if (!validatePassNew()) {
-            return;
+            return false;
         }
         if (!validateRepass()) {
-            return;
+            return false;
         }
-
-        Toast.makeText(mContext.getApplicationContext(), "Thank You!", Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     private class  MyTextWatcher implements TextWatcher {
@@ -152,4 +172,5 @@ public class ChangePasswordDialog extends Dialog{
             }
         }
     }
+
 }

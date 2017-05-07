@@ -46,6 +46,7 @@ import butterknife.ButterKnife;
 import dmax.dialog.SpotsDialog;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.gcm.GcmActivity;
 import finaltest.nhutlv.sbiker.services.cloud.SignInServiceImpl;
 import finaltest.nhutlv.sbiker.services.cloud.SignUpServiceImpl;
 import finaltest.nhutlv.sbiker.tools.ErrorDialog;
@@ -106,12 +107,15 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         mCallbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        mFlowerDialog = new FlowerDialog(getContext(),"Login...");
+        mFlowerDialog = new FlowerDialog(getContext(),"Login");
         mPassword.setTransformationMethod(new PasswordTransformationMethod());
         mPrefManagement = new PrefManagement(this);
         Intent intent = getIntent();
         if(intent.getStringExtra("email")!=null){
             mEmail.setText(intent.getStringExtra("email"));
+        }else{
+            mEmail.setText(mPrefManagement.getValueString(SBConstants.PREF_EMAIL));
+            mPassword.setText(mPrefManagement.getValueString(SBConstants.PREF_PASSWORD));
         }
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -175,6 +179,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                         public void onResult(User user) {
                             mFlowerDialog.hideDialog();
                             UserLogin.setUserLogin(user);
+                            mPrefManagement.putValueString(SBConstants.PREF_EMAIL,mEmail.getText().toString());
+                            mPrefManagement.putValueString(SBConstants.PREF_PASSWORD,mPassword.getText().toString());
                             Log.d("TAGGGGGGGGG",user.toString());
                             navigateToHome();
                         }

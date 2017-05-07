@@ -36,7 +36,7 @@ public class Store extends BaseEntities {
         mTimeClose = timeClose;
     }
 
-    public Store(String fullName, String address, String numberPhone, String type, String quantityStaff, String timeOpen, String timeClose) {
+    public Store(String fullName, String address, String numberPhone, int type, String quantityStaff, String timeOpen, String timeClose) {
         super(fullName, address, numberPhone, type);
         mQuantityStaff = quantityStaff;
         mTimeOpen = timeOpen;

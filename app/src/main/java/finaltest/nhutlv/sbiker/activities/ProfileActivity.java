@@ -1,6 +1,7 @@
 package finaltest.nhutlv.sbiker.activities;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -24,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,9 +36,14 @@ import butterknife.ButterKnife;
 import butterknife.internal.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import finaltest.nhutlv.sbiker.R;
+import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
 import finaltest.nhutlv.sbiker.tools.ChangePasswordDialog;
+import finaltest.nhutlv.sbiker.tools.ErrorDialog;
+import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.SBConstants;
 import finaltest.nhutlv.sbiker.utils.SBFunctions;
+import finaltest.nhutlv.sbiker.utils.UserLogin;
 
 /**
  * Created by NhutDu on 31/03/2017.
@@ -63,10 +70,19 @@ public class ProfileActivity extends AppCompatActivity {
     CircleImageView mImgAvatar;
 
     @BindView(R.id.btn_update_information)
-    Button mBtnUpdate;
+    TextView mBtnUpdate;
+
+    @BindView(R.id.btn_change_pass)
+    Button mBtnChangePass;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     private Uri outputFileUri;
+    private UserServiceImpl mUserService;
     private static final String TAG = ProfileActivity.class.getSimpleName();
+    private String name;
+    private String numberphone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,38 +90,38 @@ public class ProfileActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED);
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
-        setTitle("Profile Information");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        mToolbar.setTitle("Profile Information");
         mEdName.addTextChangedListener(new MyTextWatcher(mEdName));
         mEdEmail.addTextChangedListener(new MyTextWatcher(mEdEmail));
         mEdNumberPhone.addTextChangedListener(new MyTextWatcher(mEdNumberPhone));
+
+        mEdEmail.setText(UserLogin.getUserLogin().getEmai());
+        mEdName.setText(UserLogin.getUserLogin().getFullName());
+        mEdNumberPhone.setText(UserLogin.getUserLogin().getNumberPhone());
+
         mImgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                openImageIntent();
             }
         });
-//        setSupportActionBar(mToolbar);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mUserService = new UserServiceImpl();
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    }
+        mBtnChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ChangePasswordDialog(getContext()).show();
+            }
+        });
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_profile, menu);
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(TAG, "onOptionsItemSelected: aaaa");
         switch (item.getItemId()){
-            case R.id.action_settings:
-                Log.d(TAG, "onOptionsItemSelected: ");
-                new ChangePasswordDialog(ProfileActivity.this).show();
-                break;
             case android.R.id.home:
                 finish();
                 break;
@@ -205,23 +221,20 @@ public class ProfileActivity extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable s) {
+
+            name = UserLogin.getUserLogin().getFullName();
+            numberphone = UserLogin.getUserLogin().getNumberPhone();
+
             switch (mView.getId()){
                 case R.id.ed_name_profile :
-                    if(!((EditText)mView).getText().toString().equals("Lê Viết Nhựt")){
-                        mBtnUpdate.setEnabled(true);
-                    }else{
-                        mBtnUpdate.setEnabled(false);
-                    }
-                    break;
-                case R.id.ed_email_profile :
-                    if(!((EditText)mView).getText().toString().equals("levietnhutit@gmail.com")){
+                    if(!((EditText)mView).getText().toString().equals(name)){
                         mBtnUpdate.setEnabled(true);
                     }else{
                         mBtnUpdate.setEnabled(false);
                     }
                     break;
                 case R.id.ed_number_phone_profile:
-                    if(!((EditText)mView).getText().toString().equals("01687184516")){
+                    if(!((EditText)mView).getText().toString().equals(numberphone)){
                         mBtnUpdate.setEnabled(true);
                     }else{
                         mBtnUpdate.setEnabled(false);
@@ -231,10 +244,30 @@ public class ProfileActivity extends AppCompatActivity {
             mBtnUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("TAG","Active");
+                    mUserService.updateProfile(UserLogin.getUserLogin().getIdUser(), mEdName.getText().toString(),
+                            mEdNumberPhone.getText().toString(), new Callback<User>() {
+                                @Override
+                                public void onResult(User user) {
+                                    name = mEdName.getText().toString();
+                                    numberphone = mEdNumberPhone.getText().toString();
+                                    mBtnUpdate.setEnabled(false);
+                                    Toast.makeText(getContext(),"Cập nhật thông tin thành công",Toast.LENGTH_LONG).show();
+                                    UserLogin.setUserLogin(user);
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+                                    new ErrorDialog(getContext(),message).show();
+                                }
+                            });
                 }
             });
         }
+    }
+
+    //get context activity
+    private Context getContext(){
+        return  this;
     }
 }
 

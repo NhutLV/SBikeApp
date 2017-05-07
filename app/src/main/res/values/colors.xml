@@ -19,8 +19,8 @@
     <color name="dark_gray">#4C535B</color>
     <color name="dark_gray_press">#ff7e8a97</color>
 
-    <color name="backgroundColor">#f9f9f9</color>
-    <color name="backgroundColorPress">#efefed</color>
+    <color name="backgroundColor">#ffffff</color>
+    <color name="backgroundColorPress">#ffefed</color>
 
     <color name="bg_button_facebook">#48629b</color>
     <color name="bg_button_gmail">#dc4b38</color>

@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.List;
 
 import finaltest.nhutlv.sbiker.entities.History;
+import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.Configuration;
 import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
 import finaltest.nhutlv.sbiker.utils.Callback;
@@ -17,19 +18,19 @@ import retrofit2.Response;
 
 public class HistoryServiceImpl {
 
-    public void saveHistory(final History history, final Callback<History> callback){
+    public void saveHistory(final History<String> history, final Callback<History<String>> callback){
         HistoryService service = Configuration.getClient().create(HistoryService.class);
-        Call<ResponseAPI<History>> call = service.saveHistory(history.getIdUser(),
-                history.getIdBiker(),history.getTimeCall().toString(),
+        Call<ResponseAPI<History<String>>> call = service.saveHistory(history.getIdUser(),
+                (String) history.getBiker(),history.getTimeCall().toString(),
                 history.getPlaceFrom(),history.getLatitudeFrom(), history.getLongitudeFrom(),
                 history.getPlaceTo(), history.getLatitudeTo(),history.getLongitudeTo(),
                 history.getDistance(),history.getPrice(),history.getTimeSpend());
 
-        call.enqueue(new retrofit2.Callback<ResponseAPI<History>>() {
+        call.enqueue(new retrofit2.Callback<ResponseAPI<History<String>>>() {
             @Override
-            public void onResponse(Call<ResponseAPI<History>> call, Response<ResponseAPI<History>> response) {
+            public void onResponse(Call<ResponseAPI<History<String>>> call, Response<ResponseAPI<History<String>>> response) {
                 if(response.isSuccessful()){
-                    ResponseAPI<History> historyResponse = response.body();
+                    ResponseAPI<History<String>> historyResponse = response.body();
                     Log.d("TAGGGGGGG",historyResponse.getMessage());
                     Log.d("TAGGGGGGG",historyResponse.isError()+"");
                     if(!historyResponse.isError()){
@@ -43,20 +44,20 @@ public class HistoryServiceImpl {
             }
 
             @Override
-            public void onFailure(Call<ResponseAPI<History>> call, Throwable t) {
+            public void onFailure(Call<ResponseAPI<History<String>>> call, Throwable t) {
                 callback.onFailure("Đã xảy ra lỗi");
             }
         });
     }
 
-    public void getListHistory(String idUser, final Callback<List<History>> callback){
+    public void getListHistory(String idUser, final Callback<List<History<User>>> callback){
         HistoryService service = Configuration.getClient().create(HistoryService.class);
-        Call<ResponseAPI<List<History>>> call = service.getHistory(idUser);
-        call.enqueue(new retrofit2.Callback<ResponseAPI<List<History>>>() {
+        Call<ResponseAPI<List<History<User>>>> call = service.getHistory(idUser);
+        call.enqueue(new retrofit2.Callback<ResponseAPI<List<History<User>>>>() {
             @Override
-            public void onResponse(Call<ResponseAPI<List<History>>> call, Response<ResponseAPI<List<History>>> response) {
+            public void onResponse(Call<ResponseAPI<List<History<User>>>> call, Response<ResponseAPI<List<History<User>>>> response) {
                 if(response.isSuccessful()){
-                    ResponseAPI<List<History>> historiesResponse = response.body();
+                    ResponseAPI<List<History<User>>> historiesResponse = response.body();
                     if(!historiesResponse.isError()){
                         callback.onResult(historiesResponse.getData());
                     }else{
@@ -68,7 +69,7 @@ public class HistoryServiceImpl {
             }
 
             @Override
-            public void onFailure(Call<ResponseAPI<List<History>>> call, Throwable t) {
+            public void onFailure(Call<ResponseAPI<List<History<User>>>> call, Throwable t) {
                 callback.onFailure("Đã xảy ra lỗi");
             }
         });

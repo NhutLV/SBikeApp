@@ -42,7 +42,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
     @BindView(R.id.rv_history)
     RecyclerView mRvHistory;
 
-    private ArrayList<History> mHistories;
+    private ArrayList<History<User>> mHistories;
     private HistoryAdapter mAdapter;
     private HistoryServiceImpl mHistoryService;
     private FlowerDialog mFlowerDialog;
@@ -64,9 +64,9 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
         mRvHistory.setAdapter(mAdapter);
         mRvHistory.addItemDecoration(new DividerItemDecoration(this,1));
         mRvHistory.setItemAnimator(new DefaultItemAnimator());
-        mHistoryService.getListHistory(UserLogin.getUserLogin().getIdUser(), new Callback<List<History>>() {
+        mHistoryService.getListHistory(UserLogin.getUserLogin().getIdUser(), new Callback<List<History<User>>>() {
             @Override
-            public void onResult(List<History> histories) {
+            public void onResult(List<History<User>> histories) {
                 mFlowerDialog.hideDialog();
                 mHistories.clear();
                 mHistories.addAll(histories);
@@ -94,14 +94,15 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
 
     @Override
     public void onClickBiker(int position) {
-        User user = new User("Lê A", "01687184516", new Coordinate(16.0762584, 108.1608916));
+        User user = (User) mHistories.get(position).getBiker();
+        Log.d("TAGGGGGGGGGGGGG",user.toString());
         new BikerInfoDialog(this, new BikerInfoDialog.myClickListener() {
             @Override
             public void onButtonClick(User user) {
             }
 
             @Override
-            public void onCheckBox(User user) {
+            public void onCheckBox(User user,boolean isCheck) {
 
             }
         },user).show();
@@ -109,7 +110,6 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
 
     @Override
     public void onClickItem(int position) {
-        Toast.makeText(this,"Detail History index "+ (position+1),Toast.LENGTH_LONG ).show();
     }
 
     private Context getContext(){

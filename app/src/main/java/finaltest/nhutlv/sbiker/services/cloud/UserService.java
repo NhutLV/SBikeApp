@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 
 import butterknife.BindView;
+import finaltest.nhutlv.sbiker.entities.Favorite;
 import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
 import okhttp3.MultipartBody;
@@ -36,11 +37,14 @@ public interface UserService {
                                                   @Field("latitude") double latitude,
                                                   @Field("longitude") double longitude);
     @FormUrlEncoded
-    @POST("user/change-pass")
+    @POST("users/change-pass")
     Call<ResponseAPI<User>> changePassword(@Field("id_user") String id_user,
+                                           @Field("old_pass") String old_pass,
+                                           @Field("current_pass") String current_pass,
                                            @Field("new_pass") String new_pass);
 
-    @POST("user/update-profile")
+    @FormUrlEncoded
+    @POST("users/update/profile")
     Call<ResponseAPI<User>> updateProfile(@Field("id_user") String id_user,
                                           @Field("full_name") String full_name,
                                           @Field("number_phone") String numberPhone);
@@ -59,7 +63,9 @@ public interface UserService {
     @FormUrlEncoded
     @POST("users/is-driver")
     Call<ResponseAPI<User>> isDriving(@Field("id_user") String id_user,
-                                         @Field("is_driving") int is_driving);
+                                      @Field("latitude") double latitude,
+                                      @Field("longitude") double longitude,
+                                      @Field("is_driving") int is_driving);
 
     @FormUrlEncoded
     @POST("users/become-driver")
@@ -72,16 +78,21 @@ public interface UserService {
                                                    @Field("number_card") String car_number_plate,
                                                    @Field("is_become") int is_become);
     @FormUrlEncoded
-    @POST("user/favorite")
+    @POST("users/favorite")
     Call<ResponseAPI<Boolean>> isFavorite(@Field("id_user") String id_user,
                                        @Field("id_biker") String id_biker,
                                        @Field("is_favorite") int is_favorite);
 
-    @GET("user/favorite/{id_user}")
-    Call<ResponseAPI<List<User>>> getListFavorite(@Path("id_user") String id_user);
+    @GET("users/favorite/{id_user}")
+    Call<ResponseAPI<List<Favorite>>> getListFavorite(@Path("id_user") String id_user);
 
-    @GET("/user/count-favorite/{id_user}")
+    @GET("users/count-favorite/{id_user}")
     Call<ResponseAPI<Integer>> getCountFavorite(@Path("id_user") String id_user);
+
+    @FormUrlEncoded
+    @POST("users/check-favorite")
+    Call<ResponseAPI<Integer>> checkFavorite(@Field("id_user") String id_user,
+                                             @Field("id_biker") String id_biker);
 
     @GET("/user/count-not-favorite/{id_user}")
     Call<ResponseAPI<Integer>> getCountNotFavorite(@Path("id_user") String id_user);

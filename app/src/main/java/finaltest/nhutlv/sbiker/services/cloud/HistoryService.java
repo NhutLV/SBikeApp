@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import finaltest.nhutlv.sbiker.entities.History;
+import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -21,7 +22,7 @@ public interface HistoryService {
 
     @FormUrlEncoded
     @POST("journey/create")
-    Call<ResponseAPI<History>> saveHistory(@Field("id_user") String idUser,
+    Call<ResponseAPI<History<String>>> saveHistory(@Field("id_user") String idUser,
                                            @Field("id_biker") String idBiker,
                                            @Field("time_call") String timeCall,
                                            @Field("place_from") String placeFrom,
@@ -35,5 +36,5 @@ public interface HistoryService {
                                            @Field("time_spend") int timeSpend);
 
     @GET("journey/{id_user}")
-    Call<ResponseAPI<List<History>>> getHistory(@Path("id_user") String idUser);
+    Call<ResponseAPI<List<History<User>>>> getHistory(@Path("id_user") String idUser);
 }

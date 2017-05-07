@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.History;
+import finaltest.nhutlv.sbiker.entities.User;
 
 /**
  * Created by NhutDu on 27/04/2017.
@@ -21,10 +22,10 @@ import finaltest.nhutlv.sbiker.entities.History;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>{
 
     private Context mContext;
-    private ArrayList<History> mHistories;
+    private ArrayList<History<User>> mHistories;
     private onMyListener mOnMyListener;
 
-    public HistoryAdapter(Context context, ArrayList<History> histories, onMyListener onMyListener) {
+    public HistoryAdapter(Context context, ArrayList<History<User>> histories, onMyListener onMyListener) {
         mContext = context;
         mHistories = histories;
         mOnMyListener = onMyListener;
@@ -38,10 +39,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
-        History history = mHistories.get(position);
+        History<User> history = mHistories.get(position);
         holder.mTxtStart.setText(history.getPlaceFrom());
         holder.mTxtDestination.setText(history.getPlaceTo());
         holder.mTxtTime.setText(history.getTimeCall());
+        holder.mTxtBiker.setText(history.getBiker().getFullName());
         holder.mTxtDistance.setText(String.valueOf(history.getDistance()) +" km");
         holder.mTxtPrice.setText(String.valueOf(history.getPrice())+" VNĐ");
     }

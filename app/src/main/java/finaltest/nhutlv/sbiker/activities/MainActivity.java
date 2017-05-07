@@ -2,9 +2,11 @@ package finaltest.nhutlv.sbiker.activities;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,6 +23,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -45,6 +48,8 @@ import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -79,6 +84,7 @@ import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.History;
 import finaltest.nhutlv.sbiker.entities.Place;
 import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.gcm.GcmIntentService;
 import finaltest.nhutlv.sbiker.services.cloud.HistoryServiceImpl;
 import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
 import finaltest.nhutlv.sbiker.tools.BikerInfoDialog;
@@ -111,13 +117,11 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private Place mPlace = null;
     private Status mStatus = null;
-    private User mUser;
     private RelativeLayout mLayout;
     private double mDistance = 0;
     private int mPrice = 0;
     private int mTimeSpend = 0;
     private String mAddress = "";
-    private String mIdBiker ="";
     private DecimalFormat df = new DecimalFormat("#,000");
 
     private Geocoder mGeocoder;
@@ -131,17 +135,19 @@ public class MainActivity extends AppCompatActivity
     private int isApproved = 0;
     private UserServiceImpl mUserService;
     private HistoryServiceImpl mHistoryService;
+    //Creating a broadcast receiver for gcm registration
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     private List<Polyline> polylines;
     private static final int[] COLORS = new int[]{R.color.colorPrimaryDark, R.color.colorPrimary, R.color.colorApp,
             R.color.colorAccent, R.color.primary_dark_material_light};
+    private String mIdBiker;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUserService = new UserServiceImpl();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Log.d("TAGGGGGGGGGGGGG",UserLogin.getUserLogin().toString());
         mHistoryService = new HistoryServiceImpl();
         mGeocoder = new Geocoder(this, Locale.getDefault());
         mEventBus = EventBus.getDefault();
@@ -191,6 +197,8 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //get header
         View header = navigationView.getHeaderView(0);
         ImageButton editProfile = (ImageButton) header.findViewById(R.id.btn_edit_header);
         editProfile.setOnClickListener(new View.OnClickListener() {
@@ -199,6 +207,8 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
             }
         });
+        TextView username = (TextView) header.findViewById(R.id.txt_name_header);
+        username.setText(UserLogin.getUserLogin().getFullName());
 
         mMapView = (MapView) findViewById(R.id.mapView);
         mTxtPlaceSearch = (TextView) findViewById(R.id.ed_place_search);
@@ -221,12 +231,62 @@ public class MainActivity extends AppCompatActivity
         }
         //get current location
         mLocationProvider = new LocationProvider(this, this);
+
+        //Initializing our broadcast receiver
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+
+            //When the broadcast received
+            //We are sending the broadcast from GCMRegistrationIntentService
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                //If the broadcast has received with success
+                //that means device is registered successfully
+                if(intent.getAction().equals(GcmIntentService.REGISTRATION_SUCCESS)){
+                    //Getting the registration token from the intent
+                    String token = intent.getStringExtra("token");
+                    //Displaying the token as toast
+//                    Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
+                    Log.e("Token",token);
+                    //if the intent is not with success then displaying error messages
+                } else if(intent.getAction().equals(GcmIntentService.REGISTRATION_ERROR)){
+                    Toast.makeText(getApplicationContext(), "GCM registration error!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
+        //Checking play service is available or not
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+
+        //if play service is not available
+        if(ConnectionResult.SUCCESS != resultCode) {
+            //If play service is supported but not installed
+            if(GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                //Displaying message that play service is not installed
+//                Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled in this device!", Toast.LENGTH_LONG).show();
+                GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
+
+                //If play service is not supported
+                //Displaying an error message
+            } else {
+                Toast.makeText(getApplicationContext(), "This device does not support for Google Play Service!", Toast.LENGTH_LONG).show();
+            }
+
+            //If play service is available
+        } else {
+            //Starting intent to register device
+            Intent itent = new Intent(this, GcmIntentService.class);
+            startService(itent);
+        }
+
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart: ");
         isBecome = UserLogin.getUserLogin().getIsBecome();
         isApproved = UserLogin.getUserLogin().getIsApproved();
         isDriving = UserLogin.getUserLogin().getIsDriving();
@@ -249,8 +309,49 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+        if (mPlace != null) {
+            MarkerOptions placeSearch = new MarkerOptions()
+                    .position(mPlace.getLatLng())
+                    .title(mPlace.getName().toString())
+                    .snippet(mPlace.getAddress().toString())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
+            mGoogleMap.addMarker(placeSearch).showInfoWindow();
+            mTxtPlaceSearch.setText(mPlace.getAddress().toString());
+            Routing routing = new Routing.Builder()
+                    .travelMode(Routing.TravelMode.DRIVING)
+                    .withListener(this)
+                    .waypoints(mLatLngCurrent, mPlace.getLatLng())
+                    .build();
+            routing.execute();
+        }
     }
 
+    //Registering receiver on activity resume
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mMapView.onResume();
+        Log.d(TAG, "onResume: ");
+        mLocationProvider.connect();
+        Log.w("MainActivity", "onResume");
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(GcmIntentService.REGISTRATION_SUCCESS));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(GcmIntentService.REGISTRATION_ERROR));
+    }
+
+
+    //Unregistering receiver on activity paused
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause: ");
+        mMapView.onPause();
+        mLocationProvider.disconnect();
+        Log.w("MainActivity", "onPause");
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+    }
 
     @Override
     public void onBackPressed() {
@@ -270,12 +371,11 @@ public class MainActivity extends AppCompatActivity
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     if(isApproved==1){
-                        Log.d(TAG, "onCheckedChanged: True, isApproved TRƯE");
                         isDriving = 1;
-                        mUserService.setIsDriving(UserLogin.getUserLogin().getIdUser(), isDriving, new Callback<User>() {
+                        mUserService.setIsDriving(UserLogin.getUserLogin().getIdUser(), isDriving,
+                                         mLatLngCurrent, new Callback<User>() {
                             @Override
                             public void onResult(User user) {
-                                Log.d(TAG, "onResult: OK");
                                 Toast.makeText(getContext(),"Bạn đã bật chế độ tài xê",Toast.LENGTH_LONG).show();
                                 UserLogin.setUserLogin(user);
                             }
@@ -290,19 +390,17 @@ public class MainActivity extends AppCompatActivity
                     }else {
                         isDriving = 0;
                         if(isBecome==1){
-                            Log.d(TAG, "onCheckedChanged: True");
                             new ErrorDialog(MainActivity.this,"Thông tin của bạn đang được kiểm duyệt\nVui lòng thử lại sau").show();
                             mSwitchDriver.setChecked(false);
                         }else {
                             mSwitchDriver.setChecked(false);
-                            Log.d(TAG, "onCheckedChanged: True, isBecome FALSE");
                             startActivity(new Intent(MainActivity.this,BecomeDriverActivity.class));
                         }
                     }
                 } else {
                     isDriving = 0;
-                    Log.d(TAG, "onCheckedChanged: isDriving False");
-                    mUserService.setIsDriving(UserLogin.getUserLogin().getIdUser(), isDriving, new Callback<User>() {
+                    mUserService.setIsDriving(UserLogin.getUserLogin().getIdUser(), isDriving,
+                                    mLatLngCurrent, new Callback<User>() {
                         @Override
                         public void onResult(User user) {
                             Toast.makeText(getContext(),"Bạn tắt chế độ tài xế",Toast.LENGTH_LONG).show();
@@ -315,7 +413,6 @@ public class MainActivity extends AppCompatActivity
                             new ErrorDialog(MainActivity.this,message).show();
                         }
                     });
-                    Log.d(TAG, "onCheckedChanged: False");
                 }
             }
         });
@@ -382,7 +479,7 @@ public class MainActivity extends AppCompatActivity
         mAddress = getAddress(mLatLngCurrent);
         mTxtCurrentPlace.setText(mAddress);
 
-        mUserService.getListUserByRadius(11000,mLatLngCurrent, new Callback<List<User>>() {
+        mUserService.getListUserByRadius(200000,mLatLngCurrent, new Callback<List<User>>() {
             @Override
             public void onResult(List<User> users) {
                 mFlowerDialog.hideDialog();
@@ -408,7 +505,7 @@ public class MainActivity extends AppCompatActivity
         mGoogleMap.addMarker(options);
 
         final CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(mLatLngCurrent).zoom(15).build();
+                .target(mLatLngCurrent).zoom(14).build();
 
         if(!checked){
             mGoogleMap.animateCamera(CameraUpdateFactory
@@ -484,22 +581,6 @@ public class MainActivity extends AppCompatActivity
                 Bundle bundle = data.getExtras();
                 mPlace = bundle.getParcelable("searchPlace");
                 mStatus = bundle.getParcelable("searchStatus");
-                if (mPlace != null) {
-                    MarkerOptions placeSearch = new MarkerOptions()
-                            .position(mPlace.getLatLng())
-                            .title(mPlace.getName().toString())
-                            .snippet(mPlace.getAddress().toString())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
-                    mGoogleMap.addMarker(placeSearch).showInfoWindow();
-                    mTxtPlaceSearch.setText(mPlace.getAddress().toString());
-                    Routing routing = new Routing.Builder()
-                            .travelMode(Routing.TravelMode.DRIVING)
-                            .withListener(this)
-                            .waypoints(mLatLngCurrent, mPlace.getLatLng())
-                            .build();
-                    routing.execute();
-                }
                 mUserService.getListUserByRadius(11000,mLatLngCurrent, new Callback<List<User>>() {
                     @Override
                     public void onResult(List<User> users) {
@@ -546,22 +627,6 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         startActivityForResult(i, CALL_PHONE_REQUEST_CODE);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mMapView.onResume();
-        Log.d(TAG, "onResume: ");
-        mLocationProvider.connect();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause: ");
-        mMapView.onPause();
-        mLocationProvider.disconnect();
     }
 
     @Override
@@ -645,8 +710,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onCheckBox(User user) {
-        mEventBus.postSticky(user);
+    public void onCheckBox(User user, boolean isChecked) {
+        int check = isChecked?1:0;
+
+        mUserService.sendFavorite(UserLogin.getUserLogin().getIdUser(), user.getIdUser(), check, new Callback<Boolean>() {
+            @Override
+            public void onResult(Boolean aBoolean) {
+                Log.d(TAG,"Favorite OK");
+            }
+
+            @Override
+            public void onFailure(String message) {
+                Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void signOutGmail() {
@@ -696,9 +773,9 @@ public class MainActivity extends AppCompatActivity
                     Log.i(TAG, "Call ");
                     isPhoneCalling = false;
                     // save history
-                    History history = new History();
+                    History<String> history = new History();
                     history.setIdUser(UserLogin.getUserLogin().getIdUser());
-                    history.setIdBiker(mIdBiker);
+                    history.setBiker(mIdBiker);
                     history.setDistance(mDistance);
                     history.setTimeCall(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date().getTime()));
                     history.setTimeSpend(mTimeSpend);
@@ -719,9 +796,9 @@ public class MainActivity extends AppCompatActivity
                     Log.d(TAG,history.toString());
 
                     mFlowerDialogHistory.showDialog();
-                    mHistoryService.saveHistory(history, new Callback<History>() {
+                    mHistoryService.saveHistory(history, new Callback<History<String>>() {
                         @Override
-                        public void onResult(History history) {
+                        public void onResult(History<String> history) {
                             mFlowerDialogHistory.hideDialog();
                             Log.d(TAG,history.toString());
                         }

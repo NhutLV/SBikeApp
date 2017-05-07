@@ -1,14 +1,10 @@
 package finaltest.nhutlv.sbiker.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,16 +18,18 @@ import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 import java.util.ArrayList;
 
 import finaltest.nhutlv.sbiker.R;
+import finaltest.nhutlv.sbiker.entities.Favorite;
 import finaltest.nhutlv.sbiker.entities.Repairer;
+import finaltest.nhutlv.sbiker.entities.User;
 
-public class AutoRepairAdapter extends RecyclerSwipeAdapter<AutoRepairAdapter.MyViewHolder> {
+public class FavoriteAdapter extends RecyclerSwipeAdapter<FavoriteAdapter.MyViewHolder> {
 
     Context mContext;
-    ArrayList<Repairer> mRepairs;
+    ArrayList<Favorite> mBikers;
 
-    public AutoRepairAdapter(Context context, ArrayList<Repairer> repairers) {
+    public FavoriteAdapter(Context context, ArrayList<Favorite> bikers) {
         mContext = context;
-        mRepairs = repairers;
+        mBikers = bikers;
     }
 
     @Override
@@ -42,11 +40,16 @@ public class AutoRepairAdapter extends RecyclerSwipeAdapter<AutoRepairAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        Repairer repairer = mRepairs.get(position);
-        holder.name.setText(repairer.getFullName());
-        holder.content.setText(repairer.getAddress());
+        User biker = mBikers.get(position).getBikers();
+        holder.name.setText(biker.getFullName());
+        holder.email.setText(biker.getEmai());
+        holder.phone.setText(biker.getNumberPhone());
+        if(biker.getIsDriving()==1){
+            holder.state.setImageDrawable(mContext.getResources().getDrawable(R.drawable.online));
+        }else{
+            holder.state.setImageDrawable(mContext.getResources().getDrawable(R.drawable.offline));
+        }
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-        holder.state.setImageDrawable(mContext.getResources().getDrawable(R.drawable.online));
         holder.swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
             public void onOpen(SwipeLayout layout) {
@@ -72,7 +75,7 @@ public class AutoRepairAdapter extends RecyclerSwipeAdapter<AutoRepairAdapter.My
 
     @Override
     public int getItemCount() {
-        return mRepairs.size();
+        return mBikers.size();
     }
 
     @Override
@@ -83,8 +86,8 @@ public class AutoRepairAdapter extends RecyclerSwipeAdapter<AutoRepairAdapter.My
     class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView name;
-        TextView content;
-        TextView time;
+        TextView email;
+        TextView phone;
         SwipeLayout swipeLayout;
         ImageView edit;
         ImageView delete;
@@ -92,9 +95,9 @@ public class AutoRepairAdapter extends RecyclerSwipeAdapter<AutoRepairAdapter.My
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.item_name);
-            time = (TextView) itemView.findViewById(R.id.item_time);
-            content = (TextView) itemView.findViewById(R.id.item_content);
+            name = (TextView) itemView.findViewById(R.id.name_biker_favorite);
+            email = (TextView) itemView.findViewById(R.id.email_biker_favorite);
+            phone = (TextView) itemView.findViewById(R.id.phone_biker_favorite);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             edit = (ImageView) itemView.findViewById(R.id.edit_alarm);
             delete = (ImageView) itemView.findViewById(R.id.delete_alarm);

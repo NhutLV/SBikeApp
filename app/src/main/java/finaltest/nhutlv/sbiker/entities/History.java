@@ -8,13 +8,13 @@ import java.util.Date;
  * Created by NhutDu on 24/04/2017.
  */
 
-public class History {
+public class History<T> {
 
     @SerializedName("id_user")
     private String mIdUser;
 
     @SerializedName("id_biker")
-    private String mIdBiker;
+    private T mBiker;
 
     @SerializedName("time_call")
     private String mTimeCall;
@@ -54,12 +54,12 @@ public class History {
         mIdUser = idUser;
     }
 
-    public String getIdBiker() {
-        return mIdBiker;
+    public T getBiker() {
+        return mBiker;
     }
 
-    public void setIdBiker(String idBiker) {
-        mIdBiker = idBiker;
+    public void setBiker(T biker) {
+        mBiker = biker;
     }
 
     public String getTimeCall() {
@@ -142,9 +142,9 @@ public class History {
         mTimeSpend = timeSpend;
     }
 
-    public History(String idUser, String idBiker, String timeCall, String placeFrom, double latitudeFrom, double longitudeFrom, String placeTo, double latitudeTo, double longitude, double distance, int price, int timeSpend) {
+    public History(String idUser, T idBiker, String timeCall, String placeFrom, double latitudeFrom, double longitudeFrom, String placeTo, double latitudeTo, double longitude, double distance, int price, int timeSpend) {
         mIdUser = idUser;
-        mIdBiker = idBiker;
+        mBiker = idBiker;
         mTimeCall = timeCall;
         mPlaceFrom = placeFrom;
         mLatitudeFrom = latitudeFrom;
@@ -157,8 +157,8 @@ public class History {
         mTimeSpend = timeSpend;
     }
 
-    public History(String idBiker, String timeCall, String placeFrom, String placeTo, double distance, int price) {
-        mIdBiker = idBiker;
+    public History(T idBiker, String timeCall, String placeFrom, String placeTo, double distance, int price) {
+        mBiker = idBiker;
         mTimeCall = timeCall;
         mPlaceFrom = placeFrom;
         mPlaceTo = placeTo;
@@ -173,7 +173,7 @@ public class History {
     public String toString() {
         return "History{" +
                 "mIdUser='" + mIdUser + '\'' +
-                ", mIdBiker='" + mIdBiker + '\'' +
+                ", mIdBiker='" + mBiker + '\'' +
                 ", mTimeCall=" + mTimeCall +
                 ", mPlaceFrom='" + mPlaceFrom + '\'' +
                 ", mLatitudeFrom=" + mLatitudeFrom +

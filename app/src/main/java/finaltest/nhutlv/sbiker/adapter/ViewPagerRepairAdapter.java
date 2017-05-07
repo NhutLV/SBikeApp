@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import finaltest.nhutlv.sbiker.fragment.AutoRepairFragment;
 import finaltest.nhutlv.sbiker.fragment.BaseFragment;
+import finaltest.nhutlv.sbiker.fragment.StoreRepairFragment;
 
 /**
  * Created by NhutDu on 18/10/2016.
@@ -24,7 +25,7 @@ public class ViewPagerRepairAdapter extends FragmentPagerAdapter {
             case 0:
                 return new AutoRepairFragment();
             case 1:
-                return new BaseFragment();
+                return new StoreRepairFragment();
             default:
                 return null;
         }

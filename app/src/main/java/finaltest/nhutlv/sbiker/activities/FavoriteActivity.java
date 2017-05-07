@@ -4,17 +4,14 @@ package finaltest.nhutlv.sbiker.activities;
  * Created by NhutDu on 08/04/2017.
  */
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.daimajia.swipe.util.Attributes;
 
@@ -23,15 +20,23 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import finaltest.nhutlv.sbiker.R;
-import finaltest.nhutlv.sbiker.adapter.AutoRepairAdapter;
+import finaltest.nhutlv.sbiker.adapter.FavoriteAdapter;
+import finaltest.nhutlv.sbiker.entities.Favorite;
 import finaltest.nhutlv.sbiker.entities.Repairer;
 import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.services.cloud.UserService;
+import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
 import finaltest.nhutlv.sbiker.tools.DividerItemDecoration;
+import finaltest.nhutlv.sbiker.tools.ErrorDialog;
+import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.utils.Callback;
+import finaltest.nhutlv.sbiker.utils.UserLogin;
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
 
-public class FavoriteActivity extends AppCompatActivity implements AutoRepairAdapter.MyClickListener {
+public class FavoriteActivity extends AppCompatActivity implements FavoriteAdapter.MyClickListener {
 
     /**
      * RecyclerView: The new recycler view replaces the list view. Its more modular and therefore we
@@ -44,40 +49,50 @@ public class FavoriteActivity extends AppCompatActivity implements AutoRepairAda
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
-    private EventBus mEventBus;
-    private ArrayList<Repairer> mRepairers;
+    private ArrayList<Favorite> mBikers;
+    private UserServiceImpl mUserService;
+    private FlowerDialog mFlowerDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_auto);
-        mEventBus = EventBus.getDefault();
-        mEventBus.register(this);
+        mBikers = new ArrayList<>();
+        mUserService = new UserServiceImpl();
+        mFlowerDialog = new FlowerDialog(getContext());
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mRepairers = new ArrayList<>();
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
         // Layout Managers:
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         // Item Decorator:
         recyclerView.addItemDecoration(new DividerItemDecoration(this,1));
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
         // Adapter:
-        mAdapter = new AutoRepairAdapter(this,mRepairers);
+        mFlowerDialog.showDialog();
+        mUserService.getListFavorite(UserLogin.getUserLogin().getIdUser(), new Callback<List<Favorite>>() {
+            @Override
+            public void onResult(List<Favorite> users) {
+                mFlowerDialog.hideDialog();
+                mBikers.clear();
+                mBikers.addAll(users);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(String message) {
+                mFlowerDialog.hideDialog();
+                new ErrorDialog(getContext(),message).show();
+            }
+        });
+        mAdapter = new FavoriteAdapter(this,mBikers);
         LinearLayoutManager manager = new LinearLayoutManager(this);
-        ((AutoRepairAdapter) mAdapter).setMode(Attributes.Mode.Single);
-        ((AutoRepairAdapter) mAdapter).setMyClickListener(this);
+        ((FavoriteAdapter) mAdapter).setMode(Attributes.Mode.Single);
+        ((FavoriteAdapter) mAdapter).setMyClickListener(this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setItemAnimator(new FadeInLeftAnimator());
-
         /* Listeners */
         recyclerView.setOnScrollListener(onScrollListener);
     }
@@ -115,11 +130,8 @@ public class FavoriteActivity extends AppCompatActivity implements AutoRepairAda
         return true;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void getEvent(User user){
-        Log.d("TAG", "getEvent: ");
-        mRepairers.add(new Repairer("Lê Viết Nhựt","Quang Nam","01687184516","1"));
-        mAdapter.notifyDataSetChanged();
-        mEventBus.unregister(this);
+    //get context activity
+    private Context getContext(){
+        return this;
     }
 }

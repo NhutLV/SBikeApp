@@ -1,5 +1,6 @@
 package finaltest.nhutlv.sbiker.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import finaltest.nhutlv.sbiker.entities.Feedback;
 import finaltest.nhutlv.sbiker.services.cloud.FeedbackServiceImpl;
 import finaltest.nhutlv.sbiker.tools.ErrorDialog;
 import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.tools.OptionDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.CustomDialog;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
@@ -63,13 +65,18 @@ public class FeedbackActivity extends AppCompatActivity {
                         @Override
                         public void onResult(Feedback feedback) {
                             mFlowerDialog.hideDialog();
-                            Toast.makeText(FeedbackActivity.this,"Send feedback is successfully !",Toast.LENGTH_LONG).show();
+                            new OptionDialog(getContext(), "Phản hồi của bạn đã được gởi thành công.\nCám ơn bạn đã đóng góp", new OptionDialog.onMyClickDialog() {
+                                @Override
+                                public void onClickDialog() {
+                                    finish();
+                                }
+                            }).show();
                         }
 
                         @Override
                         public void onFailure(String message) {
                             mFlowerDialog.hideDialog();
-                            new ErrorDialog(FeedbackActivity.this,message).show();
+                            new ErrorDialog(getContext(),message).show();
                         }
                     });
                 }
@@ -93,13 +100,18 @@ public class FeedbackActivity extends AppCompatActivity {
     private boolean validateFrom(){
         String content = mEdContent.getText().toString();
         if(TextUtils.isEmpty(content)){
-            new ErrorDialog(FeedbackActivity.this,"Không thể bỏ trống nội dung phản hồi").show();
+            new ErrorDialog(getContext(),"Không thể bỏ trống nội dung phản hồi").show();
             return false;
         }else if(content.length()<20){
-            new ErrorDialog(FeedbackActivity.this,"Nội dung phản hồi phản hơn 20 ký tự").show();
+            new ErrorDialog(getContext(),"Nội dung phản hồi phản hơn 20 ký tự").show();
             return false;
         }
         return true;
+    }
+
+    //get Context Activity
+    private Context getContext(){
+        return this;
     }
 
 }

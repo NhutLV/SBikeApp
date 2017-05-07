@@ -39,6 +39,7 @@ public class RepairActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mAdapter = new ViewPagerRepairAdapter(getSupportFragmentManager(),2);
+        mViewPager.setOffscreenPageLimit(2);
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.getTabAt(0).setText("Auto");

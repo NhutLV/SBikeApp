@@ -70,7 +70,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
         mService = new SignUpServiceImpl();
-        mFlowerDialog = new FlowerDialog(getContext(),"Sign in...");
+        mFlowerDialog = new FlowerDialog(getContext(),"Sign Up");
         mBtnSubmit.setOnClickListener(this);
         mNavigateLogin.setOnClickListener(this);
         mPassword.setTransformationMethod(new PasswordTransformationMethod());

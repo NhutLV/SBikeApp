@@ -12,16 +12,28 @@ public abstract class BaseEntities {
     private String mId;
 
     @SerializedName("name")
-    private String mFullName;
+    private String mName;
 
     @SerializedName("address")
     private String mAddress;
 
-    @SerializedName("numberphone")
+    @SerializedName("number_phone")
     private String mNumberPhone;
 
-    @SerializedName("type")
-    private String mType;
+    @SerializedName("type_repair")
+    private int mType;
+
+    @SerializedName("time_open")
+    private String mTimeOpen;
+
+    @SerializedName("time_close")
+    private String mTimeClose;
+
+    @SerializedName("id_user_created")
+    private User mUserCreated;
+
+    @SerializedName("timestamp_created")
+    private String mTimestampCreate;
 
     public Coordinate getCoordinate() {
         return mCoordinate;
@@ -41,12 +53,12 @@ public abstract class BaseEntities {
         mId = id;
     }
 
-    public String getFullName() {
-        return mFullName;
+    public String getName() {
+        return mName;
     }
 
-    public void setFullName(String fullName) {
-        mFullName = fullName;
+    public void setName(String name) {
+        mName = name;
     }
 
     public String getAddress() {
@@ -65,24 +77,56 @@ public abstract class BaseEntities {
         mNumberPhone = numberPhone;
     }
 
-    public String getType() {
+    public int getType() {
         return mType;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         mType = type;
     }
 
-    public BaseEntities(String id, String fullName, String address, String numberPhone, String type) {
+    public String getTimeOpen() {
+        return mTimeOpen;
+    }
+
+    public void setTimeOpen(String timeOpen) {
+        mTimeOpen = timeOpen;
+    }
+
+    public String getTimeClose() {
+        return mTimeClose;
+    }
+
+    public void setTimeClose(String timeClose) {
+        mTimeClose = timeClose;
+    }
+
+    public User getUserCreated() {
+        return mUserCreated;
+    }
+
+    public void setUserCreated(User userCreated) {
+        mUserCreated = userCreated;
+    }
+
+    public String getTimestampCreate() {
+        return mTimestampCreate;
+    }
+
+    public void setTimestampCreate(String timestampCreate) {
+        mTimestampCreate = timestampCreate;
+    }
+
+    public BaseEntities(String id, String fullName, String address, String numberPhone, int type) {
         mId = id;
-        mFullName = fullName;
+        mName = fullName;
         mAddress = address;
         mNumberPhone = numberPhone;
         mType = type;
     }
 
-    public BaseEntities(String fullName, String address, String numberPhone, String type) {
-        mFullName = fullName;
+    public BaseEntities(String fullName, String address, String numberPhone, int type) {
+        mName = fullName;
         mAddress = address;
         mNumberPhone = numberPhone;
         mType = type;

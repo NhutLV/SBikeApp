@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/rate_title"
+        android:layout_width="match_parent"
+        android:padding="5dp"
+        android:layout_height="wrap_content"/>
+    <RadioGroup
+        android:id="@+id/radio_group_rate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rate_title"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rất tốt"
+            android:layout_weight="1"
+            android:id="@+id/radio_rate_1"
+            android:theme="@style/MyRadioButton"/>
+        <RadioButton
+            android:id="@+id/radio_rate_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tốt"
+            android:layout_weight="1"
+            android:theme="@style/MyRadioButton"/>
+        <RadioButton
+            android:id="@+id/radio_rate_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chưa tốt"
+            android:layout_weight="1"
+            android:theme="@style/MyRadioButton"/>
+    </RadioGroup>
+    <EditText
+        android:id="@+id/comment_rate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/radio_group_rate"
+        android:maxLines="8"
+        android:lines="8"
+        android:hint="Vui lòng nhập phản hồi cho chúng tôi"
+        android:gravity="left|start"
+        android:padding="5dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_edittext"/>
+    <Button
+        android:id="@+id/btn_submit_rate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_button_blue"
+        android:text="Submint"
+        android:layout_below="@+id/comment_rate"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textStyle="bold" />
+</RelativeLayout>
