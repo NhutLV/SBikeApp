@@ -18,13 +18,13 @@ import retrofit2.Response;
 
 public class HistoryServiceImpl {
 
-    public void saveHistory(final History<String> history, final Callback<History<String>> callback){
+    public void saveHistory(final History<String> history, String token, final Callback<History<String>> callback){
         HistoryService service = Configuration.getClient().create(HistoryService.class);
         Call<ResponseAPI<History<String>>> call = service.saveHistory(history.getIdUser(),
                 (String) history.getBiker(),history.getTimeCall().toString(),
                 history.getPlaceFrom(),history.getLatitudeFrom(), history.getLongitudeFrom(),
                 history.getPlaceTo(), history.getLatitudeTo(),history.getLongitudeTo(),
-                history.getDistance(),history.getPrice(),history.getTimeSpend());
+                history.getDistance(),history.getPrice(),history.getTimeSpend(), token);
 
         call.enqueue(new retrofit2.Callback<ResponseAPI<History<String>>>() {
             @Override

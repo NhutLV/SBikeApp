@@ -2,6 +2,7 @@ package finaltest.nhutlv.sbiker.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +50,14 @@ public class PlaceSearchAdapter extends RecyclerView.Adapter<PlaceSearchAdapter.
         holder.name.setText(placeSearch.getName());
         holder.address.setText(placeSearch.getVicinity());
         int distance = (int) placeSearch.getDistance();
-        String sDistance = df.format(distance);
-        holder.distance.setText("Cách "+ sDistance +" km");
+        String sDistance ="";
+        Log.d("TAGGGGGGGG",placeSearch.getName() +" - "+distance);
+        if(distance<1000){
+            sDistance = distance+" m";
+        }else{
+            sDistance = df.format(distance) +" km";
+        }
+        holder.distance.setText("Cách "+ sDistance);
     }
 
     @Override
@@ -79,4 +86,5 @@ public class PlaceSearchAdapter extends RecyclerView.Adapter<PlaceSearchAdapter.
             });
         }
     }
+
 }

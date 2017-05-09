@@ -24,6 +24,9 @@ public class User {
     @SerializedName("age")
     private int mAge;
 
+    @SerializedName("type_user")
+    private int mTypeUser;
+
     @SerializedName("number_phone")
     private String mNumberPhone;
 
@@ -70,6 +73,14 @@ public class User {
     private int mIsBecome;
 
     private String mRePassword;
+
+    public int getTypeUser() {
+        return mTypeUser;
+    }
+
+    public void setTypeUser(int typeUser) {
+        mTypeUser = typeUser;
+    }
 
     public String getIdUser() {
         return mIdUser;

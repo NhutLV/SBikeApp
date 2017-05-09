@@ -21,7 +21,7 @@ public interface SignUpService {
                                    @Field("number_phone") String numberPhone,
                                    @Field("password") String password);
     @FormUrlEncoded
-    @POST("sign-up-social")
+    @POST("users/sign-up-social")
     Call<ResponseAPI<User>> signUpSocial(@Field("full_name") String fullName,
                                        @Field("email") String email,
                                        @Field("access_token") String accessToken,

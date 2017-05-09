@@ -47,6 +47,7 @@ import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -68,6 +69,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -80,6 +82,7 @@ import java.util.List;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.History;
 import finaltest.nhutlv.sbiker.entities.Place;
@@ -91,6 +94,7 @@ import finaltest.nhutlv.sbiker.tools.BikerInfoDialog;
 import finaltest.nhutlv.sbiker.tools.ErrorDialog;
 import finaltest.nhutlv.sbiker.tools.FlowerDialog;
 import finaltest.nhutlv.sbiker.tools.LocationProvider;
+import finaltest.nhutlv.sbiker.tools.PrefManagement;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
 import finaltest.nhutlv.sbiker.utils.SBConstants;
@@ -154,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         polylines = new ArrayList<>();
 
         mFlowerDialog = new FlowerDialog(this);
-        mFlowerDialogHistory = new FlowerDialog(this,"Saving history...");
+        mFlowerDialogHistory = new FlowerDialog(getContext(),"Saving history...");
 
         if(!isLocationEnabled(this)){
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -201,6 +205,17 @@ public class MainActivity extends AppCompatActivity
         //get header
         View header = navigationView.getHeaderView(0);
         ImageButton editProfile = (ImageButton) header.findViewById(R.id.btn_edit_header);
+        CircleImageView avatar = (CircleImageView) header.findViewById(R.id.profile_image);
+        String path = UserLogin.getUserLogin().getAvatarPath();
+        if(path==null || path.equals("")){
+            path = "Ahihi";
+        }
+        Picasso.with(this)
+                .load(path)
+                .resize(96, 96)
+                .placeholder(R.drawable.image)
+                .centerCrop()
+                .into(avatar);
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -245,6 +260,7 @@ public class MainActivity extends AppCompatActivity
                 if(intent.getAction().equals(GcmIntentService.REGISTRATION_SUCCESS)){
                     //Getting the registration token from the intent
                     String token = intent.getStringExtra("token");
+                    new PrefManagement(getContext()).putValueString(SBConstants.PREF_TOKEN_GCM,token);
                     //Displaying the token as toast
 //                    Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
                     Log.e("Token",token);
@@ -674,10 +690,17 @@ public class MainActivity extends AppCompatActivity
             polyOptions.addAll(route.get(i).getPoints());
             Polyline polyline = mGoogleMap.addPolyline(polyOptions);
             polylines.add(polyline);
+            int distance = (int) SBFunctions.getDistance2Point(mLatLngCurrent,mPlace.getLatLng());
+            String sDistance = "";
+            if(distance<1000){
+                sDistance = distance +" m";
+            }else{
+                sDistance = df.format(distance) +" km";
+            }
             mDistance = SBFunctions.round(route.get(i).getDistanceValue()/1000,1);
-            mPrice = (int)mDistance* SBConstants.UNIT_PRICE;
+            mPrice = (mDistance<=1)?10000:(int)mDistance* SBConstants.UNIT_PRICE;
             mTimeSpend = route.get(i).getDurationValue()/60;
-            String detail = "Khoảng cách "+mDistance+" km \nMất "
+            String detail = "Khoảng cách "+sDistance+"\nMất "
                     + SBFunctions.parseTime(mTimeSpend)
                     + " - "+String.valueOf(df.format(mPrice))+"VNĐ";
 
@@ -794,18 +817,15 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     Log.d(TAG,history.toString());
-
-                    mFlowerDialogHistory.showDialog();
-                    mHistoryService.saveHistory(history, new Callback<History<String>>() {
+                    String token = new PrefManagement(getContext()).getValueString(SBConstants.PREF_TOKEN_GCM);
+                    mHistoryService.saveHistory(history,token, new Callback<History<String>>() {
                         @Override
                         public void onResult(History<String> history) {
-                            mFlowerDialogHistory.hideDialog();
                             Log.d(TAG,history.toString());
                         }
 
                         @Override
                         public void onFailure(String message) {
-                            mFlowerDialogHistory.hideDialog();
                             new ErrorDialog(getContext(),message).show();
                         }
                     });
@@ -837,6 +857,8 @@ public class MainActivity extends AppCompatActivity
 
     private void logOut(){
         UserLogin.setUserLogin(null);
+        LoginManager.getInstance().logOut();
+        new PrefManagement(this).putValueString(SBConstants.PREF_AUTO_LOGIN,"");
         startActivity(new Intent(this,SignInActivity.class));
         Toast.makeText(this,"Log out is successfully !",Toast.LENGTH_LONG).show();
         finish();
@@ -860,7 +882,7 @@ public class MainActivity extends AppCompatActivity
         List<Address> addresses;
         LatLng latLng= null;
         try {
-            addresses = mGeocoder.getFromLocationName("Cầu Rồng", 1);
+            addresses = mGeocoder.getFromLocationName(address, 1);
             if (addresses.size() > 0) {
                 double latitude = addresses.get(0).getLatitude();
                 double longitude = addresses.get(0).getLongitude();

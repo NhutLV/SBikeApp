@@ -1,9 +1,14 @@
 package finaltest.nhutlv.sbiker.fragment;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -94,7 +99,7 @@ public class AutoRepairFragment extends BaseFragment {
         mAdapter.setOnRepairListener(new BaseFragmentAdapter.onRepairListener() {
             @Override
             public void onCallPhone(int position) {
-                Log.d("TAGGGG","Call "+mRepairers.get(position).getNumberPhone());
+                callPhone(mRepairers.get(position).getNumberPhone());
             }
         });
 
@@ -120,5 +125,15 @@ public class AutoRepairFragment extends BaseFragment {
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         }, 3000);
+    }
+
+    private void callPhone(String phone) {
+        Intent i = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            return;
+        }
+        startActivityForResult(i, SBConstants.CALL_PHONE_REQUEST_CODE);
     }
 }

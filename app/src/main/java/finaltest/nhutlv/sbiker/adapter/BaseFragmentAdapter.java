@@ -1,6 +1,8 @@
 package finaltest.nhutlv.sbiker.adapter;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,12 +13,19 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.Repairer;
 import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.utils.SBFunctions;
+import finaltest.nhutlv.sbiker.utils.UserLogin;
 
 /**
  * Created by NhutDu on 27/04/2017.
@@ -27,6 +36,8 @@ public class BaseFragmentAdapter extends RecyclerView.Adapter<BaseFragmentAdapte
     private Context mContext;
     private ArrayList<Repairer<User>> mRepairers;
     private onRepairListener mOnRepairListener;
+    private Geocoder mGeocoder;
+    private DecimalFormat df = new DecimalFormat("#,000");
     public interface onRepairListener{
         void onCallPhone(int position);
     }
@@ -34,6 +45,7 @@ public class BaseFragmentAdapter extends RecyclerView.Adapter<BaseFragmentAdapte
     public BaseFragmentAdapter(Context context, ArrayList<Repairer<User>> repairers) {
         mContext = context;
         mRepairers = repairers;
+        mGeocoder = new Geocoder(mContext ,Locale.getDefault());
     }
 
     public void setOnRepairListener(onRepairListener onRepairListener) {
@@ -53,6 +65,12 @@ public class BaseFragmentAdapter extends RecyclerView.Adapter<BaseFragmentAdapte
         holder.mTxtName.setText(repairer.getName());
         holder.mTxtPhone.setText(repairer.getNumberPhone());
         holder.mTxtAddress.setText(repairer.getAddress());
+        int distance =(int) SBFunctions.getDistance2Point(UserLogin.getUserLogin().getLatLng(),repairer.getLatLang());
+        if(distance<1000){
+            holder.mTxtDistance.setText(distance +" m");
+        }else{
+            holder.mTxtDistance.setText(df.format(distance)+" km");
+        }
     }
 
     @Override
@@ -93,8 +111,6 @@ public class BaseFragmentAdapter extends RecyclerView.Adapter<BaseFragmentAdapte
         notifyDataSetChanged();
 
     }
-
-
 
 // Add a list of items
 

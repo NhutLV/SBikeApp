@@ -42,6 +42,15 @@ public class GcmActivity extends AppCompatActivity {
     @BindView(R.id.rate_title)
     TextView mTitle;
 
+    @BindView(R.id.txt_rating_place_from)
+    TextView mPlaceFrom;
+
+    @BindView(R.id.txt_rating_place_to)
+    TextView mPlaceTo;
+
+    @BindView(R.id.txt_rating)
+    TextView mRating;
+
     @BindView(R.id.radio_group_rate)
     RadioGroup mRadioGroup;
 
@@ -71,10 +80,9 @@ public class GcmActivity extends AppCompatActivity {
             final String idHistory = extras.getString("id_history");
 
             Log.d(TAG,idHistory);
-
-            String title = message +"\nKhởi hành tại " +placeFrom+"\nĐến tại "+placeTo +
-                    "\nVui lòng đánh giá chuyến đi của bạn.";
-            mTitle.setText(title);
+            mTitle.setText(message);
+            mPlaceTo.setText("Điểm đến : "+placeTo);
+            mPlaceFrom.setText("Điểm khởi hành : "+placeFrom);
             String comment ="";
             mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 

@@ -21,6 +21,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by NhutDu on 26/04/2017.
@@ -50,9 +51,10 @@ public interface UserService {
                                           @Field("number_phone") String numberPhone);
 
     @Multipart
-    @POST("user/image-")
+    @POST("upload/{id}")
     Call<ResponseAPI<User>> uploadImageAvatar(@Part MultipartBody.Part image,
-                                              @Part("name") RequestBody name);
+                                              @Part("file") RequestBody name,
+                                              @Query("id") String id);
 
     @FormUrlEncoded
     @POST("users/update-coordinate")

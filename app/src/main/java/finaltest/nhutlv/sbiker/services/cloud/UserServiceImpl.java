@@ -1,5 +1,6 @@
 package finaltest.nhutlv.sbiker.services.cloud;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
@@ -14,6 +15,7 @@ import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.Configuration;
 import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
 import finaltest.nhutlv.sbiker.utils.Callback;
+import finaltest.nhutlv.sbiker.utils.FileUtils;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -27,6 +29,12 @@ import retrofit2.Response;
 public class UserServiceImpl {
 
     private UserService mService;
+    private Context mContext;
+
+    public UserServiceImpl(Context context) {
+        mContext = context;
+        mService = Configuration.getClient().create(UserService.class);
+    }
 
     public UserServiceImpl(){
         mService = Configuration.getClient().create(UserService.class);
@@ -163,23 +171,23 @@ public class UserServiceImpl {
 
     //update image avatar
     public void updateImage(Uri filePath, final Callback<User> callback){
-        File file = new File(filePath.getPath());
+        File file = FileUtils.getFile(mContext,filePath);
 
         RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("upload", file.getName(), reqFile);
-        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "upload_test");
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), reqFile);
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "file");
 
-        Call<ResponseAPI<User>> call = mService.uploadImageAvatar(body,name);
+        Call<ResponseAPI<User>> call = mService.uploadImageAvatar(body,name,"nhutle");
         call.enqueue(new retrofit2.Callback<ResponseAPI<User>>() {
             @Override
             public void onResponse(Call<ResponseAPI<User>> call, Response<ResponseAPI<User>> response) {
                 if(response.isSuccessful()){
-                    ResponseAPI<User> responseAPI = response.body();
-                    if(!responseAPI.isError()){
-                        callback.onResult(responseAPI.getData());
-                    }else{
-                        callback.onFailure("Không thể kết nối máy chủ");
-                    }
+//                    ResponseAPI<User> responseAPI = response.body();
+//                    if(!responseAPI.isError()){
+//                        callback.onResult(responseAPI.getData());
+//                    }else{
+//                        callback.onFailure("Không thể kết nối máy chủ");
+//                    }
                 }else{
                     callback.onFailure("Không thể kết nối máy chủ");
                 }
@@ -188,10 +196,12 @@ public class UserServiceImpl {
 
             @Override
             public void onFailure(Call<ResponseAPI<User>> call, Throwable t) {
-                callback.onFailure("Đã xảy ra lỗi");
+                callback.onFailure("Đã xảy ra lỗi"+t);
             }
         });
     }
+
+
 
     //become driver
     public void setIsDriving(String idUser, int isDriving, LatLng latLng, final Callback<User> callback){

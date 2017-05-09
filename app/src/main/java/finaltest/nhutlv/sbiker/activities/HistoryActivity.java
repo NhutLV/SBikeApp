@@ -68,9 +68,13 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
             @Override
             public void onResult(List<History<User>> histories) {
                 mFlowerDialog.hideDialog();
-                mHistories.clear();
-                mHistories.addAll(histories);
-                mAdapter.notifyDataSetChanged();
+                if(histories.size()==0){
+                    setContentView(R.layout.no_item_history);
+                }else{
+                    mHistories.clear();
+                    mHistories.addAll(histories);
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

@@ -101,6 +101,12 @@
                 android:drawableLeft="@drawable/ic_access_time_black_24dp"
                 android:text="Time Close" />
         </LinearLayout>
+        <fragment
+            android:id="@+id/mapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="20dp"
+            class="com.google.android.gms.maps.SupportMapFragment"/>
 
         <Button
             android:id="@+id/btn_register_repair"

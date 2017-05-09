@@ -76,9 +76,13 @@ public class FavoriteActivity extends AppCompatActivity implements FavoriteAdapt
             @Override
             public void onResult(List<Favorite> users) {
                 mFlowerDialog.hideDialog();
-                mBikers.clear();
-                mBikers.addAll(users);
-                mAdapter.notifyDataSetChanged();
+                if(users.size() ==0){
+                    setContentView(R.layout.no_item_favorite);
+                }else{
+                    mBikers.clear();
+                    mBikers.addAll(users);
+                    mAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

@@ -22,6 +22,8 @@ public interface RepairService {
     @POST("repair/create")
     Call<ResponseAPI<Repairer<String>>> saveRepair(@Field("name") String name,
                                                         @Field("address") String address,
+                                                        @Field("latitude") double latitude,
+                                                        @Field("longitude") double longitude,
                                                         @Field("number_phone") String numberPhone,
                                                         @Field("time_open") String timeOpen,
                                                         @Field("time_close" ) String timeClose ,

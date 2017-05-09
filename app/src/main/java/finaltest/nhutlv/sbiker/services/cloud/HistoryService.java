@@ -33,7 +33,8 @@ public interface HistoryService {
                                            @Field("longitude_to") double longitudeTo,
                                            @Field("distance") double distance,
                                            @Field("price") int price,
-                                           @Field("time_spend") int timeSpend);
+                                           @Field("time_spend") int timeSpend,
+                                           @Field("token_gcm") String tokenGcm);
 
     @GET("journey/{id_user}")
     Call<ResponseAPI<List<History<User>>>> getHistory(@Path("id_user") String idUser);

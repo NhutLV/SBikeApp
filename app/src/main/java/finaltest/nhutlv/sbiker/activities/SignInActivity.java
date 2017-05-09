@@ -37,6 +37,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -166,7 +167,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
-                Log.d(TAG, "onClick: ");
                 if (isOffline()) {
                     return;
                 }
@@ -252,7 +252,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         if (isOffline()) {
             return;
         }
-//        signInWithAccessToken();
+        if(mPrefManagement.getValueString(SBConstants.PREF_AUTO_LOGIN).length()>0)
+            signInWithAccessToken();
 //        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
 //        if (opr.isDone()) {
 //            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -297,19 +298,34 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                 // Application code
                                 String email = object.optString("email");
                                 String birthday = object.optString("birthday"); // 01/31/1980 format
-                                String name = object.optString("name");
+                                final String name = object.optString("name");
                                 String first_name = object.optString("first_name");
                                 String last_name = object.optString("last_name");
-                                String id = object.optString("id");
+                                final String id = object.optString("id");
+                                String profilePicUrl = "";
+                                JSONObject data = response.getJSONObject();
+                                if (data.has("picture")) {
+                                    try {
+                                        profilePicUrl = data.getJSONObject("picture").getJSONObject("data").getString("url");
+                                        Log.d("TAGGGGGG",profilePicUrl);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
 
-                                String accessToken = loginResult.getAccessToken().getToken();
-                                mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN, accessToken);
+                                final String accessToken = loginResult.getAccessToken().getToken();
                                 User user = new User();
-
+                                user.setFullName(name);
+                                user.setAccessToken(id);
+                                user.setEmai(email);
+                                user.setAvatarPath("https://graph.facebook.com/"+ id + "/picture?type=large");
                                 mSignUpService.signUpSocial(user, new Callback<User>() {
                                     @Override
                                     public void onResult(User user) {
-                                        Log.d(TAG, "onResult: LoginFacebook");
+                                        mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN,id);
+                                        mPrefManagement.putValueString(SBConstants.PREF_AUTO_LOGIN,name);
+                                        UserLogin.setUserLogin(user);
+                                        navigateToHome();
                                         Toast.makeText(SignInActivity.this,"Login with Facebook is successfully !",Toast.LENGTH_LONG).show();
                                     }
 
@@ -341,16 +357,16 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void signInWithAccessToken() {
-        String accessToken = new PrefManagement(this).getValueString(SBConstants.PREF_ACCESS_TOKEN);
+        String accessToken = mPrefManagement.getValueString(SBConstants.PREF_ACCESS_TOKEN);
         mFlowerDialog.showDialog();
-        Log.d(TAG, "signInWithAccessToken: ");
-//        showProgress();
+        Log.d(TAG, "signInWithAccessToken: "+accessToken);
         mLoginService.signInSocial(accessToken, new Callback<User>() {
             @Override
             public void onResult(User user) {
+//                Log.d(TAG,user.getAvatarPath());
                 mFlowerDialog.hideDialog();
-                Log.d(TAG, "onResult: Login with access token OK");
                 UserLogin.setUserLogin(user);
+                navigateToHome();
             }
 
             @Override
@@ -378,20 +394,25 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 // Signed in successfully, show authenticated UI.
                 GoogleSignInAccount acct = result.getSignInAccount();
                 Log.e(TAG, "display name: " + acct.getDisplayName());
-                String personName = acct.getDisplayName();
+                final String personName = acct.getDisplayName();
                 String personPhotoUrl = acct.getPhotoUrl().toString();
                 String email = acct.getEmail();
-                String tokenServer = acct.getServerAuthCode();
+                final String tokenServer = acct.getServerAuthCode();
 
-                Log.e(TAG, "Name: " + personName + ", email: " + email
-                        + ", Image: " + personPhotoUrl);
-                Log.e(TAG, "Author Server: " + tokenServer);
                 User user = new User();
-                mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN, tokenServer);
+                user.setAvatarPath(personPhotoUrl);
+                user.setFullName(personName);
+                user.setEmai(email);
+                user.setAccessToken(tokenServer);
+
+                Log.e(TAG, "Author Server: " + tokenServer);
                 mSignUpService.signUpSocial(user, new Callback<User>() {
                     @Override
                     public void onResult(User user) {
-                        Log.d(TAG, "onResult: LoginFacebook");
+                        mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN,tokenServer);
+                        mPrefManagement.putValueString(SBConstants.PREF_AUTO_LOGIN,personName);
+                        UserLogin.setUserLogin(user);
+                        navigateToHome();
                         Toast.makeText(SignInActivity.this,"Login with Facebook is successfully !",Toast.LENGTH_LONG).show();
                     }
 

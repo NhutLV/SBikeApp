@@ -2,9 +2,11 @@ package finaltest.nhutlv.sbiker.activities;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,9 +29,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +47,7 @@ import butterknife.internal.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.User;
+import finaltest.nhutlv.sbiker.services.Configuration;
 import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
 import finaltest.nhutlv.sbiker.tools.ChangePasswordDialog;
 import finaltest.nhutlv.sbiker.tools.ErrorDialog;
@@ -90,6 +101,8 @@ public class ProfileActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED);
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+
         mToolbar.setTitle("Profile Information");
         mEdName.addTextChangedListener(new MyTextWatcher(mEdName));
         mEdEmail.addTextChangedListener(new MyTextWatcher(mEdEmail));
@@ -97,19 +110,22 @@ public class ProfileActivity extends AppCompatActivity {
 
         mEdEmail.setText(UserLogin.getUserLogin().getEmai());
         mEdName.setText(UserLogin.getUserLogin().getFullName());
-        mEdNumberPhone.setText(UserLogin.getUserLogin().getNumberPhone());
+        mEdNumberPhone.setText(UserLogin.getUserLogin().getNumberPhone()==null?
+                "":UserLogin.getUserLogin().getNumberPhone());
 
         mImgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               openImageIntent();
+               pickImageAvatar();
             }
         });
         mUserService = new UserServiceImpl();
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        if(UserLogin.getUserLogin().getTypeUser()==1){
+            mBtnChangePass.setEnabled(false);
+        }
         mBtnChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +148,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void openImageIntent() {
         // Determine Uri of camera image to save.
-        final File root = new File(Environment.getExternalStorageDirectory() + File.separator + "MyDir" + File.separator);
+        final File root = new File(Environment.DIRECTORY_PICTURES + File.separator + "MyDir" + File.separator);
         root.mkdirs();
         final String fname ="img_"+ System.currentTimeMillis() + ".jpg";
         final File sdImageMainDirectory = new File(root, fname);
@@ -168,7 +184,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
             if (requestCode == SBConstants.IMAGE_AVATAR_REQUEST_CODE) {
                 final boolean isCamera;
                 Log.d(TAG, "onActivityResult: ");
@@ -195,8 +210,47 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "onActivityResult: NO CAMERA "+selectedImageUri.toString());
                 }
                 mImgAvatar.setImageURI(selectedImageUri);
+                mUserService.updateImage(selectedImageUri, new Callback<User>() {
+                    @Override
+                    public void onResult(User user) {
+                        Log.d(TAG, "onResult: ");
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Log.d(TAG, "onFailure: "+message);
+                    }
+                });
+            }else if(requestCode==200) {
+                final Uri selectedImage = data.getData();
+                new UserServiceImpl(getContext()).updateImage(selectedImage, new Callback<User>() {
+                    @Override
+                    public void onResult(User user) {
+                        Log.d(TAG, "onResult: ");
+                    }
+
+                    @Override
+                    public void onFailure(String message) {
+                        Log.d(TAG, "onFailure: "+message);
+                    }
+                });
             }
-        }
+    }
+
+    public void pickImageAvatar() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 200);
+    }
+
+    private String getPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 
     //endregion

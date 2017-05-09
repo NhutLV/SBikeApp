@@ -20,7 +20,7 @@ public interface SignInService {
                                 , @Field("password") String password);
 
     @FormUrlEncoded
-    @POST("user/sign-in-social")
+    @POST("users/sign-in-social")
     Call<ResponseAPI<User>> signSocial(@Field("access_token") String accessToken);
 
 }

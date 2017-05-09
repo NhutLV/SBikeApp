@@ -25,8 +25,8 @@ public class RepairServiceImpl {
     //save repair
     public void saveRepair(final Repairer<String> repairer, final Callback<Repairer<String>> callback){
         Call<ResponseAPI<Repairer<String>>> call = mRepairService.saveRepair(repairer.getName(),repairer.getAddress(),
-                repairer.getNumberPhone(),repairer.getTimeOpen(),repairer.getTimeClose(),repairer.getType(),
-                repairer.getUserCreated());
+                repairer.getLatitude(), repairer.getLongitude(),repairer.getNumberPhone(),repairer.getTimeOpen(),
+                repairer.getTimeClose(),repairer.getType(), repairer.getUserCreated());
         call.enqueue(new retrofit2.Callback<ResponseAPI<Repairer<String>>>() {
             @Override
             public void onResponse(Call<ResponseAPI<Repairer<String>>> call, Response<ResponseAPI<Repairer<String>>> response) {

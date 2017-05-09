@@ -62,7 +62,16 @@ public class SignInServiceImpl {
         call.enqueue(new retrofit2.Callback<ResponseAPI<User>>() {
             @Override
             public void onResponse(Call<ResponseAPI<User>> call, Response<ResponseAPI<User>> response) {
-
+                if(response.isSuccessful()){
+                    ResponseAPI<User> responseAPI = response.body();
+                    if(!responseAPI.isError()){
+                        callback.onResult(responseAPI.getData());
+                    }else {
+                        callback.onFailure(responseAPI.getMessage());
+                    }
+                }else{
+                    callback.onFailure("Không thể kết nối máy chủ");
+                }
             }
 
             @Override

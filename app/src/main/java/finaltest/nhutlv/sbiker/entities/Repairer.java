@@ -1,5 +1,6 @@
 package finaltest.nhutlv.sbiker.entities;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -16,6 +17,12 @@ public class Repairer<T> {
 
     @SerializedName("address")
     private String mAddress;
+
+    @SerializedName("latitude")
+    private double mLatitude;
+
+    @SerializedName("longitude")
+    private double mLongitude;
 
     @SerializedName("number_phone")
     private String mNumberPhone;
@@ -69,6 +76,22 @@ public class Repairer<T> {
         mAddress = address;
     }
 
+    public double getLatitude() {
+        return mLatitude;
+    }
+
+    public void setLatitude(double latitude) {
+        mLatitude = latitude;
+    }
+
+    public double getLongitude() {
+        return mLongitude;
+    }
+
+    public void setLongitude(double longitude) {
+        mLongitude = longitude;
+    }
+
     public String getNumberPhone() {
         return mNumberPhone;
     }
@@ -115,5 +138,9 @@ public class Repairer<T> {
 
     public void setTimestampCreate(String timestampCreate) {
         mTimestampCreate = timestampCreate;
+    }
+
+    public LatLng getLatLang(){
+        return new LatLng(mLatitude,mLongitude);
     }
 }

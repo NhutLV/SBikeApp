@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -91,6 +92,13 @@ public class SearchPlaceActivity extends AppCompatActivity{
         mTxtNoResult = (TextView) findViewById(R.id.txt_no_result);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mEdSearch = (EditText) findViewById(R.id.ed_search_place);
+        TextView textView = (TextView) mToolbar.findViewById(R.id.txt_back);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mToolbar.setTitle("Search Place");
         setSupportActionBar(mToolbar);
 
@@ -286,15 +294,18 @@ public class SearchPlaceActivity extends AppCompatActivity{
             }
         }
         finaltest.nhutlv.sbiker.entities.Place place = new finaltest.nhutlv.sbiker.entities.Place();
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        place.setAddress(mPlace.getAddress().toString());
-        place.setName(mPlace.getName().toString());
-        place.setLatLng(mPlace.getLatLng());
-        bundle.putParcelable("searchPlace",place);
-        bundle.putParcelable("searchStatus",mStatus);
-        intent.putExtras(bundle);
-        setResult(RESULT_OK,intent);
-        finish();
+        if(mPlace!=null){
+            place.setAddress(mPlace.getAddress().toString());
+            place.setName(mPlace.getName().toString());
+            place.setLatLng(mPlace.getLatLng());
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("searchPlace",place);
+            bundle.putParcelable("searchStatus",mStatus);
+            intent.putExtras(bundle);
+            setResult(RESULT_OK,intent);
+            finish();
+        }
     }
+
 }
