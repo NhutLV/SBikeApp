@@ -4,24 +4,21 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.Feedback;
 import finaltest.nhutlv.sbiker.services.cloud.FeedbackServiceImpl;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
-import finaltest.nhutlv.sbiker.tools.FlowerDialog;
-import finaltest.nhutlv.sbiker.tools.OptionDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
+import finaltest.nhutlv.sbiker.dialog.OptionDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
-import finaltest.nhutlv.sbiker.utils.CustomDialog;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
 
 /**
@@ -47,6 +44,7 @@ public class FeedbackActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
         ButterKnife.bind(this);
+        setTitle(getResources().getString(R.string.title_feedback));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

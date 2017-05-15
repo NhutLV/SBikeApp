@@ -1,4 +1,4 @@
-package finaltest.nhutlv.sbiker.tools;
+package finaltest.nhutlv.sbiker.dialog;
 
 import android.app.Dialog;
 import android.content.Context;

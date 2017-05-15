@@ -1,15 +1,12 @@
-package finaltest.nhutlv.sbiker.tools;
+package finaltest.nhutlv.sbiker.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -36,8 +33,8 @@ public class BikerInfoDialog extends Dialog {
     private boolean check;
 
     public interface myClickListener{
-        public void onButtonClick(User user);
-        public void onCheckBox(User user, boolean isCheck);
+        void onButtonClick(User user);
+        void onCheckBox(User user, boolean isCheck);
     }
 
     public BikerInfoDialog(@NonNull Context context,myClickListener myClickListener,User user) {
@@ -66,7 +63,6 @@ public class BikerInfoDialog extends Dialog {
                 check = (integer==1);
                 mCheckFavorite.setChecked((integer==1));
             }
-
             @Override
             public void onFailure(String message) {
                 Log.d(TAG, "onFailure: check Favorite");
@@ -110,6 +106,7 @@ public class BikerInfoDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 myClickListener.onButtonClick(mUser);
+                dismiss();
             }
         });
     }

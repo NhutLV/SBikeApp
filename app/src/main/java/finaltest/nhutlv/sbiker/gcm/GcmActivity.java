@@ -1,19 +1,9 @@
 package finaltest.nhutlv.sbiker.gcm;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -21,19 +11,15 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.Rating;
 import finaltest.nhutlv.sbiker.services.cloud.RateServiceImpl;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
-import finaltest.nhutlv.sbiker.tools.FlowerDialog;
-import finaltest.nhutlv.sbiker.tools.OptionDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
+import finaltest.nhutlv.sbiker.dialog.OptionDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
-import okhttp3.ResponseBody;
 
 public class GcmActivity extends AppCompatActivity {
 

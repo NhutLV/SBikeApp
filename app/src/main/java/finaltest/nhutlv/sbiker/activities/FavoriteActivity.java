@@ -15,23 +15,16 @@ import android.view.MenuItem;
 
 import com.daimajia.swipe.util.Attributes;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.adapter.FavoriteAdapter;
 import finaltest.nhutlv.sbiker.entities.Favorite;
-import finaltest.nhutlv.sbiker.entities.Repairer;
-import finaltest.nhutlv.sbiker.entities.User;
-import finaltest.nhutlv.sbiker.services.cloud.UserService;
 import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
 import finaltest.nhutlv.sbiker.tools.DividerItemDecoration;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
-import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
 import jp.wasabeef.recyclerview.animators.FadeInLeftAnimator;
@@ -60,7 +53,7 @@ public class FavoriteActivity extends AppCompatActivity implements FavoriteAdapt
         mBikers = new ArrayList<>();
         mUserService = new UserServiceImpl();
         mFlowerDialog = new FlowerDialog(getContext());
-
+        setTitle(getResources().getString(R.string.title_favorite));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

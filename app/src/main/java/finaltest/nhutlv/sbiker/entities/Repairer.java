@@ -3,6 +3,9 @@ package finaltest.nhutlv.sbiker.entities;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
+import finaltest.nhutlv.sbiker.utils.SBFunctions;
+import finaltest.nhutlv.sbiker.utils.UserLogin;
+
 /**
  * Created by NhutDu on 18/03/2017.
  */
@@ -41,6 +44,8 @@ public class Repairer<T> {
 
     @SerializedName("timestamp_created")
     private String mTimestampCreate;
+
+    private int distance;
 
     public Coordinate getCoordinate() {
         return mCoordinate;
@@ -140,7 +145,20 @@ public class Repairer<T> {
         mTimestampCreate = timestampCreate;
     }
 
+    public int getDistance() {
+        return distance;
+    }
+
     public LatLng getLatLang(){
         return new LatLng(mLatitude,mLongitude);
+    }
+
+    public void setLatLng(LatLng latLng){
+        mLatitude = latLng.latitude;
+        mLongitude = latLng.longitude;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 }

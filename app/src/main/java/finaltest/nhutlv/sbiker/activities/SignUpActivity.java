@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,14 +19,11 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import finaltest.nhutlv.sbiker.R;
-import finaltest.nhutlv.sbiker.entities.Coordinate;
 import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.cloud.SignUpServiceImpl;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
-import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
-import finaltest.nhutlv.sbiker.utils.CustomToast;
-import finaltest.nhutlv.sbiker.utils.UserLogin;
 
 /**
  * Created by NhutDu on 21/02/2017.
@@ -69,6 +66,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+        setTitle(getResources().getString(R.string.sign_up));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         mService = new SignUpServiceImpl();
         mFlowerDialog = new FlowerDialog(getContext(),"Sign Up");
         mBtnSubmit.setOnClickListener(this);
@@ -187,6 +187,15 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
+    }
 
     @Override
     protected void onDestroy() {

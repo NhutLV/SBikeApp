@@ -1,4 +1,4 @@
-package finaltest.nhutlv.sbiker.tools;
+package finaltest.nhutlv.sbiker.dialog;
 
 import android.content.Context;
 import android.graphics.Color;

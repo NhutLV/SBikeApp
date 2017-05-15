@@ -9,4 +9,16 @@
     <string name="key_google_maps_api_v2">AIzaSyC9ekn4CKbdqS-EWjxtRrSASlLRtCDCntw</string>
     <string name="facebook_app_id">1436732339733873</string>
     <string name="fb_login_protocol_scheme">fbAPP_1436732339733873</string>
+
+    <string name="title_history">History</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="title_feedback">Feedback</string>
+    <string name="title_repair">Repair</string>
+    <string name="title_become_driver">Become Driver</string>
+    <string name="title_register_repair">Register Repair</string>
+    <string name="title_search_place">Search Place</string>
+    <string name="title_profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
 </resources>

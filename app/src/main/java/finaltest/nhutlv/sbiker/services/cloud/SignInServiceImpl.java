@@ -3,11 +3,9 @@ package finaltest.nhutlv.sbiker.services.cloud;
 import android.content.Context;
 import android.util.Log;
 
-import finaltest.nhutlv.sbiker.activities.SignInActivity;
 import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.Configuration;
 import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import retrofit2.Call;
 import retrofit2.Response;

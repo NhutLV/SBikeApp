@@ -84,15 +84,16 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import finaltest.nhutlv.sbiker.R;
+import finaltest.nhutlv.sbiker.dialog.LogoutDialog;
 import finaltest.nhutlv.sbiker.entities.History;
 import finaltest.nhutlv.sbiker.entities.Place;
 import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.gcm.GcmIntentService;
 import finaltest.nhutlv.sbiker.services.cloud.HistoryServiceImpl;
 import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
-import finaltest.nhutlv.sbiker.tools.BikerInfoDialog;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
-import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.dialog.BikerInfoDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
 import finaltest.nhutlv.sbiker.tools.LocationProvider;
 import finaltest.nhutlv.sbiker.tools.PrefManagement;
 import finaltest.nhutlv.sbiker.utils.Callback;
@@ -158,16 +159,16 @@ public class MainActivity extends AppCompatActivity
         polylines = new ArrayList<>();
 
         mFlowerDialog = new FlowerDialog(this);
-        mFlowerDialogHistory = new FlowerDialog(getContext(),"Saving history...");
+        mFlowerDialogHistory = new FlowerDialog(getContext(), "Saving history...");
 
-        if(!isLocationEnabled(this)){
+        if (!isLocationEnabled(this)) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setMessage("GPS is Off\nDo you want to turn on GPS");
             dialog.setPositiveButton("Go Setting", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                     // TODO Auto-generated method stub
-                    Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     startActivity(myIntent);
                     //get gps
                 }
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity
                 }
             });
             dialog.show();
-        }else{
+        } else {
             mFlowerDialog.showDialog();
         }
         mLayout = (RelativeLayout) findViewById(R.id.mapLayout);
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity
         PhoneCallListener phoneListener = new PhoneCallListener();
         TelephonyManager telephonyManager = (TelephonyManager) this
                 .getSystemService(Context.TELEPHONY_SERVICE);
-        telephonyManager.listen(phoneListener,PhoneStateListener.LISTEN_CALL_STATE);
+        telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -207,7 +208,7 @@ public class MainActivity extends AppCompatActivity
         ImageButton editProfile = (ImageButton) header.findViewById(R.id.btn_edit_header);
         CircleImageView avatar = (CircleImageView) header.findViewById(R.id.profile_image);
         String path = UserLogin.getUserLogin().getAvatarPath();
-        if(path==null || path.equals("")){
+        if (path == null || path.equals("")) {
             path = "Ahihi";
         }
         Picasso.with(this)
@@ -231,8 +232,8 @@ public class MainActivity extends AppCompatActivity
         mTxtPlaceSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,SearchPlaceActivity.class);
-                startActivityForResult(intent,SBConstants.PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                Intent intent = new Intent(MainActivity.this, SearchPlaceActivity.class);
+                startActivityForResult(intent, SBConstants.PLACE_AUTOCOMPLETE_REQUEST_CODE);
             }
         });
 
@@ -257,15 +258,15 @@ public class MainActivity extends AppCompatActivity
             public void onReceive(Context context, Intent intent) {
                 //If the broadcast has received with success
                 //that means device is registered successfully
-                if(intent.getAction().equals(GcmIntentService.REGISTRATION_SUCCESS)){
+                if (intent.getAction().equals(GcmIntentService.REGISTRATION_SUCCESS)) {
                     //Getting the registration token from the intent
                     String token = intent.getStringExtra("token");
-                    new PrefManagement(getContext()).putValueString(SBConstants.PREF_TOKEN_GCM,token);
+                    new PrefManagement(getContext()).putValueString(SBConstants.PREF_TOKEN_GCM, token);
                     //Displaying the token as toast
 //                    Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
-                    Log.e("Token",token);
+                    Log.e("Token", token);
                     //if the intent is not with success then displaying error messages
-                } else if(intent.getAction().equals(GcmIntentService.REGISTRATION_ERROR)){
+                } else if (intent.getAction().equals(GcmIntentService.REGISTRATION_ERROR)) {
                     Toast.makeText(getApplicationContext(), "GCM registration error!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
@@ -277,9 +278,9 @@ public class MainActivity extends AppCompatActivity
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
 
         //if play service is not available
-        if(ConnectionResult.SUCCESS != resultCode) {
+        if (ConnectionResult.SUCCESS != resultCode) {
             //If play service is supported but not installed
-            if(GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
                 //Displaying message that play service is not installed
 //                Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled in this device!", Toast.LENGTH_LONG).show();
                 GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
@@ -304,7 +305,6 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         isBecome = UserLogin.getUserLogin().getIsBecome();
-        isApproved = UserLogin.getUserLogin().getIsApproved();
         isDriving = UserLogin.getUserLogin().getIsDriving();
 
         mMapView.getMapAsync(new OnMapReadyCallback() {
@@ -386,49 +386,49 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if(isApproved==1){
+                    if (UserLogin.getUserLogin().getIsApproved()== 1) {
                         isDriving = 1;
                         mUserService.setIsDriving(UserLogin.getUserLogin().getIdUser(), isDriving,
-                                         mLatLngCurrent, new Callback<User>() {
-                            @Override
-                            public void onResult(User user) {
-                                Toast.makeText(getContext(),"Bạn đã bật chế độ tài xê",Toast.LENGTH_LONG).show();
-                                UserLogin.setUserLogin(user);
-                            }
+                                mLatLngCurrent, new Callback<User>() {
+                                    @Override
+                                    public void onResult(User user) {
+                                        Toast.makeText(getContext(), "Bạn đã bật chế độ tài xê", Toast.LENGTH_LONG).show();
+                                        UserLogin.setUserLogin(user);
+                                    }
 
-                            @Override
-                            public void onFailure(String message) {
-                                Log.d(TAG, "onFailure: ");
-                                mSwitchDriver.setChecked(false);
-                                new ErrorDialog(MainActivity.this,message).show();
-                            }
-                        });
-                    }else {
+                                    @Override
+                                    public void onFailure(String message) {
+                                        Log.d(TAG, "onFailure: ");
+                                        mSwitchDriver.setChecked(false);
+                                        new ErrorDialog(MainActivity.this, message).show();
+                                    }
+                                });
+                    } else {
                         isDriving = 0;
-                        if(isBecome==1){
-                            new ErrorDialog(MainActivity.this,"Thông tin của bạn đang được kiểm duyệt\nVui lòng thử lại sau").show();
+                        if (isBecome == 1) {
+                            new ErrorDialog(MainActivity.this, "Thông tin của bạn đang được kiểm duyệt\nVui lòng thử lại sau").show();
                             mSwitchDriver.setChecked(false);
-                        }else {
+                        } else {
                             mSwitchDriver.setChecked(false);
-                            startActivity(new Intent(MainActivity.this,BecomeDriverActivity.class));
+                            startActivity(new Intent(MainActivity.this, BecomeDriverActivity.class));
                         }
                     }
                 } else {
                     isDriving = 0;
                     mUserService.setIsDriving(UserLogin.getUserLogin().getIdUser(), isDriving,
-                                    mLatLngCurrent, new Callback<User>() {
-                        @Override
-                        public void onResult(User user) {
-                            Toast.makeText(getContext(),"Bạn tắt chế độ tài xế",Toast.LENGTH_LONG).show();
-                            UserLogin.setUserLogin(user);
-                        }
+                            mLatLngCurrent, new Callback<User>() {
+                                @Override
+                                public void onResult(User user) {
+                                    Toast.makeText(getContext(), "Bạn tắt chế độ tài xế", Toast.LENGTH_LONG).show();
+                                    UserLogin.setUserLogin(user);
+                                }
 
-                        @Override
-                        public void onFailure(String message) {
-                            mSwitchDriver.setChecked(false);
-                            new ErrorDialog(MainActivity.this,message).show();
-                        }
-                    });
+                                @Override
+                                public void onFailure(String message) {
+                                    mSwitchDriver.setChecked(false);
+                                    new ErrorDialog(MainActivity.this, message).show();
+                                }
+                            });
                 }
             }
         });
@@ -467,7 +467,12 @@ public class MainActivity extends AppCompatActivity
 //            signOutGmail();
 //            startActivity(new Intent(new Intent(MainActivity.this, SignInActivity.class)));
 //            finish();
-            logOut();
+            new LogoutDialog(getContext(), new LogoutDialog.onMyListenerLogout() {
+                @Override
+                public void onLogout() {
+                    logOut();
+                }
+            }).show();
             return true;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -481,8 +486,10 @@ public class MainActivity extends AppCompatActivity
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
         mLatLngCurrent = new LatLng(currentLatitude, currentLongitude);
+        mAddress = getAddress(mLatLngCurrent);
+        mTxtCurrentPlace.setText(mAddress);
+        UserLogin.getUserLogin().setLatLng(mLatLngCurrent);
         mEventBus.postSticky(mLatLngCurrent);
-
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.clear();
 
@@ -492,21 +499,19 @@ public class MainActivity extends AppCompatActivity
                         != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        mAddress = getAddress(mLatLngCurrent);
-        mTxtCurrentPlace.setText(mAddress);
 
-        mUserService.getListUserByRadius(200000,mLatLngCurrent, new Callback<List<User>>() {
+        mUserService.getListUserByRadius(200000, mLatLngCurrent, new Callback<List<User>>() {
             @Override
             public void onResult(List<User> users) {
                 mFlowerDialog.hideDialog();
-                Log.d(TAG,"Get list by radius is OK");
+                Log.d(TAG, "Get list by radius is OK");
                 setPlaceToMap(mGoogleMap, users);
             }
 
             @Override
             public void onFailure(String message) {
                 mFlowerDialog.hideDialog();
-                new ErrorDialog(getContext(),message).show();
+                new ErrorDialog(getContext(), message).show();
             }
         });
 
@@ -523,7 +528,7 @@ public class MainActivity extends AppCompatActivity
         final CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(mLatLngCurrent).zoom(14).build();
 
-        if(!checked){
+        if (!checked) {
             mGoogleMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(cameraPosition));
             checked = true;
@@ -541,6 +546,8 @@ public class MainActivity extends AppCompatActivity
             public boolean onMyLocationButtonClick() {
                 mGoogleMap.animateCamera(CameraUpdateFactory
                         .newCameraPosition(cameraPosition));
+                mAddress = getAddress(mLatLngCurrent);
+                mTxtCurrentPlace.setText(mAddress);
                 return true;
             }
         });
@@ -592,21 +599,21 @@ public class MainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mGoogleMap.clear();
-        if(resultCode==RESULT_OK){
+        if (resultCode == RESULT_OK) {
             if (requestCode == SBConstants.PLACE_AUTOCOMPLETE_REQUEST_CODE) {
                 Bundle bundle = data.getExtras();
                 mPlace = bundle.getParcelable("searchPlace");
                 mStatus = bundle.getParcelable("searchStatus");
-                mUserService.getListUserByRadius(11000,mLatLngCurrent, new Callback<List<User>>() {
+                mUserService.getListUserByRadius(11000, mLatLngCurrent, new Callback<List<User>>() {
                     @Override
                     public void onResult(List<User> users) {
-                        Log.d(TAG,"Get list by radius is OK");
+                        Log.d(TAG, "Get list by radius is OK");
                         setPlaceToMap(mGoogleMap, users);
                     }
 
                     @Override
                     public void onFailure(String message) {
-                        new ErrorDialog(getContext(),message).show();
+                        new ErrorDialog(getContext(), message).show();
                     }
                 });
             } else if (requestCode == HISTORY_REQUEST_CODE) {
@@ -671,7 +678,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
-        if(polylines.size()>0) {
+        if (polylines.size() > 0) {
             for (Polyline poly : polylines) {
                 poly.remove();
             }
@@ -679,7 +686,7 @@ public class MainActivity extends AppCompatActivity
 
         polylines = new ArrayList<>();
         //add route(s) to the map.
-        for (int i = 0; i <route.size(); i++) {
+        for (int i = 0; i < route.size(); i++) {
 
             //In case of more than 5 alternative routes
             int colorIndex = i % COLORS.length;
@@ -690,27 +697,27 @@ public class MainActivity extends AppCompatActivity
             polyOptions.addAll(route.get(i).getPoints());
             Polyline polyline = mGoogleMap.addPolyline(polyOptions);
             polylines.add(polyline);
-            int distance = (int) SBFunctions.getDistance2Point(mLatLngCurrent,mPlace.getLatLng());
+            int distance = (int) SBFunctions.getDistance2Point(mLatLngCurrent, mPlace.getLatLng());
             String sDistance = "";
-            if(distance<1000){
-                sDistance = distance +" m";
-            }else{
-                sDistance = df.format(distance) +" km";
+            if (distance < 1000) {
+                sDistance = distance + " m";
+            } else {
+                sDistance = df.format(distance) + " km";
             }
-            mDistance = SBFunctions.round(route.get(i).getDistanceValue()/1000,1);
-            mPrice = (mDistance<=1)?10000:(int)mDistance* SBConstants.UNIT_PRICE;
-            mTimeSpend = route.get(i).getDurationValue()/60;
-            String detail = "Khoảng cách "+sDistance+"\nMất "
+            mDistance = SBFunctions.round(route.get(i).getDistanceValue() / 1000, 1);
+            mPrice = (mDistance <= 1) ? 10000 : (int) mDistance * SBConstants.UNIT_PRICE;
+            mTimeSpend = route.get(i).getDurationValue() / 60;
+            String detail = "Khoảng cách " + sDistance + "\nMất "
                     + SBFunctions.parseTime(mTimeSpend)
-                    + " - "+String.valueOf(df.format(mPrice))+"VNĐ";
+                    + " - " + String.valueOf(df.format(mPrice)) + "VNĐ";
 
-            final Snackbar snackbar = Snackbar.make(mLayout,detail, BaseTransientBottomBar.LENGTH_INDEFINITE)
+            final Snackbar snackbar = Snackbar.make(mLayout, detail, BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setAction("HIDE", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                        @Override
+                        public void onClick(View v) {
 
-                }
-            });
+                        }
+                    });
             snackbar.show();
         }
     }
@@ -723,28 +730,32 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onInfoWindowClick(Marker marker) {
         User user = (User) marker.getTag();
-        Dialog dialog = new BikerInfoDialog(this,this,user);
+        Dialog dialog = new BikerInfoDialog(this, this, user);
         dialog.show();
     }
 
     @Override
     public void onButtonClick(User user) {
-        callPhone(user);
+        if(mPlace==null){
+            Toast.makeText(getContext(),"Vui lòng chọn địa diểm bạn muốn đến",Toast.LENGTH_LONG).show();
+        }else{
+            callPhone(user);
+        }
     }
 
     @Override
     public void onCheckBox(User user, boolean isChecked) {
-        int check = isChecked?1:0;
+        int check = isChecked ? 1 : 0;
 
         mUserService.sendFavorite(UserLogin.getUserLogin().getIdUser(), user.getIdUser(), check, new Callback<Boolean>() {
             @Override
             public void onResult(Boolean aBoolean) {
-                Log.d(TAG,"Favorite OK");
+                Log.d(TAG, "Favorite OK");
             }
 
             @Override
             public void onFailure(String message) {
-                Toast.makeText(getContext(),message,Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -759,7 +770,7 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
-    private void closeDrawer(){
+    private void closeDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -770,6 +781,7 @@ public class MainActivity extends AppCompatActivity
     private class PhoneCallListener extends PhoneStateListener {
 
         private boolean isPhoneCalling = false;
+
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
 
@@ -792,43 +804,36 @@ public class MainActivity extends AppCompatActivity
                 Log.i(TAG, "IDLE");
                 Log.i(TAG, "IDLE: " + System.currentTimeMillis());
                 if (isPhoneCalling) {
-                    Log.i(TAG, "restart app");
-                    Log.i(TAG, "Call ");
                     isPhoneCalling = false;
-                    // save history
-                    History<String> history = new History();
-                    history.setIdUser(UserLogin.getUserLogin().getIdUser());
-                    history.setBiker(mIdBiker);
-                    history.setDistance(mDistance);
-                    history.setTimeCall(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date().getTime()));
-                    history.setTimeSpend(mTimeSpend);
-                    history.setPrice(mPrice);
-                    history.setPlaceFrom(mAddress);
-                    history.setLatitudeFrom(mLatLngCurrent.latitude);
-                    history.setLongitudeFrom(mLatLngCurrent.longitude);
-                    if(mPlace==null){
-                        history.setPlaceTo("Chưa có địa điểm");
-                        history.setLatitudeTo(0);
-                        history.setLongitudeTo(0);
-                    }else{
+                    if(mPlace!=null){
+                        History<String> history = new History();
+                        history.setIdUser(UserLogin.getUserLogin().getIdUser());
+                        history.setBiker(mIdBiker);
+                        history.setDistance(mDistance);
+                        history.setTimeCall(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date().getTime()));
+                        history.setTimeSpend(mTimeSpend);
+                        history.setPrice(mPrice);
+                        history.setPlaceFrom(mAddress);
+                        history.setLatitudeFrom(mLatLngCurrent.latitude);
+                        history.setLongitudeFrom(mLatLngCurrent.longitude);
                         history.setPlaceTo(mPlace.getAddress());
                         history.setLatitudeTo(mPlace.getLatLng().latitude);
                         history.setLongitudeTo(mPlace.getLatLng().longitude);
+
+                        String token = new PrefManagement(getContext()).getValueString(SBConstants.PREF_TOKEN_GCM);
+                        mHistoryService.saveHistory(history, token, new Callback<History<String>>() {
+                            @Override
+                            public void onResult(History<String> history) {
+                                Log.d(TAG, history.toString());
+                            }
+
+                            @Override
+                            public void onFailure(String message) {
+                                new ErrorDialog(getContext(), message).show();
+                            }
+                        });
                     }
 
-                    Log.d(TAG,history.toString());
-                    String token = new PrefManagement(getContext()).getValueString(SBConstants.PREF_TOKEN_GCM);
-                    mHistoryService.saveHistory(history,token, new Callback<History<String>>() {
-                        @Override
-                        public void onResult(History<String> history) {
-                            Log.d(TAG,history.toString());
-                        }
-
-                        @Override
-                        public void onFailure(String message) {
-                            new ErrorDialog(getContext(),message).show();
-                        }
-                    });
                 }
             }
         }
@@ -838,7 +843,7 @@ public class MainActivity extends AppCompatActivity
         int locationMode = 0;
         String locationProviders;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             try {
                 locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
 
@@ -849,23 +854,26 @@ public class MainActivity extends AppCompatActivity
 
             return locationMode != Settings.Secure.LOCATION_MODE_OFF;
 
-        }else{
+        } else {
             locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
             return !TextUtils.isEmpty(locationProviders);
         }
     }
 
-    private void logOut(){
+    private void logOut() {
         UserLogin.setUserLogin(null);
         LoginManager.getInstance().logOut();
-        new PrefManagement(this).putValueString(SBConstants.PREF_AUTO_LOGIN,"");
-        startActivity(new Intent(this,SignInActivity.class));
-        Toast.makeText(this,"Log out is successfully !",Toast.LENGTH_LONG).show();
+        if(UserLogin.getGoogleApiClient()!=null){
+            signOut();
+        }
+        new PrefManagement(this).putValueString(SBConstants.PREF_AUTO_LOGIN, "");
+        startActivity(new Intent(this, SignInActivity.class));
+        Toast.makeText(this, "Log out is successfully !", Toast.LENGTH_LONG).show();
         finish();
     }
 
     //get Address by LatLng
-    private String getAddress(LatLng latLng){
+    private String getAddress(LatLng latLng) {
         String address = "";
         try {
             List<Address> addresses = mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
@@ -873,30 +881,31 @@ public class MainActivity extends AppCompatActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return address;
     }
 
-    //get location from address
-    private LatLng getLatLngByAddress(String address){
-        List<Address> addresses;
-        LatLng latLng= null;
-        try {
-            addresses = mGeocoder.getFromLocationName(address, 1);
-            if (addresses.size() > 0) {
-                double latitude = addresses.get(0).getLatitude();
-                double longitude = addresses.get(0).getLongitude();
-                latLng = new LatLng(latitude,longitude);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(UserLogin.getGoogleApiClient()).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Toast.makeText(getContext(),"Logout is successfully!!",Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
 
-        return latLng;
+    private void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(UserLogin.getGoogleApiClient()).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        Toast.makeText(getContext(),"Revoke Access is successfully!!",Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     //get Context Activity
-    private Context getContext(){
+    private Context getContext() {
         return this;
     }
 }

@@ -35,6 +35,7 @@ public class RepairActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repair_bike);
         ButterKnife.bind(this);
+        setTitle(getResources().getString(R.string.title_repair));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

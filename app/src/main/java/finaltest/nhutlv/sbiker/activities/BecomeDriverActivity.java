@@ -1,7 +1,6 @@
 package finaltest.nhutlv.sbiker.activities;
 
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -16,24 +15,23 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
 
@@ -68,8 +66,11 @@ public class BecomeDriverActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_become_driver);
         bindActivity();
-        mUserService = new UserServiceImpl();
+        setTitle(getResources().getString(R.string.title_become_driver));
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mUserService = new UserServiceImpl();
         Calendar calendar = Calendar.getInstance();
         yearCurrent =calendar.get(Calendar.YEAR);
         monthCurrent = calendar.get(Calendar.MONTH);
@@ -206,6 +207,7 @@ public class BecomeDriverActivity extends AppCompatActivity implements View.OnCl
                     public void onResult(User user) {
                         UserLogin.setUserLogin(user);
                         Toast.makeText(getContext(),"Đã gởi thông tin thành công\nVui lòng chờ ban kiểm duyệt xác nhận",Toast.LENGTH_LONG).show();
+                        finish();
                     }
 
                     @Override
@@ -277,6 +279,16 @@ public class BecomeDriverActivity extends AppCompatActivity implements View.OnCl
         if(TextUtils.isEmpty(mEdNumberCard.getText().toString())){
             new ErrorDialog(this,"Vui lòng nhập biển số xe").show();
             return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
         }
         return true;
     }

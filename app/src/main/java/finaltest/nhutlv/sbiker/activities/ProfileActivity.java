@@ -12,48 +12,35 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.Response;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.internal.Utils;
 import de.hdodenhof.circleimageview.CircleImageView;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.User;
-import finaltest.nhutlv.sbiker.services.Configuration;
 import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
-import finaltest.nhutlv.sbiker.tools.ChangePasswordDialog;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.ChangePasswordDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.SBConstants;
-import finaltest.nhutlv.sbiker.utils.SBFunctions;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
 
 /**
@@ -120,6 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
         mUserService = new UserServiceImpl();
+        mToolbar.setTitle(getResources().getString(R.string.title_profile));
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

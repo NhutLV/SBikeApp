@@ -260,6 +260,11 @@ public class User {
         return new LatLng(mLatitude,mLongitude);
     }
 
+    public void setLatLng(LatLng latLng){
+        mLatitude = latLng.latitude;
+        mLongitude = latLng.longitude;
+    }
+
     @Override
     public String toString() {
         return "User{" +

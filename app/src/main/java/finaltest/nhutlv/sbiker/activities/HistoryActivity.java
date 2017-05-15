@@ -9,27 +9,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.daimajia.androidanimations.library.specials.out.TakingOffAnimator;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.adapter.HistoryAdapter;
-import finaltest.nhutlv.sbiker.entities.Coordinate;
 import finaltest.nhutlv.sbiker.entities.History;
 import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.cloud.HistoryServiceImpl;
-import finaltest.nhutlv.sbiker.tools.BikerInfoDialog;
+import finaltest.nhutlv.sbiker.dialog.BikerInfoDialog;
 import finaltest.nhutlv.sbiker.tools.DividerItemDecoration;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
-import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
 
@@ -54,6 +48,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
         ButterKnife.bind(this);
         mHistoryService = new HistoryServiceImpl();
         mFlowerDialog = new FlowerDialog(this);
+        setTitle(getResources().getString(R.string.title_history));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mFlowerDialog.showDialog();

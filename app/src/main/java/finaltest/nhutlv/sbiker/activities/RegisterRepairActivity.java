@@ -16,19 +16,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -39,8 +36,8 @@ import butterknife.ButterKnife;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.Repairer;
 import finaltest.nhutlv.sbiker.services.cloud.RepairServiceImpl;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
-import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
 
@@ -48,7 +45,8 @@ import finaltest.nhutlv.sbiker.utils.UserLogin;
  * Created by NhutDu on 02/04/2017.
  */
 
-public class RegisterRepairActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback {
+public class RegisterRepairActivity extends AppCompatActivity implements View.OnClickListener,
+        OnMapReadyCallback, View.OnFocusChangeListener {
 
 
     @BindView(R.id.name_register_repair)
@@ -89,6 +87,7 @@ public class RegisterRepairActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_repair);
         ButterKnife.bind(this);
+        setTitle(getResources().getString(R.string.title_register_repair));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -101,6 +100,8 @@ public class RegisterRepairActivity extends AppCompatActivity implements View.On
         hourClose = hourOpen = calendar.get(Calendar.HOUR_OF_DAY);
         minuteClose = minuteOpen = calendar.get(Calendar.MINUTE);
         mTimeOpen.setOnClickListener(this);
+        mTimeOpen.setOnFocusChangeListener(this);
+        mTimeClose.setOnFocusChangeListener(this);
         mTimeClose.setOnClickListener(this);
         mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -170,6 +171,8 @@ public class RegisterRepairActivity extends AppCompatActivity implements View.On
                         public void onResult(Repairer<String> stringRepairer) {
                             mFlowerDialog.hideDialog();
                             Toast.makeText(getContext(), "Đăng ký thành công", Toast.LENGTH_LONG).show();
+                            finish();
+                            overridePendingTransition(R.anim.fadein,R.anim.fadeout);
                         }
 
                         @Override
@@ -292,5 +295,36 @@ public class RegisterRepairActivity extends AppCompatActivity implements View.On
                 mGoogleMap.addMarker(placeSearch).showInfoWindow();
             }
         });
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if(hasFocus){
+            switch (v.getId()) {
+                case R.id.time_open_register_repair:
+                    TimePickerDialog timePickerDialogOpen = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            minuteOpen = minute;
+                            hourOpen = hourOfDay;
+                            mTimeOpen.setText(hourOfDay + " : " + minute);
+                        }
+                    }, hourOpen, minuteOpen, true);
+                    timePickerDialogOpen.show();
+                    break;
+
+                case R.id.time_close_register_repair:
+                    TimePickerDialog timePickerDialogClose = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                            hourClose = hourOfDay;
+                            minuteClose = minute;
+                            mTimeClose.setText(hourOfDay + " : " + minute);
+                        }
+                    }, hourClose, minuteClose, true);
+                    timePickerDialogClose.show();
+                    break;
+            }
+        }
     }
 }

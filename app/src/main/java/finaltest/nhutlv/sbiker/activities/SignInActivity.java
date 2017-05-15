@@ -1,6 +1,5 @@
 package finaltest.nhutlv.sbiker.activities;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -44,17 +43,14 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dmax.dialog.SpotsDialog;
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.entities.User;
-import finaltest.nhutlv.sbiker.gcm.GcmActivity;
 import finaltest.nhutlv.sbiker.services.cloud.SignInServiceImpl;
 import finaltest.nhutlv.sbiker.services.cloud.SignUpServiceImpl;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
-import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
 import finaltest.nhutlv.sbiker.tools.PrefManagement;
 import finaltest.nhutlv.sbiker.utils.Callback;
-import finaltest.nhutlv.sbiker.utils.CustomDialog;
 import finaltest.nhutlv.sbiker.utils.CustomToast;
 import finaltest.nhutlv.sbiker.utils.SBConstants;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
@@ -249,6 +245,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onStart() {
         super.onStart();
+        if(mGoogleApiClient!=null)
+            mGoogleApiClient.connect();
         if (isOffline()) {
             return;
         }
@@ -443,26 +441,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             Profile profile = Profile.getCurrentProfile();
             Log.d("TAG LOGIN FB", "Login Again Successfully");
         }
-    }
-
-    private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        updateUI(false);
-                    }
-                });
-    }
-
-    private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        updateUI(false);
-                    }
-                });
     }
 
     private void showProgressDialog() {

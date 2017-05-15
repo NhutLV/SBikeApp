@@ -65,11 +65,10 @@ public class BaseFragmentAdapter extends RecyclerView.Adapter<BaseFragmentAdapte
         holder.mTxtName.setText(repairer.getName());
         holder.mTxtPhone.setText(repairer.getNumberPhone());
         holder.mTxtAddress.setText(repairer.getAddress());
-        int distance =(int) SBFunctions.getDistance2Point(UserLogin.getUserLogin().getLatLng(),repairer.getLatLang());
-        if(distance<1000){
-            holder.mTxtDistance.setText(distance +" m");
+        if(repairer.getDistance()<1000){
+            holder.mTxtDistance.setText(repairer.getDistance() +" m");
         }else{
-            holder.mTxtDistance.setText(df.format(distance)+" km");
+            holder.mTxtDistance.setText(df.format(repairer.getDistance())+" km");
         }
     }
 
@@ -86,7 +85,6 @@ public class BaseFragmentAdapter extends RecyclerView.Adapter<BaseFragmentAdapte
         TextView mTxtDistance;
         TextView mTxtTime;
         ImageButton mCallPhone;
-
 
         public BaseViewHolder(View itemView) {
             super(itemView);

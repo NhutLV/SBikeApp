@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,21 +32,22 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.adapter.PlaceSearchAdapter;
 import finaltest.nhutlv.sbiker.entities.Location;
 import finaltest.nhutlv.sbiker.entities.PlaceSearch;
-import finaltest.nhutlv.sbiker.entities.SearchEntity;
 import finaltest.nhutlv.sbiker.services.cloud.SearchServiceImpl;
 import finaltest.nhutlv.sbiker.tools.DividerItemDecoration;
-import finaltest.nhutlv.sbiker.tools.ErrorDialog;
-import finaltest.nhutlv.sbiker.tools.FlowerDialog;
+import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
+import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.CustomDialog;
 import finaltest.nhutlv.sbiker.utils.SBFunctions;
-import retrofit2.Retrofit;
 
 /**
  * Created by NhutDu on 30/04/2017.
@@ -99,7 +99,7 @@ public class SearchPlaceActivity extends AppCompatActivity{
                 finish();
             }
         });
-        mToolbar.setTitle("Search Place");
+        mToolbar.setTitle(getResources().getString(R.string.title_search_place));
         setSupportActionBar(mToolbar);
 
         mTxtNoResult.setVisibility(View.GONE);
@@ -124,6 +124,17 @@ public class SearchPlaceActivity extends AppCompatActivity{
                         placeSearch.setDistance(SBFunctions.getDistance2Point(mCurrentLatLng,latLng));
                     }
                     mPlaceSearches = placeSearches;
+                    Collections.sort(mPlaceSearches, new Comparator<PlaceSearch>() {
+                        @Override
+                        public int compare(PlaceSearch o1, PlaceSearch o2) {
+                            if(o1.getDistance()<o2.getDistance()){
+                                return -1;
+                            }else if(o1.getDistance()>o2.getDistance()){
+                                return 1;
+                            }
+                            return 0;
+                        }
+                    });
                     mAdapter = new PlaceSearchAdapter(SearchPlaceActivity.this,mPlaceSearches);
                     mAdapter.setOnClickSearch(new PlaceSearchAdapter.onClickSearch() {
                         @Override
@@ -206,6 +217,18 @@ public class SearchPlaceActivity extends AppCompatActivity{
                                         placeSearch.setDistance(SBFunctions.getDistance2Point(mCurrentLatLng,latLng));
                                     }
                                     mPlaceSearches = placeSearches;
+                                    Collections.sort(mPlaceSearches, new Comparator<PlaceSearch>() {
+                                        @Override
+                                        public int compare(PlaceSearch o1, PlaceSearch o2) {
+                                            if(o1.getDistance()<o2.getDistance()){
+                                                return -1;
+                                            }else if(o1.getDistance()<o2.getDistance()){
+                                                return 1;
+                                            }
+                                            return 0;
+                                        }
+                                    });
+
                                     mAdapter = new PlaceSearchAdapter(SearchPlaceActivity.this,mPlaceSearches);
                                     mAdapter.setOnClickSearch(new PlaceSearchAdapter.onClickSearch() {
                                         @Override
@@ -285,12 +308,9 @@ public class SearchPlaceActivity extends AppCompatActivity{
         if (requestCode == PLACE_AUTOCOMPLETE_SEARCH_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 mPlace = PlaceAutocomplete.getPlace(this, data);
-                Log.d("TAGGGGGGGG",mPlace.getAddress().toString());
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 mStatus = PlaceAutocomplete.getStatus(this, data);
-                Log.i("TAG PLACE", mStatus.getStatusMessage());
             } else if (requestCode == RESULT_CANCELED) {
-                Log.i("TAG PLACE", "Cancel");
             }
         }
         finaltest.nhutlv.sbiker.entities.Place place = new finaltest.nhutlv.sbiker.entities.Place();
