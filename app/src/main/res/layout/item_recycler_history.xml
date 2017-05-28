@@ -27,7 +27,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Start: "/>
+            android:text="Khởi hành : "/>
         <TextView
             android:id="@+id/place_start"
             android:layout_width="0dp"
@@ -49,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Destination: "/>
+            android:text="Điểm đến: "/>
         <TextView
             android:id="@+id/place_destination"
             android:layout_width="0dp"
@@ -69,7 +69,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Biker: "/>
+            android:text="Tài xế : "/>
         <TextView
             android:id="@+id/name_biker"
             android:layout_width="0dp"
@@ -88,17 +88,17 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_weight="1">
             <TextView
                 android:id="@+id/title_distance"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Distance: "/>
+                android:text="Khoảng cách : "/>
             <TextView
                 android:id="@+id/distance"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:layout_height="wrap_content"
                 android:text="1"/>
         </LinearLayout>
@@ -108,15 +108,14 @@
             android:layout_weight="1">
             <TextView
                 android:id="@+id/title_price"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Price: "/>
+                android:text="Giá: "/>
             <TextView
                 android:id="@+id/price"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:text="50.000 VNĐ"/>
         </LinearLayout>
     </LinearLayout>

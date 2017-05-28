@@ -2,26 +2,30 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="wrap_content">
     <LinearLayout
         android:id="@+id/layout_sign_up"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorWhite"
-        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:background="@drawable/img_bg"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:padding="20dp">
-
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp">
+        <ImageView
+            android:src="@drawable/img_logo"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
         <EditText
             android:id="@+id/input_name_sign_up"
             style="@style/MyEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_account_box_black_24dp"
-            android:hint="FullName"
+            android:hint="@string/fullname"
             android:inputType="text"/>
 
         <EditText
@@ -41,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:drawableLeft="@drawable/ic_settings_phone_black_24dp"
-            android:hint="Number Phone"
+            android:hint="@string/numberphone"
             android:inputType="numberDecimal"/>
 
         <EditText
@@ -53,7 +57,7 @@
             android:singleLine="true"
             android:imeOptions="actionNext"
             android:drawableLeft="@drawable/ic_lock_black_24dp"
-            android:hint="Password"/>
+            android:hint="@string/password"/>
 
         <EditText
             android:id="@+id/input_confirm_password_sign_up"
@@ -64,7 +68,7 @@
             android:singleLine="true"
             android:imeOptions="actionDone"
             android:drawableLeft="@drawable/ic_lock_black_24dp"
-            android:hint="Confirm Password"/>
+            android:hint="@string/re_password"/>
 
         <Button
             android:id="@+id/btn_sign_up"
@@ -72,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background="@drawable/bg_button_blue"
-            android:text="Sign Up"
+            android:text="@string/sign_up"
             android:textAllCaps="false"
             android:textColor="@color/colorWhite"
             android:textSize="14sp"
@@ -89,7 +93,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:text="You have account ? "
+                android:text="@string/you_have_account"
                 android:textColor="#C6C3C2"
                 android:textSize="16sp"/>
 
@@ -98,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/donthave"
-                android:text="Log in"
+                android:text="@string/sign_in"
                 android:textColor="@color/colorApp"
                 android:textSize="16sp"/>
         </RelativeLayout>

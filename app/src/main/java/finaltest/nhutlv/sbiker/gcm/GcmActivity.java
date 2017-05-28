@@ -56,6 +56,7 @@ public class GcmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gcm);
         ButterKnife.bind(this);
+        getSupportActionBar().setTitle(getResources().getString(R.string.title_evaluation));
         mRateService = new RateServiceImpl();
         mFlowerDialog = new FlowerDialog(this);
         Bundle extras = getIntent().getExtras();
@@ -65,7 +66,6 @@ public class GcmActivity extends AppCompatActivity {
             String placeFrom = extras.getString("place_from");
             final String idHistory = extras.getString("id_history");
 
-            Log.d(TAG,idHistory);
             mTitle.setText(message);
             mPlaceTo.setText("Điểm đến : "+placeTo);
             mPlaceFrom.setText("Điểm khởi hành : "+placeFrom);
@@ -77,7 +77,6 @@ public class GcmActivity extends AppCompatActivity {
                 {
                     checkedRadioButton = (RadioButton) findViewById(checkedId);
                     text = checkedRadioButton.getText().toString();
-                    Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
                 }
             });
             final String finalComment = comment;

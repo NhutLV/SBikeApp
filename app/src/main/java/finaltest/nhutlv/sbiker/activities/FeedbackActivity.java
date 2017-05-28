@@ -89,6 +89,7 @@ public class FeedbackActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case android.R.id.home:
+                setResult(RESULT_OK);
                 finish();
                 break;
         }

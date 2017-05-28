@@ -121,6 +121,7 @@ public class FavoriteActivity extends AppCompatActivity implements FavoriteAdapt
 
         switch (item.getItemId()){
             case android.R.id.home:
+                setResult(RESULT_OK);
                 finish();
                 break;
         }

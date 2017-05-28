@@ -66,9 +66,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
-        setTitle(getResources().getString(R.string.sign_up));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         mService = new SignUpServiceImpl();
         mFlowerDialog = new FlowerDialog(getContext(),"Sign Up");
         mBtnSubmit.setOnClickListener(this);
@@ -113,6 +110,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private boolean validatePassword(){
         if(TextUtils.isEmpty(mPassword.getText().toString())){
             new ErrorDialog(getContext(),"Vui lòng nhập mật khẩu").show();
+            return false;
+        }else if(mPassword.getText().length()<6 || mPassword.getText().length()>20){
+            new ErrorDialog(getContext(),"Mật khẩu phải có từ 6-20 kí tự").show();
             return false;
         }
         return true;
@@ -181,20 +181,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case R.id.link_sign_in:
-                startActivity(new Intent(getContext(),SignInActivity.class));
+                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
                 finish();
                 break;
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                finish();
-                break;
-        }
-        return true;
     }
 
     @Override

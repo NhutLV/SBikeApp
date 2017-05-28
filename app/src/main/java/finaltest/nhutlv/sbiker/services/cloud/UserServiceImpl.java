@@ -16,6 +16,7 @@ import finaltest.nhutlv.sbiker.services.Configuration;
 import finaltest.nhutlv.sbiker.services.response.ResponseAPI;
 import finaltest.nhutlv.sbiker.utils.Callback;
 import finaltest.nhutlv.sbiker.utils.FileUtils;
+import finaltest.nhutlv.sbiker.utils.UserLogin;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -175,9 +176,9 @@ public class UserServiceImpl {
 
         RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), reqFile);
-        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "file");
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "nhutle");
 
-        Call<ResponseAPI<User>> call = mService.uploadImageAvatar(body,name,"nhutle");
+        Call<ResponseAPI<User>> call = mService.uploadImageAvatar(body,name, UserLogin.getUserLogin().getIdUser());
         call.enqueue(new retrofit2.Callback<ResponseAPI<User>>() {
             @Override
             public void onResponse(Call<ResponseAPI<User>> call, Response<ResponseAPI<User>> response) {

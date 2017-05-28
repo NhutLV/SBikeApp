@@ -48,23 +48,26 @@ public class User {
     @SerializedName("identification_card_after_path")
     private String mIdentificationCardAfterPath;
 
-    @SerializedName("driving_license_before_path")
-    private String mDrivingLicenseBeforePath;
+    @SerializedName("number_card")
+    private String mNumberCard;
 
-    @SerializedName("driving_license_after_path")
-    private String mDrivingLicenseAfterPath;
+    @SerializedName("identification_number")
+    private String mNumberIdentification;
 
-    @SerializedName("car_number_plate_path")
-    private String mCarNumberPlatePath;
+    @SerializedName("identification_place")
+    private String mPlaceIdentification;
+
+    @SerializedName("identification_date")
+    private String mDateIdentification;
+
+    @SerializedName("driving_license_number")
+    private String mNumberLicense;
+
+    @SerializedName("driving_license_seri")
+    private String mSeriLicense;
 
     @SerializedName("is_driving")
     private int mIsDriving;
-
-    @SerializedName("number_favorite")
-    private int mNumberFavorite;
-
-    @SerializedName("number_not_favorite")
-    private int mNumberNotFavorite;
 
     @SerializedName("is_approved")
     private int mIsApproved;
@@ -164,28 +167,68 @@ public class User {
         mIdentificationCardAfterPath = identificationCardAfterPath;
     }
 
-    public String getDrivingLicenseBeforePath() {
-        return mDrivingLicenseBeforePath;
+    public double getLatitude() {
+        return mLatitude;
     }
 
-    public void setDrivingLicenseBeforePath(String drivingLicenseBeforePath) {
-        mDrivingLicenseBeforePath = drivingLicenseBeforePath;
+    public void setLatitude(double latitude) {
+        mLatitude = latitude;
     }
 
-    public String getDrivingLicenseAfterPath() {
-        return mDrivingLicenseAfterPath;
+    public double getLongitude() {
+        return mLongitude;
     }
 
-    public void setDrivingLicenseAfterPath(String drivingLicenseAfterPath) {
-        mDrivingLicenseAfterPath = drivingLicenseAfterPath;
+    public void setLongitude(double longitude) {
+        mLongitude = longitude;
     }
 
-    public String getCarNumberPlatePath() {
-        return mCarNumberPlatePath;
+    public String getNumberCard() {
+        return mNumberCard;
     }
 
-    public void setCarNumberPlatePath(String carNumberPlatePath) {
-        mCarNumberPlatePath = carNumberPlatePath;
+    public void setNumberCard(String numberCard) {
+        mNumberCard = numberCard;
+    }
+
+    public String getNumberIdentification() {
+        return mNumberIdentification;
+    }
+
+    public void setNumberIdentification(String numberIdentification) {
+        mNumberIdentification = numberIdentification;
+    }
+
+    public String getPlaceIdentification() {
+        return mPlaceIdentification;
+    }
+
+    public void setPlaceIdentification(String placeIdentification) {
+        mPlaceIdentification = placeIdentification;
+    }
+
+    public String getDateIdentification() {
+        return mDateIdentification;
+    }
+
+    public void setDateIdentification(String dateIdentification) {
+        mDateIdentification = dateIdentification;
+    }
+
+    public String getNumberLicense() {
+        return mNumberLicense;
+    }
+
+    public void setNumberLicense(String numberLicense) {
+        mNumberLicense = numberLicense;
+    }
+
+    public String getSeriLicense() {
+        return mSeriLicense;
+    }
+
+    public void setSeriLicense(String seriLicense) {
+        mSeriLicense = seriLicense;
     }
 
     public int getIsDriving() {
@@ -194,22 +237,6 @@ public class User {
 
     public void setIsDriving(int isDriving) {
         mIsDriving = isDriving;
-    }
-
-    public int getNumberFavorite() {
-        return mNumberFavorite;
-    }
-
-    public void setNumberFavorite(int numberFavorite) {
-        mNumberFavorite = numberFavorite;
-    }
-
-    public int getNumberNotFavorite() {
-        return mNumberNotFavorite;
-    }
-
-    public void setNumberNotFavorite(int numberNotFavorite) {
-        mNumberNotFavorite = numberNotFavorite;
     }
 
     public int getIsApproved() {
@@ -280,12 +307,7 @@ public class User {
                 ", mAvatarPath='" + mAvatarPath + '\'' +
                 ", mIdentificationCardBeforePath='" + mIdentificationCardBeforePath + '\'' +
                 ", mIdentificationCardAfterPath='" + mIdentificationCardAfterPath + '\'' +
-                ", mDrivingLicenseBeforePath='" + mDrivingLicenseBeforePath + '\'' +
-                ", mDrivingLicenseAfterPath='" + mDrivingLicenseAfterPath + '\'' +
-                ", mCarNumberPlatePath='" + mCarNumberPlatePath + '\'' +
                 ", mIsDriving=" + mIsDriving +
-                ", mNumberFavorite=" + mNumberFavorite +
-                ", mNumberNotFavorite=" + mNumberNotFavorite +
                 ", mIsApproved=" + mIsApproved +
                 ", mIsBecome=" + mIsBecome +
                 ", mRePassword='" + mRePassword + '\'' +

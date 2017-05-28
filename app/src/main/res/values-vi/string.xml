@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_history">Lịch sử</string>
+    <string name="title_favorite">Yêu thích</string>
+    <string name="title_feedback">Phản hồi</string>
+    <string name="title_repair">Sửa chữa</string>
+    <string name="title_become_driver">Trở thành tài xế</string>
+    <string name="title_register_repair">Đăng ký sữa chữa</string>
+    <string name="title_search_place">Tìm kiếm địa điểm</string>
+    <string name="title_evaluation">Đánh giá</string>
+    <string name="title_information">Thông tin thêm</string>
+    <string name="price_list">Bảng giá</string>
+    <string name="title_profile">Thông tin cá nhân</string>
+    <string name="account">Tài khoản</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="sign_in">Đăng nhập</string>
+    <string name="sign_up">Đăng ký</string>
+
+    <string name="password">Mật khẩu</string>
+    <string name="fullname">Họ Tên</string>
+    <string name="numberphone">Số điện thoại</string>
+    <string name="re_password">Xác nhận mật khẩu</string>
+    <string name="address">Địa chỉ</string>
+
+    <string name="sign_up_gmail">Tiếp tục với Gmail</string>
+    <string name="dont_have_account">Bạn chưa có tài khoản?</string>
+    <string name="you_have_account">Bạn có tài khoản?</string>
+
+    <string name="content_search_main">Bạn muốn đi đâu?</string>
+    <string name="content_search_place">Tìm kiếm</string>
+    <string name="tab_search_university">Trường học</string>
+    <string name="tab_search_hospital">Bệnh viện</string>
+    <string name="tab_search_restaurant">Nhà hàng</string>
+
+</resources>

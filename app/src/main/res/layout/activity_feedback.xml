@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:focusable="true"
-    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:background="@drawable/img_bg"
+    android:padding="@dimen/activity_horizontal_margin"
     android:orientation="vertical">
     <EditText
         android:id="@+id/ed_title_feedback"

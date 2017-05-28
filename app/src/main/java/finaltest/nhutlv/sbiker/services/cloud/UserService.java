@@ -52,9 +52,15 @@ public interface UserService {
 
     @Multipart
     @POST("upload/{id}")
-    Call<ResponseAPI<User>> uploadImageAvatar(@Part MultipartBody.Part image,
+    Call<ResponseAPI<User>> uploadImageAvatar1(@Part MultipartBody.Part image,
                                               @Part("file") RequestBody name,
                                               @Query("id") String id);
+
+    @Multipart
+    @POST("api/upload")
+    Call<ResponseAPI<User>> uploadImageAvatar(@Part MultipartBody.Part image,
+                                              @Part("file") RequestBody name,
+                                              @Part("id_user") String file);
 
     @FormUrlEncoded
     @POST("users/update-coordinate")

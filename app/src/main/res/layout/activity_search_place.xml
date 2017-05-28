@@ -41,7 +41,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_toRightOf="@+id/txt_back"
                 android:background="@drawable/bg_edittext_search"
-                android:hint="Find your address"
+                android:hint="@string/content_search_place"
                 android:drawableLeft="@android:drawable/ic_menu_search"
                 android:gravity="center"/>
         </RelativeLayout>

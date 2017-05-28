@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private Context mContext;
     private ArrayList<History<User>> mHistories;
     private onMyListener mOnMyListener;
+    private DecimalFormat df = new DecimalFormat("#,000");
 
     public HistoryAdapter(Context context, ArrayList<History<User>> histories, onMyListener onMyListener) {
         mContext = context;
@@ -44,7 +46,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.mTxtDestination.setText(history.getPlaceTo());
         holder.mTxtTime.setText(history.getTimeCall());
         holder.mTxtBiker.setText(history.getBiker().getFullName());
-        holder.mTxtDistance.setText(String.valueOf(history.getDistance()) +" km");
+        if(history.getDistance()<1000){
+            holder.mTxtDistance.setText(String.valueOf(history.getDistance()) +" m");
+        }else{
+            holder.mTxtDistance.setText(df.format(history.getDistance())+" km");
+        }
         holder.mTxtPrice.setText(String.valueOf(history.getPrice())+" VNĐ");
     }
 

@@ -287,7 +287,6 @@ public class RegisterRepairActivity extends AppCompatActivity implements View.On
                 // TODO Auto-generated method stub
                 mLatLng = arg0;
                 mGoogleMap.clear();
-                Log.d("TAGGGGG", arg0.latitude + "-" + arg0.longitude);
                 MarkerOptions placeSearch = new MarkerOptions()
                         .position(arg0)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
@@ -307,7 +306,7 @@ public class RegisterRepairActivity extends AppCompatActivity implements View.On
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                             minuteOpen = minute;
                             hourOpen = hourOfDay;
-                            mTimeOpen.setText(hourOfDay + " : " + minute);
+                            mTimeOpen.setText(hourOfDay + "h " + minute);
                         }
                     }, hourOpen, minuteOpen, true);
                     timePickerDialogOpen.show();
@@ -319,7 +318,7 @@ public class RegisterRepairActivity extends AppCompatActivity implements View.On
                         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                             hourClose = hourOfDay;
                             minuteClose = minute;
-                            mTimeClose.setText(hourOfDay + " : " + minute);
+                            mTimeClose.setText(hourOfDay + "h " + minute);
                         }
                     }, hourClose, minuteClose, true);
                     timePickerDialogClose.show();

@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -28,6 +29,7 @@ import java.util.List;
 public class SBFunctions {
 
     private Context mContext;
+    private static DecimalFormat formatter = new DecimalFormat("###,###,000");
 
     public SBFunctions(Context context){
         mContext = context;
@@ -45,6 +47,16 @@ public class SBFunctions {
         value = value * factor;
         long tmp = Math.round(value);
         return (double) tmp / factor;
+    }
+
+    public static  int calculationMoney(double s){
+        int total = 0;
+        if(s>0 && s<=2){
+            total = (int) (s*(UserLogin.getPriceList().getFirstPrice()));
+        }else{
+            total = (int) (2*UserLogin.getPriceList().getFirstPrice()+(s-2)*UserLogin.getPriceList().getSecondPrice());
+        }
+        return total;
     }
 
     public boolean isOnline() {

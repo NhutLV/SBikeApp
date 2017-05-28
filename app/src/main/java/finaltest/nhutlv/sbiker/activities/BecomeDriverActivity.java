@@ -39,7 +39,7 @@ import finaltest.nhutlv.sbiker.utils.UserLogin;
  * Created by NhutDu on 25/04/2017.
  */
 
-public class BecomeDriverActivity extends AppCompatActivity implements View.OnClickListener{
+public class BecomeDriverActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener{
     private Uri outputFileUri;
     private static final int IDENTIFICATION_CARD_BEFORE_REQUEST_CODE = 100;
     private static final int IDENTIFICATION_CARD_AFTER_REQUEST_CODE = 101;
@@ -78,6 +78,7 @@ public class BecomeDriverActivity extends AppCompatActivity implements View.OnCl
         mImgIndetAft.setOnClickListener(this);
         mImgIndetBef.setOnClickListener(this);
         mEdIdentDate.setOnClickListener(this);
+        mEdIdentDate.setOnFocusChangeListener(this);
         mSubmit.setOnClickListener(this);
     }
 
@@ -243,7 +244,6 @@ public class BecomeDriverActivity extends AppCompatActivity implements View.OnCl
         if(!validateNumberCard()){
             return ;
         }
-        Toast.makeText(this,"Submit Form OK",Toast.LENGTH_LONG).show();
     }
 
     private boolean validateIdentification(){
@@ -296,5 +296,22 @@ public class BecomeDriverActivity extends AppCompatActivity implements View.OnCl
     //get Context
     private Context getContext(){
         return this;
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if(hasFocus){
+            DatePickerDialog timePickerDialogClose = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    yearCurrent = year;
+                    monthCurrent = month;
+                    dateCurrent = dayOfMonth;
+                    mEdIdentDate.setText(dayOfMonth+"/"+month+"/"+year);
+                }
+
+            }, yearCurrent, monthCurrent, dateCurrent);
+            timePickerDialogClose.show();
+        }
     }
 }

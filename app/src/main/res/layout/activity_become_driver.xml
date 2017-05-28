@@ -2,7 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@drawable/img_bg"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -15,6 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
             android:background="@drawable/bg_edittext_search"
             android:hint="Số CMND"/>
         <LinearLayout
@@ -30,12 +32,16 @@
                 android:layout_marginRight="5dp"
                 android:layout_height="wrap_content"
                 android:inputType="date"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
                 android:background="@drawable/bg_edittext_search"
                 android:hint="Ngày cấp"/>
             <EditText
                 android:id="@+id/bc_identification_place"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
                 android:layout_marginLeft="5dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_edittext_search"
@@ -84,6 +90,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:singleLine="true"
+            android:imeOptions="actionNext"
             android:background="@drawable/bg_edittext_search"
             android:hint="Số Seri GPLX"/>
         <EditText
@@ -91,6 +99,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:background="@drawable/bg_edittext_search"
             android:hint="Số biển số xe"/>
         <Button

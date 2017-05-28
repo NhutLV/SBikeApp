@@ -5,8 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorApp
-        </item>
+        <item name="colorAccent">@color/colorApp</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -99,4 +98,15 @@
         <item name="colorControlActivated">@color/colorApp</item>
     </style>
     <!---->
+
+    <style name="Divider">
+        <item name="android:layout_width">1dip</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">#5D8637</item>
+    </style>
+
+    <style name="Divider_invisible">
+        <item name="android:layout_width">1dip</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
 </resources>

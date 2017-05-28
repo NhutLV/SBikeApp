@@ -9,12 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="10dp"
         app:popupTheme="@style/AppTheme.PopupOverlay">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
+            <TextView
+                android:id="@+id/title_profile"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp"
+                android:text="@string/title_profile"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/btn_update_information"
                 android:layout_width="wrap_content"
@@ -46,56 +52,6 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"/>
 
-            <RelativeLayout
-                android:id="@+id/profile_layout"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/header_cover_image"
-                android:background="#ebf90f0f"
-                android:elevation="4dp"
-                android:paddingBottom="24dp">
-
-                <ImageView
-                    android:id="@+id/img_like"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:src="@mipmap/ic_no_favorite"/>
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_toRightOf="@+id/img_like"
-                    android:gravity="center"
-                    android:text="123"
-                    android:textColor="@color/colorWhite"/>
-
-                <ImageView
-                    android:id="@+id/img_dislike"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_toLeftOf="@+id/number_dislike"
-                    android:src="@mipmap/ic_dislike"/>
-
-                <TextView
-                    android:id="@+id/number_dislike"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center"
-                    android:text="13"
-                    android:textColor="@color/colorWhite"/>
-            </RelativeLayout>
-
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img_avatar_profile"
                 android:layout_width="130dp"
@@ -110,23 +66,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/profile_layout"
+                android:layout_below="@+id/img_avatar_profile"
                 android:layout_margin="@dimen/activity_horizontal_margin"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:gravity="center"
-                    android:lineSpacingExtra="8dp"
-                    android:text="Thông tin cá nhân"
-                    android:textColor="@color/colorApp"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
 
                 <EditText
                     android:id="@+id/ed_name_profile"
@@ -170,7 +114,20 @@
                     android:text="Change Password"
                     android:textColor="@color/colorWhite"
                     android:textAllCaps="false"
+                    android:visibility="gone"
                     android:textSize="16sp"
+                    android:textStyle="bold"/>
+                <Button
+                    android:id="@+id/btn_more_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/bg_button_blue"
+                    android:text="More Information"
+                    android:textColor="@color/colorWhite"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:visibility="gone"
                     android:textStyle="bold"/>
             </LinearLayout>
         </RelativeLayout>

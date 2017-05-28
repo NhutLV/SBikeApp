@@ -33,7 +33,7 @@
        android:layout_height="wrap_content"
        android:background="@drawable/bg_textview_search"
        android:padding="12dp"
-       android:hint="Where do you go?"
+       android:hint="@string/content_search_main"
        android:layout_marginTop="5dp"
        android:layout_marginLeft="10dp"
        android:layout_marginRight="10dp"

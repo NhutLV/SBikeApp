@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import finaltest.nhutlv.sbiker.entities.History;
 import finaltest.nhutlv.sbiker.entities.User;
 import finaltest.nhutlv.sbiker.services.cloud.HistoryServiceImpl;
 import finaltest.nhutlv.sbiker.dialog.BikerInfoDialog;
+import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
 import finaltest.nhutlv.sbiker.tools.DividerItemDecoration;
 import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
 import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
@@ -84,6 +86,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
+                setResult(RESULT_OK);
                 finish();
                 break;
         }
@@ -93,8 +96,7 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
 
     @Override
     public void onClickBiker(int position) {
-        User user = (User) mHistories.get(position).getBiker();
-        Log.d("TAGGGGGGGGGGGGG",user.toString());
+        User user = mHistories.get(position).getBiker();
         new BikerInfoDialog(this, new BikerInfoDialog.myClickListener() {
             @Override
             public void onButtonClick(User user) {
@@ -102,7 +104,19 @@ public class HistoryActivity extends AppCompatActivity implements HistoryAdapter
 
             @Override
             public void onCheckBox(User user,boolean isCheck) {
+                int check = isCheck ? 1 : 0;
+                UserServiceImpl mUserService = new UserServiceImpl();
+                mUserService.sendFavorite(UserLogin.getUserLogin().getIdUser(), user.getIdUser(), check, new Callback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean aBoolean) {
+                        Log.d("TAGGGGGGG", "Favorite OK");
+                    }
 
+                    @Override
+                    public void onFailure(String message) {
+                        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         },user).show();
     }

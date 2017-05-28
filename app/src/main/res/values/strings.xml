@@ -17,8 +17,35 @@
     <string name="title_become_driver">Become Driver</string>
     <string name="title_register_repair">Register Repair</string>
     <string name="title_search_place">Search Place</string>
+    <string name="title_evaluation">Evaluation</string>
+    <string name="title_information">More Information</string>
+    <string name="price_list">Price List</string>
     <string name="title_profile">Profile</string>
     <string name="logout">Logout</string>
+    <string name="account">Account</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
+
+    <string name="password">Password</string>
+    <string name="fullname">FullName</string>
+    <string name="numberphone">Number Phone</string>
+    <string name="re_password">Comfirm Passowrd</string>
+    <string name="address">Address</string>
+
+    <string name="sign_up_gmail">Continue With Gmail</string>
+    <string name="dont_have_account">Don\'t have account yet?</string>
+    <string name="you_have_account">You have account?</string>
+
+    <string name="content_search_main">Where do you want to go?</string>
+    <string name="content_search_place">Find your address</string>
+    <string name="tab_search_university">University</string>
+    <string name="tab_search_hospital">Hospital</string>
+    <string name="tab_search_restaurant">Restaurant</string>
+
+    <string name="title_price_list">Chào mừng bạn đến với hệ thống xe ôm thông minh,
+        dưới đây là bảng giá khi đi xe ôm mà bạn cần phải trả</string>
+    <string name="note_price_list">Lưu ý: Cước giá có thể thay đổi tùy theo nhu cầu, khu vực và thời
+        điểm thực hiện chuyến đi.</string>
+    <string name="fee_price_list">Nếu bạn thực hiện chuyến đi từ 11 giờ đến 5 giờ sáng
+        thì phải trả thêm cước phí phụ là</string>
 </resources>

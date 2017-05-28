@@ -17,6 +17,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.NavigationView;
@@ -87,9 +88,10 @@ import finaltest.nhutlv.sbiker.R;
 import finaltest.nhutlv.sbiker.dialog.LogoutDialog;
 import finaltest.nhutlv.sbiker.entities.History;
 import finaltest.nhutlv.sbiker.entities.Place;
+import finaltest.nhutlv.sbiker.entities.PriceList;
 import finaltest.nhutlv.sbiker.entities.User;
-import finaltest.nhutlv.sbiker.gcm.GcmIntentService;
 import finaltest.nhutlv.sbiker.services.cloud.HistoryServiceImpl;
+import finaltest.nhutlv.sbiker.services.cloud.PriceListServiceImpl;
 import finaltest.nhutlv.sbiker.services.cloud.UserServiceImpl;
 import finaltest.nhutlv.sbiker.dialog.BikerInfoDialog;
 import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
@@ -109,8 +111,14 @@ public class MainActivity extends AppCompatActivity
         GoogleMap.OnInfoWindowClickListener,
         BikerInfoDialog.myClickListener {
 
+    private final static int PROFILE_REQUEST_CODE = 1;
     private final static int HISTORY_REQUEST_CODE = 2;
     private final static int CALL_PHONE_REQUEST_CODE = 3;
+    private final static int FAVORITE_REQUEST_CODE = 4;
+    private final static int REPAIR_REQUEST_CODE = 5;
+    private final static int BECOME_REQUEST_CODE = 6;
+    private final static int PRICE_LIST_REQUEST_CODE = 7;
+    private final static int FEEDBACK_REQUEST_CODE = 8;
 
     private EventBus mEventBus;
 
@@ -140,8 +148,10 @@ public class MainActivity extends AppCompatActivity
     private int isApproved = 0;
     private UserServiceImpl mUserService;
     private HistoryServiceImpl mHistoryService;
+    boolean doubleBackToExitPressedOnce = false;
+    private static DecimalFormat formatter = new DecimalFormat("###,###,000");
+    TextView username;
     //Creating a broadcast receiver for gcm registration
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     private List<Polyline> polylines;
     private static final int[] COLORS = new int[]{R.color.colorPrimaryDark, R.color.colorPrimary, R.color.colorApp,
@@ -220,10 +230,11 @@ public class MainActivity extends AppCompatActivity
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                startActivityForResult(intent, PROFILE_REQUEST_CODE);
             }
         });
-        TextView username = (TextView) header.findViewById(R.id.txt_name_header);
+        username = (TextView) header.findViewById(R.id.txt_name_header);
         username.setText(UserLogin.getUserLogin().getFullName());
 
         mMapView = (MapView) findViewById(R.id.mapView);
@@ -247,58 +258,7 @@ public class MainActivity extends AppCompatActivity
         }
         //get current location
         mLocationProvider = new LocationProvider(this, this);
-
-        //Initializing our broadcast receiver
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-
-            //When the broadcast received
-            //We are sending the broadcast from GCMRegistrationIntentService
-
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                //If the broadcast has received with success
-                //that means device is registered successfully
-                if (intent.getAction().equals(GcmIntentService.REGISTRATION_SUCCESS)) {
-                    //Getting the registration token from the intent
-                    String token = intent.getStringExtra("token");
-                    new PrefManagement(getContext()).putValueString(SBConstants.PREF_TOKEN_GCM, token);
-                    //Displaying the token as toast
-//                    Toast.makeText(getApplicationContext(), "Registration token:" + token, Toast.LENGTH_LONG).show();
-                    Log.e("Token", token);
-                    //if the intent is not with success then displaying error messages
-                } else if (intent.getAction().equals(GcmIntentService.REGISTRATION_ERROR)) {
-                    Toast.makeText(getApplicationContext(), "GCM registration error!", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
-                }
-            }
-        };
-
-        //Checking play service is available or not
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
-
-        //if play service is not available
-        if (ConnectionResult.SUCCESS != resultCode) {
-            //If play service is supported but not installed
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                //Displaying message that play service is not installed
-//                Toast.makeText(getApplicationContext(), "Google Play Service is not install/enabled in this device!", Toast.LENGTH_LONG).show();
-                GooglePlayServicesUtil.showErrorNotification(resultCode, getApplicationContext());
-
-                //If play service is not supported
-                //Displaying an error message
-            } else {
-                Toast.makeText(getApplicationContext(), "This device does not support for Google Play Service!", Toast.LENGTH_LONG).show();
-            }
-
-            //If play service is available
-        } else {
-            //Starting intent to register device
-            Intent itent = new Intent(this, GcmIntentService.class);
-            startService(itent);
-        }
-
-
+        getPrice();
     }
 
     @Override
@@ -321,7 +281,7 @@ public class MainActivity extends AppCompatActivity
                     // position on right bottom
                     layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                     layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                    layoutParams.setMargins(0, 0, 30, 200);
+                    layoutParams.setMargins(0, 0, 30, 240);
                 }
             }
         });
@@ -348,13 +308,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         mMapView.onResume();
-        Log.d(TAG, "onResume: ");
         mLocationProvider.connect();
-        Log.w("MainActivity", "onResume");
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GcmIntentService.REGISTRATION_SUCCESS));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(GcmIntentService.REGISTRATION_ERROR));
     }
 
 
@@ -362,11 +316,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause: ");
         mMapView.onPause();
         mLocationProvider.disconnect();
-        Log.w("MainActivity", "onPause");
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
     @Override
@@ -375,7 +326,21 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
         }
     }
 
@@ -386,7 +351,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (UserLogin.getUserLogin().getIsApproved()== 1) {
+                    if (UserLogin.getUserLogin().getIsApproved() == 1) {
                         isDriving = 1;
                         mUserService.setIsDriving(UserLogin.getUserLogin().getIdUser(), isDriving,
                                 mLatLngCurrent, new Callback<User>() {
@@ -406,11 +371,13 @@ public class MainActivity extends AppCompatActivity
                     } else {
                         isDriving = 0;
                         if (isBecome == 1) {
-                            new ErrorDialog(MainActivity.this, "Thông tin của bạn đang được kiểm duyệt\nVui lòng thử lại sau").show();
+                            new ErrorDialog(MainActivity.this, "Thông tin của bạn đang được kiểm duyệt\n" +
+                                    "Vui lòng thử lại sau").show();
                             mSwitchDriver.setChecked(false);
                         } else {
                             mSwitchDriver.setChecked(false);
-                            startActivity(new Intent(MainActivity.this, BecomeDriverActivity.class));
+                            startActivityForResult(new Intent(MainActivity.this, BecomeDriverActivity.class),
+                                    BECOME_REQUEST_CODE);
                         }
                     }
                 } else {
@@ -440,28 +407,25 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        Fragment fragment = null;
         if (id == R.id.nav_register) {
-            startActivity(new Intent(new Intent(MainActivity.this, RepairActivity.class)));
             closeDrawer();
+            startActivityForResult(new Intent(MainActivity.this, RepairActivity.class),REPAIR_REQUEST_CODE);
             return true;
         } else if (id == R.id.nav_history) {
+            closeDrawer();
             Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
             startActivityForResult(intent, HISTORY_REQUEST_CODE);
-            closeDrawer();
             return true;
         } else if (id == R.id.nav_favorite) {
             Intent intent = new Intent(MainActivity.this, FavoriteActivity.class);
-            startActivity(intent);
-            closeDrawer();
+            startActivityForResult(intent, FAVORITE_REQUEST_CODE);
             return true;
         } else if (id == R.id.nav_driver) {
-            Log.d(TAG, "onNavigationItemSelected: " + mSwitchDriver.isChecked());
             return true;
         } else if (id == R.id.nav_feedback) {
-            Intent intent = new Intent(MainActivity.this, FeedbackActivity.class);
-            startActivity(intent);
             closeDrawer();
+            Intent intent = new Intent(MainActivity.this, FeedbackActivity.class);
+            startActivityForResult(intent, FEEDBACK_REQUEST_CODE);
             return true;
         } else if (id == R.id.nav_log_out) {
 //            signOutGmail();
@@ -474,6 +438,11 @@ public class MainActivity extends AppCompatActivity
                 }
             }).show();
             return true;
+        } else if (id == R.id.nav_price_list) {
+            closeDrawer();
+            Intent intent = new Intent(MainActivity.this, PriceListActivity.class);
+            startActivityForResult(intent,PRICE_LIST_REQUEST_CODE);
+            return true;
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -485,6 +454,7 @@ public class MainActivity extends AppCompatActivity
         boolean checked = false;
         double currentLatitude = location.getLatitude();
         double currentLongitude = location.getLongitude();
+        Log.d("TAGGGGG", currentLatitude + " - " + currentLongitude);
         mLatLngCurrent = new LatLng(currentLatitude, currentLongitude);
         mAddress = getAddress(mLatLngCurrent);
         mTxtCurrentPlace.setText(mAddress);
@@ -526,7 +496,7 @@ public class MainActivity extends AppCompatActivity
         mGoogleMap.addMarker(options);
 
         final CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(mLatLngCurrent).zoom(14).build();
+                .target(mLatLngCurrent).zoom(13).build();
 
         if (!checked) {
             mGoogleMap.animateCamera(CameraUpdateFactory
@@ -536,7 +506,7 @@ public class MainActivity extends AppCompatActivity
 
         CircleOptions circleOptions = new CircleOptions()
                 .center(mLatLngCurrent)
-                .radius(1000)
+                .radius(3000)
                 .strokeWidth(2)
                 .strokeColor(getResources().getColor(R.color.colorCircleStroke))
                 .fillColor(getResources().getColor(R.color.colorCircleFill));
@@ -552,46 +522,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        /*final GMapV2Direction md = new GMapV2Direction();
-        md.getDocument(mLatLngCurrent, latLngDest,
-                GMapV2Direction.MODE_DRIVING, new Callback<Document>() {
-                    @Override
-                    public void onResult(Document document) {
-                        ArrayList<LatLng> directionPoint = md.getDirection(document);
-                        PolylineOptions rectLine = new PolylineOptions().width(3).color(
-                                Color.RED);
-
-                        for (int i = 0; i < directionPoint.size(); i++) {
-                            rectLine.add(directionPoint.get(i));
-                        }
-                        Polyline polylin = mGoogleMap.addPolyline(rectLine);
-                    }
-
-                    @Override
-                    public void onFailure() {
-
-                    }
-                });*/
-
-    }
-
-    // draw circle radius
-    private void drawCircleMaps(LatLng latLng, int radius) {
-        int d = 500; // diameter
-        Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(bm);
-        Paint p = new Paint();
-        p.setColor(getResources().getColor(R.color.colorApp));
-        c.drawCircle(d / 2, d / 2, d / 2, p);
-
-        // generate BitmapDescriptor from circle Bitmap
-        BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
-
-        // mapView is the GoogleMap
-        mGoogleMap.addGroundOverlay(new GroundOverlayOptions().
-                image(bmD).
-                position(latLng, radius * 2, radius * 2).
-                transparency(0.4f));
     }
 
     // activity for result
@@ -599,29 +529,45 @@ public class MainActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mGoogleMap.clear();
-        if (resultCode == RESULT_OK) {
-            if (requestCode == SBConstants.PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-                Bundle bundle = data.getExtras();
-                mPlace = bundle.getParcelable("searchPlace");
-                mStatus = bundle.getParcelable("searchStatus");
-                mUserService.getListUserByRadius(11000, mLatLngCurrent, new Callback<List<User>>() {
-                    @Override
-                    public void onResult(List<User> users) {
-                        Log.d(TAG, "Get list by radius is OK");
-                        setPlaceToMap(mGoogleMap, users);
-                    }
+        if(resultCode ==  RESULT_OK){
+            switch (requestCode){
+                case PROFILE_REQUEST_CODE:
+                    username.setText(UserLogin.getUserLogin().getFullName());
+                    break;
+                case SBConstants.PLACE_AUTOCOMPLETE_REQUEST_CODE:
+                    Bundle bundle = data.getExtras();
+                    mPlace = bundle.getParcelable("searchPlace");
+                    mStatus = bundle.getParcelable("searchStatus");
+                    mUserService.getListUserByRadius(11000, mLatLngCurrent, new Callback<List<User>>() {
+                        @Override
+                        public void onResult(List<User> users) {
+                            setPlaceToMap(mGoogleMap, users);
+                        }
 
-                    @Override
-                    public void onFailure(String message) {
-                        new ErrorDialog(getContext(), message).show();
-                    }
-                });
-            } else if (requestCode == HISTORY_REQUEST_CODE) {
-                if (resultCode == RESULT_OK) {
-                    navigationView.getMenu().getItem(1).setChecked(false);
-                }
-            } else if (requestCode == CALL_PHONE_REQUEST_CODE) {
-                Log.d(TAG, "onActivityResult: CALL");
+                        @Override
+                        public void onFailure(String message) {
+                            new ErrorDialog(getContext(), message).show();
+                        }
+                    });
+                    break;
+                case PRICE_LIST_REQUEST_CODE:
+                    resetNavigation();
+                    break;
+                case HISTORY_REQUEST_CODE:
+                    resetNavigation();
+                    break;
+                case FAVORITE_REQUEST_CODE:
+                    resetNavigation();
+                    break;
+                case BECOME_REQUEST_CODE:
+                    resetNavigation();
+                    break;
+                case REPAIR_REQUEST_CODE:
+                    resetNavigation();
+                    break;
+                case FEEDBACK_REQUEST_CODE:
+                    resetNavigation();
+                    break;
             }
         }
     }
@@ -655,13 +601,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
         mMapView.onDestroy();
     }
 
     @Override
     public void onLowMemory() {
-        Log.d(TAG, "onLowMemory: ");
         super.onLowMemory();
         mMapView.onLowMemory();
     }
@@ -704,12 +648,12 @@ public class MainActivity extends AppCompatActivity
             } else {
                 sDistance = df.format(distance) + " km";
             }
-            mDistance = SBFunctions.round(route.get(i).getDistanceValue() / 1000, 1);
-            mPrice = (mDistance <= 1) ? 10000 : (int) mDistance * SBConstants.UNIT_PRICE;
+            mDistance = distance;
+            mPrice = SBFunctions.calculationMoney((double) distance / 1000);
             mTimeSpend = route.get(i).getDurationValue() / 60;
             String detail = "Khoảng cách " + sDistance + "\nMất "
                     + SBFunctions.parseTime(mTimeSpend)
-                    + " - " + String.valueOf(df.format(mPrice)) + "VNĐ";
+                    + " - " + formatter.format(mPrice) + "VNĐ";
 
             final Snackbar snackbar = Snackbar.make(mLayout, detail, BaseTransientBottomBar.LENGTH_INDEFINITE)
                     .setAction("HIDE", new View.OnClickListener() {
@@ -736,9 +680,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onButtonClick(User user) {
-        if(mPlace==null){
-            Toast.makeText(getContext(),"Vui lòng chọn địa diểm bạn muốn đến",Toast.LENGTH_LONG).show();
-        }else{
+        if (mPlace == null) {
+            Toast.makeText(getContext(), "Vui lòng chọn địa diểm bạn muốn đến", Toast.LENGTH_LONG).show();
+        } else {
             callPhone(user);
         }
     }
@@ -746,7 +690,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onCheckBox(User user, boolean isChecked) {
         int check = isChecked ? 1 : 0;
-
         mUserService.sendFavorite(UserLogin.getUserLogin().getIdUser(), user.getIdUser(), check, new Callback<Boolean>() {
             @Override
             public void onResult(Boolean aBoolean) {
@@ -805,7 +748,7 @@ public class MainActivity extends AppCompatActivity
                 Log.i(TAG, "IDLE: " + System.currentTimeMillis());
                 if (isPhoneCalling) {
                     isPhoneCalling = false;
-                    if(mPlace!=null){
+                    if (mPlace != null) {
                         History<String> history = new History();
                         history.setIdUser(UserLogin.getUserLogin().getIdUser());
                         history.setBiker(mIdBiker);
@@ -863,7 +806,7 @@ public class MainActivity extends AppCompatActivity
     private void logOut() {
         UserLogin.setUserLogin(null);
         LoginManager.getInstance().logOut();
-        if(UserLogin.getGoogleApiClient()!=null){
+        if (UserLogin.getGoogleApiClient() != null) {
             signOut();
         }
         new PrefManagement(this).putValueString(SBConstants.PREF_AUTO_LOGIN, "");
@@ -889,7 +832,7 @@ public class MainActivity extends AppCompatActivity
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        Toast.makeText(getContext(),"Logout is successfully!!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Logout is successfully!!", Toast.LENGTH_LONG).show();
                     }
                 });
     }
@@ -899,9 +842,34 @@ public class MainActivity extends AppCompatActivity
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        Toast.makeText(getContext(),"Revoke Access is successfully!!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Revoke Access is successfully!!", Toast.LENGTH_LONG).show();
                     }
                 });
+    }
+
+    private void getPrice() {
+        PriceListServiceImpl service = new PriceListServiceImpl();
+        service.getPriceList(new Callback<PriceList>() {
+            @Override
+            public void onResult(PriceList priceList) {
+                UserLogin.setPriceList(priceList);
+            }
+
+            @Override
+            public void onFailure(String message) {
+                UserLogin.setPriceList(null);
+                new ErrorDialog(getContext(), message).show();
+            }
+        });
+    }
+
+    private void resetNavigation(){
+        navigationView.getMenu().getItem(0).setChecked(false);
+        navigationView.getMenu().getItem(1).setChecked(false);
+        navigationView.getMenu().getItem(2).setChecked(false);
+        navigationView.getMenu().getItem(3).setChecked(false);
+        navigationView.getMenu().getItem(4).setChecked(false);
+        navigationView.getMenu().getItem(5).setChecked(false);
     }
 
     //get Context Activity

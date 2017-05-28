@@ -38,6 +38,7 @@ public class RepairActivity extends AppCompatActivity{
         setTitle(getResources().getString(R.string.title_repair));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setElevation(0);
 
         mAdapter = new ViewPagerRepairAdapter(getSupportFragmentManager(),2);
         mViewPager.setOffscreenPageLimit(2);
@@ -75,6 +76,7 @@ public class RepairActivity extends AppCompatActivity{
 
         switch (item.getItemId()){
             case android.R.id.home:
+                setResult(RESULT_OK);
                 finish();
                 break;
             case R.id.register_repair:

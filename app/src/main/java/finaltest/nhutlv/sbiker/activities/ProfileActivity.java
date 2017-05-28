@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.koushikdutta.ion.Ion;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,11 +49,11 @@ import finaltest.nhutlv.sbiker.utils.UserLogin;
  */
 public class ProfileActivity extends AppCompatActivity {
 
-    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
-    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS     = 0.3f;
-    private static final int ALPHA_ANIMATIONS_DURATION              = 200;
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f;
+    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f;
+    private static final int ALPHA_ANIMATIONS_DURATION = 200;
 
-    private boolean mIsTheTitleVisible          = false;
+    private boolean mIsTheTitleVisible = false;
     private boolean mIsTheTitleContainerVisible = true;
 
     @BindView(R.id.ed_name_profile)
@@ -73,6 +74,9 @@ public class ProfileActivity extends AppCompatActivity {
     @BindView(R.id.btn_change_pass)
     Button mBtnChangePass;
 
+    @BindView(R.id.btn_more_info)
+    Button mBtnMoreInfo;
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
@@ -81,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = ProfileActivity.class.getSimpleName();
     private String name;
     private String numberphone;
+    Uri selectedImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,21 +94,28 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
-
-        mToolbar.setTitle("Profile Information");
         mEdName.addTextChangedListener(new MyTextWatcher(mEdName));
         mEdEmail.addTextChangedListener(new MyTextWatcher(mEdEmail));
         mEdNumberPhone.addTextChangedListener(new MyTextWatcher(mEdNumberPhone));
 
         mEdEmail.setText(UserLogin.getUserLogin().getEmai());
         mEdName.setText(UserLogin.getUserLogin().getFullName());
-        mEdNumberPhone.setText(UserLogin.getUserLogin().getNumberPhone()==null?
-                "":UserLogin.getUserLogin().getNumberPhone());
-
+        mEdNumberPhone.setText(UserLogin.getUserLogin().getNumberPhone() == null ?
+                "" : UserLogin.getUserLogin().getNumberPhone());
+        String path = UserLogin.getUserLogin().getAvatarPath();
+        if (path == null || path.equals("")) {
+            path = "path";
+        }
+        Picasso.with(this)
+                .load(path)
+                .resize(96, 96)
+                .placeholder(R.drawable.image)
+                .centerCrop()
+                .into(mImgAvatar);
         mImgAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               pickImageAvatar();
+                pickImageAvatar();
             }
         });
         mUserService = new UserServiceImpl();
@@ -111,8 +123,8 @@ public class ProfileActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if(UserLogin.getUserLogin().getTypeUser()==1){
-            mBtnChangePass.setEnabled(false);
+        if (UserLogin.getUserLogin().getTypeUser() == 0) {
+            mBtnChangePass.setVisibility(View.VISIBLE);
         }
         mBtnChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,12 +133,23 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        if(UserLogin.getUserLogin().getIsApproved()==1){
+            mBtnMoreInfo.setVisibility(View.VISIBLE);
+        }
+        mBtnMoreInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ProfileActivity.this,MoreInformationActivity.class));
+            }
+        });
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
+                setResult(RESULT_OK);
                 finish();
                 break;
         }
@@ -138,7 +161,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Determine Uri of camera image to save.
         final File root = new File(Environment.DIRECTORY_PICTURES + File.separator + "MyDir" + File.separator);
         root.mkdirs();
-        final String fname ="img_"+ System.currentTimeMillis() + ".jpg";
+        final String fname = "img_" + System.currentTimeMillis() + ".jpg";
         final File sdImageMainDirectory = new File(root, fname);
         outputFileUri = Uri.fromFile(sdImageMainDirectory);
 
@@ -147,7 +170,7 @@ public class ProfileActivity extends AppCompatActivity {
         final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         final PackageManager packageManager = getPackageManager();
         final List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
-        for(ResolveInfo res : listCam) {
+        for (ResolveInfo res : listCam) {
             final String packageName = res.activityInfo.packageName;
             final Intent intent = new Intent(captureIntent);
             intent.setComponent(new ComponentName(packageName, res.activityInfo.name));
@@ -172,57 +195,56 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            if (requestCode == SBConstants.IMAGE_AVATAR_REQUEST_CODE) {
-                final boolean isCamera;
-                Log.d(TAG, "onActivityResult: ");
-                if (data == null) {
-                    Log.d(TAG, "onActivityResult: data NULL");
-                    isCamera = true;
+        if (requestCode == SBConstants.IMAGE_AVATAR_REQUEST_CODE) {
+            final boolean isCamera;
+            Log.d(TAG, "onActivityResult: ");
+            if (data == null) {
+                Log.d(TAG, "onActivityResult: data NULL");
+                isCamera = true;
+            } else {
+                final String action = data.getAction();
+                if (action == null) {
+                    Log.d(TAG, "onActivityResult: action NULL");
+                    isCamera = false;
                 } else {
-                    final String action = data.getAction();
-                    if (action == null) {
-                        Log.d(TAG, "onActivityResult: action NULL");
-                        isCamera = false;
-                    } else {
-                        Log.d(TAG, "onActivityResult: action "+action);
-                        isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    }
+                    Log.d(TAG, "onActivityResult: action " + action);
+                    isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 }
-
-                Uri selectedImageUri;
-                if (isCamera) {
-                    selectedImageUri = outputFileUri;
-                    Log.d(TAG, "onActivityResult: IS CAMERA "+selectedImageUri.toString());
-                } else {
-                    selectedImageUri = data == null ? null : data.getData();
-                    Log.d(TAG, "onActivityResult: NO CAMERA "+selectedImageUri.toString());
-                }
-                mImgAvatar.setImageURI(selectedImageUri);
-                mUserService.updateImage(selectedImageUri, new Callback<User>() {
-                    @Override
-                    public void onResult(User user) {
-                        Log.d(TAG, "onResult: ");
-                    }
-
-                    @Override
-                    public void onFailure(String message) {
-                        Log.d(TAG, "onFailure: "+message);
-                    }
-                });
-            }else if(requestCode==200) {
-                final Uri selectedImage = data.getData();
-                new UserServiceImpl(getContext()).updateImage(selectedImage, new Callback<User>() {
-                    @Override
-                    public void onResult(User user) {
-                        Log.d(TAG, "onResult: ");
-                    }
-
-                    @Override
-                    public void onFailure(String message) {
-                        Log.d(TAG, "onFailure: "+message);
-                    }
-                });
             }
+            if (isCamera) {
+                selectedImageUri = outputFileUri;
+                Log.d(TAG, "onActivityResult: IS CAMERA " + selectedImageUri.toString());
+            } else {
+                selectedImageUri = data == null ? null : data.getData();
+                Log.d(TAG, "onActivityResult: NO CAMERA " + selectedImageUri.toString());
+            }
+            mImgAvatar.setImageURI(selectedImageUri);
+            mUserService.updateImage(selectedImageUri, new Callback<User>() {
+                @Override
+                public void onResult(User user) {
+                    Log.d(TAG, "onResult: ");
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Log.d(TAG, "onFailure: " + message);
+                }
+            });
+        } else if (requestCode == 200) {
+            final Uri selectedImage = data.getData();
+            mImgAvatar.setImageURI(selectedImage);
+            new UserServiceImpl(getContext()).updateImage(selectedImage, new Callback<User>() {
+                @Override
+                public void onResult(User user) {
+                    Log.d(TAG, "onResult: ");
+                }
+
+                @Override
+                public void onFailure(String message) {
+                    Log.d(TAG, "onFailure: " + message);
+                }
+            });
+        }
     }
 
     public void pickImageAvatar() {
@@ -233,7 +255,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private String getPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
         Cursor cursor = loader.loadInBackground();
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -243,7 +265,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     //endregion
 
-   private class  MyTextWatcher implements TextWatcher{
+    private class MyTextWatcher implements TextWatcher {
 
         View mView;
 
@@ -267,18 +289,18 @@ public class ProfileActivity extends AppCompatActivity {
             name = UserLogin.getUserLogin().getFullName();
             numberphone = UserLogin.getUserLogin().getNumberPhone();
 
-            switch (mView.getId()){
-                case R.id.ed_name_profile :
-                    if(!((EditText)mView).getText().toString().equals(name)){
+            switch (mView.getId()) {
+                case R.id.ed_name_profile:
+                    if (!((EditText) mView).getText().toString().equals(name)) {
                         mBtnUpdate.setEnabled(true);
-                    }else{
+                    } else {
                         mBtnUpdate.setEnabled(false);
                     }
                     break;
                 case R.id.ed_number_phone_profile:
-                    if(!((EditText)mView).getText().toString().equals(numberphone)){
+                    if (!((EditText) mView).getText().toString().equals(numberphone)) {
                         mBtnUpdate.setEnabled(true);
-                    }else{
+                    } else {
                         mBtnUpdate.setEnabled(false);
                     }
                     break;
@@ -293,13 +315,13 @@ public class ProfileActivity extends AppCompatActivity {
                                     name = mEdName.getText().toString();
                                     numberphone = mEdNumberPhone.getText().toString();
                                     mBtnUpdate.setEnabled(false);
-                                    Toast.makeText(getContext(),"Cập nhật thông tin thành công",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getContext(), "Cập nhật thông tin thành công", Toast.LENGTH_LONG).show();
                                     UserLogin.setUserLogin(user);
                                 }
 
                                 @Override
                                 public void onFailure(String message) {
-                                    new ErrorDialog(getContext(),message).show();
+                                    new ErrorDialog(getContext(), message).show();
                                 }
                             });
                 }
@@ -308,8 +330,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     //get context activity
-    private Context getContext(){
-        return  this;
+    private Context getContext() {
+        return this;
     }
 }
 

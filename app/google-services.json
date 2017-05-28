@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "92252181847",
-    "project_id": "firebase-sbike"
+    "firebase_url": "https://fir-sbike.firebaseio.com",
+    "project_id": "firebase-sbike",
+    "storage_bucket": "firebase-sbike.appspot.com"
   },
   "client": [
     {
@@ -12,6 +14,10 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "92252181847-764nkjqi8bida36ggjud076cahbjv2d4.apps.googleusercontent.com",
+          "client_type": 3
+        },
         {
           "client_id": "92252181847-1r6s3bo34b0816cqipo9rkk7aod1qia5.apps.googleusercontent.com",
           "client_type": 1,
@@ -27,6 +33,9 @@
       ],
       "api_key": [
         {
+          "current_key": "AIzaSyC9kF3oVZp1WpUGZuByeSwR-BJACVRuj0Y"
+        },
+        {
           "current_key": "AIzaSyD8WDEj1tqAFy6REOowl6gO6MnRhNAPP_s"
         }
       ],
@@ -35,11 +44,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "92252181847-764nkjqi8bida36ggjud076cahbjv2d4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

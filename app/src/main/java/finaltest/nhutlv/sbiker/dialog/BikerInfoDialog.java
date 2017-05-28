@@ -83,25 +83,39 @@ public class BikerInfoDialog extends Dialog {
         });
 
         mCheckFavorite = (CheckBox) findViewById(R.id.check_favorite);
-        mCheckFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mCheckFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int countF = mCount;
-                boolean checkF = check;
-//                if(checkF==isChecked){
-//                    Log.d(TAG, "onCheckedChanged: Favorite");
-//                    countF = countF+1;
-//                    count.setText(String.valueOf(countF));
-//                    checkF = !checkF;
-//                }else{
-//                    Log.d(TAG, "onCheckedChanged: No Favorite");
-//                    countF = countF -1;
-//                    count.setText(String.valueOf(countF));
-//                    checkF = !checkF;
-//                }
+            public void onClick(View v) {
+                boolean isChecked = ((CheckBox)v).isChecked();
+                if(isChecked){
+                    Log.d(TAG, "onCheckedChanged: NO CHECK");
+                    count.setText(String.valueOf(mCount+1));
+                    mCount = mCount + 1;
+                }else{
+                    Log.d(TAG, "onCheckedChanged: CHECK");
+                    count.setText(String.valueOf(mCount-1));
+                    mCount = mCount-1;
+                }
                 myClickListener.onCheckBox(mUser,isChecked);
             }
         });
+//        mCheckFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                int countF = mCount;
+//                boolean checkF = check;
+//                if(!isChecked){
+//                    Log.d(TAG, "onCheckedChanged: CHECK");
+//                    count.setText(String.valueOf(mCount-1));
+//                    mCount = mCount-1;
+//                }else{
+//                    Log.d(TAG, "onCheckedChanged: NO CHECK");
+//                    count.setText(String.valueOf(mCount+1));
+//                    mCount = mCount + 1;
+//                }
+//                myClickListener.onCheckBox(mUser,isChecked);
+//            }
+//        });
         numberPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

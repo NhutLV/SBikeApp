@@ -15,6 +15,7 @@ public class SBConstants {
     public static final String PREF_ACCESS_TOKEN ="ACCESS_TOKEN";
     public static final String PREF_AUTO_LOGIN ="AUTO_LOGIN";
     public static final String PREF_VALUE_STRING_DEFAULT ="";
+    public static final boolean PREF_VALUE_BOOLEAN_DEFAULT =false;
     public static final int PREF_VALUE_INTEGER_DEFAULT =0;
     public static final int IMAGE_AVATAR_REQUEST_CODE =1;
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE =111;

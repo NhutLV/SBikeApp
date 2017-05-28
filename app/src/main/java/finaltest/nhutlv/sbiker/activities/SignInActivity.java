@@ -1,11 +1,14 @@
 package finaltest.nhutlv.sbiker.activities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -32,9 +35,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +53,6 @@ import finaltest.nhutlv.sbiker.dialog.ErrorDialog;
 import finaltest.nhutlv.sbiker.dialog.FlowerDialog;
 import finaltest.nhutlv.sbiker.tools.PrefManagement;
 import finaltest.nhutlv.sbiker.utils.Callback;
-import finaltest.nhutlv.sbiker.utils.CustomToast;
 import finaltest.nhutlv.sbiker.utils.SBConstants;
 import finaltest.nhutlv.sbiker.utils.UserLogin;
 import finaltest.nhutlv.sbiker.utils.SBFunctions;
@@ -62,8 +63,10 @@ import finaltest.nhutlv.sbiker.utils.SBFunctions;
 
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener {
-
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = SignInActivity.class.getSimpleName();
+    private boolean isReceiverRegistered;
+
     @BindView(R.id.input_email_login)
     EditText mEmail;
 
@@ -97,6 +100,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 1;
     private PrefManagement mPrefManagement;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,13 +108,13 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         mCallbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        mFlowerDialog = new FlowerDialog(getContext(),"Login");
+        mFlowerDialog = new FlowerDialog(getContext(), "Login");
         mPassword.setTransformationMethod(new PasswordTransformationMethod());
         mPrefManagement = new PrefManagement(this);
         Intent intent = getIntent();
-        if(intent.getStringExtra("email")!=null){
+        if (intent.getStringExtra("email") != null) {
             mEmail.setText(intent.getStringExtra("email"));
-        }else{
+        } else {
             mEmail.setText(mPrefManagement.getValueString(SBConstants.PREF_EMAIL));
             mPassword.setText(mPrefManagement.getValueString(SBConstants.PREF_PASSWORD));
         }
@@ -139,24 +143,15 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    public void setEmailError() {
-        new CustomToast().ShowToast(this, mLayout, "Email chưa hợp lệ");
-    }
 
-
-    public void setPasswordError() {
-        new CustomToast().ShowToast(this, mLayout, "Password chưa hợp lệ");
-    }
-
-
-    public void navigateToHome() {
+    private void navigateToHome() {
         startActivity(new Intent(SignInActivity.this, MainActivity.class));
         finish();
     }
 
-    public void navigateToSignUp() {
+    private void navigateToSignUp() {
         startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
-        finish();
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 
     @Override
@@ -168,23 +163,23 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 }
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                if(submitLogin()){
+                if (submitLogin()) {
                     mFlowerDialog.showDialog();
                     mLoginService.login(email, password, new Callback<User>() {
                         @Override
                         public void onResult(User user) {
                             mFlowerDialog.hideDialog();
                             UserLogin.setUserLogin(user);
-                            mPrefManagement.putValueString(SBConstants.PREF_EMAIL,mEmail.getText().toString());
-                            mPrefManagement.putValueString(SBConstants.PREF_PASSWORD,mPassword.getText().toString());
-                            Log.d("TAGGGGGGGGG",user.toString());
+                            mPrefManagement.putValueString(SBConstants.PREF_EMAIL, mEmail.getText().toString());
+                            mPrefManagement.putValueString(SBConstants.PREF_PASSWORD, mPassword.getText().toString());
+                            Log.d("TAGGGGGGGGG", user.toString());
                             navigateToHome();
                         }
 
                         @Override
                         public void onFailure(String message) {
                             mFlowerDialog.hideDialog();
-                            new ErrorDialog(SignInActivity.this,message).show();
+                            new ErrorDialog(SignInActivity.this, message).show();
                         }
                     });
                 }
@@ -204,9 +199,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     private boolean validateEmail() {
         String email = mEmail.getText().toString();
-        Log.d(TAG, "validateEmail: "+email);
+        Log.d(TAG, "validateEmail: " + email);
         if (TextUtils.isEmpty(email) || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            new ErrorDialog(this,"Email không hợp lệ !!").show();
+            new ErrorDialog(this, "Email không hợp lệ !!").show();
             return true;
         }
         return false;
@@ -214,7 +209,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
 
     private boolean validatePassword() {
         if (TextUtils.isEmpty(mPassword.getText().toString())) {
-            new ErrorDialog(this,"Password không hợp lệ !!").show();
+            new ErrorDialog(this, "Password không hợp lệ !!").show();
             return true;
         }
         return false;
@@ -245,12 +240,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onStart() {
         super.onStart();
-        if(mGoogleApiClient!=null)
+        if (mGoogleApiClient != null)
             mGoogleApiClient.connect();
         if (isOffline()) {
             return;
         }
-        if(mPrefManagement.getValueString(SBConstants.PREF_AUTO_LOGIN).length()>0)
+        if (mPrefManagement.getValueString(SBConstants.PREF_AUTO_LOGIN).length() > 0)
             signInWithAccessToken();
 //        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
 //        if (opr.isDone()) {
@@ -279,6 +274,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         super.onResume();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     private void signInFaceBook() {
         if (isOffline()) {
             return;
@@ -305,7 +305,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                 if (data.has("picture")) {
                                     try {
                                         profilePicUrl = data.getJSONObject("picture").getJSONObject("data").getString("url");
-                                        Log.d("TAGGGGGG",profilePicUrl);
+                                        Log.d("TAGGGGGG", profilePicUrl);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -316,21 +316,21 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                                 user.setFullName(name);
                                 user.setAccessToken(id);
                                 user.setEmai(email);
-                                user.setAvatarPath("https://graph.facebook.com/"+ id + "/picture?type=large");
+                                user.setAvatarPath("https://graph.facebook.com/" + id + "/picture?type=large");
                                 mSignUpService.signUpSocial(user, new Callback<User>() {
                                     @Override
                                     public void onResult(User user) {
-                                        mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN,id);
-                                        mPrefManagement.putValueString(SBConstants.PREF_AUTO_LOGIN,name);
+                                        mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN, id);
+                                        mPrefManagement.putValueString(SBConstants.PREF_AUTO_LOGIN, name);
                                         UserLogin.setUserLogin(user);
                                         navigateToHome();
-                                        Toast.makeText(SignInActivity.this,"Login with Facebook is successfully !",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SignInActivity.this, "Login with Facebook is successfully !", Toast.LENGTH_LONG).show();
                                     }
 
                                     @Override
                                     public void onFailure(String message) {
                                         Log.d(TAG, "onFailure: Login Facebook");
-                                        new ErrorDialog(SignInActivity.this,"Không thể kết nối máy chủ").show();
+                                        new ErrorDialog(SignInActivity.this, "Không thể kết nối máy chủ").show();
                                     }
                                 });
                             }
@@ -357,7 +357,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private void signInWithAccessToken() {
         String accessToken = mPrefManagement.getValueString(SBConstants.PREF_ACCESS_TOKEN);
         mFlowerDialog.showDialog();
-        Log.d(TAG, "signInWithAccessToken: "+accessToken);
+        Log.d(TAG, "signInWithAccessToken: " + accessToken);
         mLoginService.signInSocial(accessToken, new Callback<User>() {
             @Override
             public void onResult(User user) {
@@ -370,7 +370,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onFailure(String message) {
                 mFlowerDialog.hideDialog();
-                new ErrorDialog(SignInActivity.this,message).show();
+                new ErrorDialog(SignInActivity.this, message).show();
             }
 
         });
@@ -407,17 +407,17 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                 mSignUpService.signUpSocial(user, new Callback<User>() {
                     @Override
                     public void onResult(User user) {
-                        mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN,tokenServer);
-                        mPrefManagement.putValueString(SBConstants.PREF_AUTO_LOGIN,personName);
+                        mPrefManagement.putValueString(SBConstants.PREF_ACCESS_TOKEN, tokenServer);
+                        mPrefManagement.putValueString(SBConstants.PREF_AUTO_LOGIN, personName);
                         UserLogin.setUserLogin(user);
                         navigateToHome();
-                        Toast.makeText(SignInActivity.this,"Login with Facebook is successfully !",Toast.LENGTH_LONG).show();
+                        Toast.makeText(SignInActivity.this, "Login with Facebook is successfully !", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(String message) {
                         Log.d(TAG, "onFailure: Login Facebook");
-                        new ErrorDialog(SignInActivity.this,"Không thể kết nối máy chủ").show();
+                        new ErrorDialog(SignInActivity.this, "Không thể kết nối máy chủ").show();
                     }
                 });
                 updateUI(true);
@@ -473,7 +473,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         return !isOnline;
     }
 
-    private Context getContext(){
+    private Context getContext() {
         return this;
     }
 }

@@ -30,6 +30,16 @@ public class PrefManagement {
         return mPreferences.getString(key, SBConstants.PREF_VALUE_STRING_DEFAULT);
     }
 
+    public void putValueBoolean(String key,boolean value){
+        mEditor = mPreferences.edit();
+        mEditor.putBoolean(key,value);
+        mEditor.apply();
+    }
+
+    public boolean getValueBoolean(String key){
+        return mPreferences.getBoolean(key, SBConstants.PREF_VALUE_BOOLEAN_DEFAULT);
+    }
+
     public void putValueInteger(String key,int value){
         mEditor = mPreferences.edit();
         mEditor.putInt(key,value).apply();
